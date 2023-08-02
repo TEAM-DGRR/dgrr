@@ -1,6 +1,4 @@
-export const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/";
-
+//Stomp
 export const stompConfig = {
   BROKER_URL: "ws://localhost:8080/ws",
   CONNECT_HEADER: {
@@ -9,7 +7,7 @@ export const stompConfig = {
     "heart-beat": "10000,10000",
   },
   DESTINATION_URI: {
-    GAME_URI: "/recv/game",
+    GAME_URI: "/user/recv/game",
     IMAGE_DATA_URI: "/send/imgData",
     IMAGE_RESULT_URI: "/recv/imgResult",
     STATUS_URI: "/recv/status",
@@ -24,3 +22,18 @@ export interface IGameConfig {
   opUserProfileImg: string;
   opUserTier: string;
 }
+
+//OpenVidu
+export const openViduConfig = {
+  APPLICATION_SERVER_URL: process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/",
+  PUBLISHER_PROPERTIES: {
+    audioSource: undefined,
+    videoSource: undefined,
+    publishAudio: true,
+    publishVideo: true,
+    resolution: "640x480",
+    frameRate: 30,
+    insertMode: "APPEND",
+    mirror: false,
+  },
+};

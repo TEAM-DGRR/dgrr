@@ -11,8 +11,8 @@ export const connectStomp = (headers: StompHeaders) => {
       ...CONNECT_HEADER,
       ...headers,
     },
-    debug: (str) => {
-      console.log("[Stomp Debug]", str); // 웹소켓 디버깅 로그 추가
+    debug: (message) => {
+      console.log("[Stomp Debug]", message); // 웹소켓 디버깅 로그 추가
     },
   });
 
@@ -20,7 +20,6 @@ export const connectStomp = (headers: StompHeaders) => {
 
   return new Promise<Client>((resolve) => {
     client.onConnect = (frame) => {
-      console.log("Stomp 연결 성공");
       resolve(client);
     };
   });
@@ -47,13 +46,6 @@ export const onStompError = (client: Client, callback: Function) => {
 export const publishMessage = (client: Client, destination: string, body: string) => {
   client.publish({ destination, body });
 };
-
-// export const onUnhandledMessage = (client: Client, callback: Function) => {
-//   client.onUnhandledMessage = (message: IMessage) => {
-//     console.log(message);
-//     callback(message);
-//   };
-// };
 
 export const subscribeURI = (
   client: Client,

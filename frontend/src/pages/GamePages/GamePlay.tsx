@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
 import { captureImage } from "components/Game/captureImage";
+import { Client } from "@stomp/stompjs";
 
 export const GamePlay = (props: IGameProps) => {
   // OpenVidu
@@ -37,7 +38,7 @@ export const GamePlay = (props: IGameProps) => {
     const captureInterval = 1000;
 
     setInterval(() => {
-      if (isStompConnected) {
+      if (isStompConnected && stompClient instanceof Client) {
         if (videoRef.current && canvasRef.current) {
           captureImage(videoRef.current, canvasRef.current, (base64data: string) => {
             publishMessage(stompClient, "/app/imageData", base64data);

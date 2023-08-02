@@ -1,0 +1,22 @@
+.kakaoLogin {
+  background: #469FF6;
+  width: 360px;
+  height: 100vh;
+  
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  * {
+    margin: 0 24px;
+  }
+}
+
+#kakaoimg {
+  width: calc(100% - 48px);
+}
+
+#logo {
+  width: calc(100% - 48px);
+}

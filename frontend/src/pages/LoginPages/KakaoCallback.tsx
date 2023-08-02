@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import axios from "axios"
-import { REST_API_KEY, REDIRECT_URI } from './LoginData'
 
 export const KakaoCallback = () => {
     useEffect(() => {
         // 인가 코드 받기
+        const REST_API_KEY = `${process.env.REACT_APP_REST_API_KEY}`;
+        const REDIRECT_URI = `${process.env.REACT_APP_REDIRECT_URI}`;
         const code = new URL(window.location.href).searchParams.get("code");
         const grantType = "authorization_code";
 

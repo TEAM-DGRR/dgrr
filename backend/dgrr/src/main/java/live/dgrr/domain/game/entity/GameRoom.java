@@ -19,10 +19,10 @@ public class GameRoom {
      * UserOne 이 언제나 선공이다.
      */
 
-    private GameRoomUser userOne;
-    private GameRoomUser userTwo;
+    private final GameRoomUser userOne;
+    private final GameRoomUser userTwo;
 
-    private String gameSessionId;
+    private final String gameSessionId;
     private GameStatus gameStatus;
     private LocalDateTime firstRoundStartTime;
     private LocalDateTime firstLaughTime;

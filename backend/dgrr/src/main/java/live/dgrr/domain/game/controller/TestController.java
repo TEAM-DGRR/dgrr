@@ -22,8 +22,7 @@ public class TestController {
     private final GameService gameService;
 
     @MessageMapping("/testM")
-    public void processMessageFromClient(@Payload String messageData, MessageHeaders headers, @Header(name = "simpSessionId") String sessionId) throws Exception {
-        System.out.println("11" + headers);
+    public void processMessageFromClient(@Payload String messageData, MessageHeaders headers, @Header(name = "simpSessionId") String sessionId) {
         template.convertAndSendToUser(sessionId,"/recv/sendM", "단일 보내기", createHeaders(sessionId));
     }
 

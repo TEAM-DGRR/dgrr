@@ -6,7 +6,11 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.lang.Nullable;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpAttributesContextHolder;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -70,9 +74,18 @@ public class GameService {
         //Openvidu 생성
 
         //Client에 시작 시그널, User 정보 전송.
-//        template.convertAndSendToUser();
+        template.convertAndSendToUser(roomUser1.getSessionId(),"/recv/game", roomUser2, createHeaders(roomUser1.getSessionId()));
+        template.convertAndSendToUser(roomUser2.getSessionId(),"/recv/game", roomUser1, createHeaders(roomUser2.getSessionId()));
     }
 
-
+    /**
+     * sessionId 를 바탕으로 SimpMessageHeader 를 만들어 준다.
+     */
+    private MessageHeaders createHeaders(@Nullable String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+        if (sessionId != null) headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
+    }
 
 }

@@ -6,4 +6,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     public Member findByKakaoId(Long kakaoId);
 
+
 }

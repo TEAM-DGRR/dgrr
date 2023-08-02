@@ -1,5 +1,6 @@
 package live.dgrr.domain.member;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,11 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@Table(name = "member")
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id

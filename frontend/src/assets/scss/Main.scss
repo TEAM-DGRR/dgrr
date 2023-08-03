@@ -1,0 +1,39 @@
+$mainblack: #121417;
+$blue: #469FF6;
+
+.MainPage {
+  text-align: center;
+}
+
+.MainBody {
+  display: flex;
+  flex-direction: column;
+
+  img {
+    margin: auto;
+  }
+}
+
+.MainNav {
+  margin: auto;
+  width: calc(100% - 48px);
+  display: flex;
+  justify-content: space-between;
+}
+
+.MainBtns {
+  height: 176px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+#character {
+  width: calc(100% - 172px);
+}
+
+#title {
+  width: calc(100% - 156px);
+}

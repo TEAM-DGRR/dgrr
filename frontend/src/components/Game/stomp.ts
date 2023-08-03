@@ -1,16 +1,18 @@
 import { Client, IMessage, StompHeaders, messageCallbackType } from "@stomp/stompjs";
+import { stompConfig, IGameConfig } from "./config";
+
+const { BROKER_URL, CONNECT_HEADER, DESTINATION_URI } = stompConfig;
+const { GAME_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
 
 export const connectStomp = (headers: StompHeaders) => {
   const client = new Client({
-    brokerURL: "ws://localhost:8080/ws",
+    brokerURL: BROKER_URL,
     connectHeaders: {
-      username: "1234",
-      password: "1234",
-      "heart-beat": "10000,10000", // Heartbeat 메시지 주기 설정
+      ...CONNECT_HEADER,
       ...headers,
     },
-    debug: function (str) {
-      console.log("[Stomp Debug]", str); // 웹소켓 디버깅 로그 추가
+    debug: (message) => {
+      console.log("[Stomp Debug]", message); // 웹소켓 디버깅 로그 추가
     },
   });
 
@@ -18,9 +20,19 @@ export const connectStomp = (headers: StompHeaders) => {
 
   return new Promise<Client>((resolve) => {
     client.onConnect = (frame) => {
-      console.log("Stomp 연결 성공");
       resolve(client);
     };
+  });
+};
+
+export const getGameConfig = (client: Client) => {
+  return new Promise<IGameConfig>((resolve) => {
+    client.subscribe(GAME_URI, (message) => {
+      console.log("[GAME Message recieved] : " + message.headers);
+      console.log("[body] : " + message.body);
+      const gameConfig = JSON.parse(message.body);
+      resolve(gameConfig);
+    });
   });
 };
 
@@ -33,13 +45,6 @@ export const onStompError = (client: Client, callback: Function) => {
 
 export const publishMessage = (client: Client, destination: string, body: string) => {
   client.publish({ destination, body });
-};
-
-export const onUnhandledMessage = (client: Client, callback: Function) => {
-  client.onUnhandledMessage = (message: IMessage) => {
-    console.log(message);
-    callback(message);
-  };
 };
 
 export const subscribeURI = (

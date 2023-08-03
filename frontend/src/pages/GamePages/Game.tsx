@@ -1,59 +1,61 @@
 import react, { useEffect, useRef, useState } from "react";
-import { connectStomp, onUnhandledMessage, subscribeURI } from "components/Game/stomp";
+import { connectStomp, getGameConfig } from "components/Game/stomp";
 import { Client, IMessage } from "@stomp/stompjs";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { GameLoading } from "./GameLoading";
 import { GamePlay } from "./GamePlay";
+import { IGameConfig } from "components/Game";
 
 export interface IGameProps {
-  stompClient: Client;
+  stompClient: Client | undefined;
   isStompConnected: boolean;
+  gameConfig: IGameConfig;
 }
 
 export const Game = () => {
+  const [num, setNum] = useState<Number>(0);
   const [stompClient, setStompClient] = useState<Client>();
+  const [gameConfig, setGameConfig] = useState<IGameConfig>({} as IGameConfig);
   const isStompConnected = useRef<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 게임 창으로 진입시 소켓 통신 연결
+    const startGame = (message: IGameConfig) => {
+      setGameConfig(message);
+      navigate("/game/play");
+    };
+
+    // 소켓 통신 연결
     const tryConnectStomp = async () => {
-      try {
-        await connectStomp({}).then((client) => {
-          setStompClient(client);
-        });
+      const client = await connectStomp({});
+      setStompClient(client);
+      isStompConnected.current = true;
 
-        if (stompClient === undefined) throw "Stomp client가 존재하지 않음";
-        isStompConnected.current = true;
-        console.log("Stomp 연결 성공");
-
-        onUnhandledMessage(stompClient, (message: IMessage) => {
-          console.log("Received message:", message);
-          navigate("/game/play");
-        });
-      } catch (error) {
-        console.error("Failed to connect:", error);
-      }
+      // 구독, 게임 시작 메시지를 수신하도록 대기
+      startGame(await getGameConfig(client));
     };
 
     tryConnectStomp();
-  }, []);
+  }, [navigate]);
 
   return (
     <div>
       <Routes>
-        {stompClient !== undefined ? (
-          <>
-            <Route
-              path="/game/loading"
-              element={<GameLoading stompClient={stompClient} isStompConnected />}
-            />
-            <Route
-              path="/game/play"
-              element={<GamePlay stompClient={stompClient} isStompConnected />}
-            />
-          </>
-        ) : null}
+        <>
+          <Route
+            index
+            path="/game/loading"
+            element={
+              <GameLoading stompClient={stompClient} gameConfig={gameConfig} isStompConnected />
+            }
+          />
+          <Route
+            path="/game/play"
+            element={
+              <GamePlay stompClient={stompClient} gameConfig={gameConfig} isStompConnected />
+            }
+          />
+        </>
       </Routes>
     </div>
   );

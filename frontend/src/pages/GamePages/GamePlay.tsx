@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
 import { captureImage } from "components/Game/captureImage";
+import { Client } from "@stomp/stompjs";
 
 export const GamePlay = (props: IGameProps) => {
   // OpenVidu
@@ -14,13 +15,14 @@ export const GamePlay = (props: IGameProps) => {
   const currentVideoDeviceRef = useRef<Device>();
 
   // Stomp
-  const { stompClient, isStompConnected } = props;
+  const { stompClient, isStompConnected, gameConfig } = props;
+  const { gameSessionId, openViduToken } = gameConfig;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // OpenVidu 세션 입장
   useEffect(() => {
-    joinSession("SessionA", "faegawfd")
+    joinSession(openViduToken, "faegawfd")
       .then(({ session, publisher, subscriber, currentVideoDevice }) => {
         setOVSession(session);
         setPublisher(publisher);
@@ -32,12 +34,15 @@ export const GamePlay = (props: IGameProps) => {
       });
   }, []);
 
+  // Stomp 엔드포인트 구독
+  useEffect(() => {});
+
   // 이미지 캡처
   const startWebcamCapture = () => {
     const captureInterval = 1000;
 
     setInterval(() => {
-      if (isStompConnected) {
+      if (isStompConnected && stompClient instanceof Client) {
         if (videoRef.current && canvasRef.current) {
           captureImage(videoRef.current, canvasRef.current, (base64data: string) => {
             publishMessage(stompClient, "/app/imageData", base64data);

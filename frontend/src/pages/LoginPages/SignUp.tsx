@@ -17,7 +17,7 @@ export const SignUp = () => {
   // 버튼이 눌리면 파일 업로드 창 띄우기 
   const fileInput = () => {
     fileInputRef.current?.click();
-  }
+  };
   
   // 사진 업로드
   const uploadImg = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,14 +66,12 @@ export const SignUp = () => {
     {/* 프로필 이미지 제출 폼 */}
     <form>
       {/* 버튼 누르면 미리보기 안 바뀜 > 고쳐야함 */}
-      <button onClick={fileInput}>파일 업로드 버튼</button>
-      <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadImg} />
+      <button onClick={fileInput}>
+        파일 업로드 버튼
+        <input hidden type="file" accept="image/*" ref={fileInputRef} onChange={uploadImg} />
+      </button>
     </form>
-    
-    {/* 닉네임 부분은 따로 분리시켜서 다시 만들기 */}
-    <p>닉네임</p>
-    <input type="search" placeholder="닉네임을 입력해주세요" />
-    <button>중복검사</button>
+
     
     <p>한 줄 소개</p>
     <input type="search" placeholder="즐겁게 게임해요~" />

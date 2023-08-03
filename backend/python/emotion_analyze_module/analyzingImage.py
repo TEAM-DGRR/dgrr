@@ -32,13 +32,11 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
         return {
             "emotion": emotion,
             "probability": labeled_probabilities,
-            "stopVideo": emotion == "Smile" and max_prob > 0.5,
             "message": "success",
         }
 
     return {
         "emotion": "Not Detected Your Face",
         "probability": dict(zip(emotions, [-1] * 7)),
-        "stopVideo": False,
         "message": "failed",
     }

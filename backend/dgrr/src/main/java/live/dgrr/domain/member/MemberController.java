@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/member")
+@CrossOrigin
 public class MemberController {
 
     @Autowired

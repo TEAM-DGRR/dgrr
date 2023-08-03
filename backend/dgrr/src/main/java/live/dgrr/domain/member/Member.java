@@ -23,7 +23,7 @@ public class Member {
     private Long memberId;
 
     @Column(name = "kakao_id")
-    private Long kakaoId;
+    private String kakaoId;
 
     @Column(name = "profile_image")
     private String profileImage;
@@ -46,7 +46,7 @@ public class Member {
     private Timestamp modifiedAt;
 
     @Builder
-    public Member(Long kakaoId, String memberRole) {
+    public Member(String kakaoId, String memberRole) {
         this.kakaoId = kakaoId;
         this.memberRole = RoleType.valueOf(memberRole);
     }

@@ -55,8 +55,10 @@ public class MemberService {
         try {
             oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
         } catch (JsonProcessingException e) {
+            System.out.println("jsonprocessingexception");
             e.printStackTrace();
         }
+
 
         return oauthToken;
     }
@@ -89,6 +91,10 @@ public class MemberService {
             bw.write(sb);
             bw.flush();
 
+            // 결과 코드가 200이라면 성공
+            int responseCode = conn.getResponseCode();
+            System.out.println("response Code: " + responseCode);
+
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
@@ -110,6 +116,8 @@ public class MemberService {
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(":::\nmemberService: " + e.getMessage());
+            System.out.println(e.toString());
         }
 
         return access_Token;
@@ -155,6 +163,6 @@ public class MemberService {
     }
 
     public Member getMemberByKakaoId(String id) {
-        return memberRepository.findByKakaoId(Long.valueOf(id));
+        return memberRepository.findByKakaoId(id);
     }
 }

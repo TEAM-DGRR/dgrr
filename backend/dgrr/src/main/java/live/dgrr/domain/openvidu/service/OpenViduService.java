@@ -44,13 +44,19 @@ public class OpenViduService {
         return session.getSessionId();
     }
 
-    public String createConnection(String sessionId, Map<String, Object> params) throws OpenViduJavaClientException, OpenViduHttpException {
+    public String createConnection(String sessionId) {
         Session session = openvidu.getActiveSession(sessionId);
         if (session == null) {
             return "false";
         }
-        ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
-        Connection connection = session.createConnection(properties);
+        Connection connection = null;
+        try {
+            connection = session.createConnection();
+        } catch (OpenViduJavaClientException e) {
+            throw new RuntimeException(e);
+        } catch (OpenViduHttpException e) {
+            throw new RuntimeException(e);
+        }
         return connection.getToken();
     }
 }

@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.service;
 
+import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomUser;
 import live.dgrr.domain.game.entity.WaitingMember;
@@ -42,10 +43,6 @@ public class GameService {
         gameRoomMap = new ConcurrentHashMap<>();
     }
 
-    public void printQ() {
-        waitingQueue.forEach(System.out::println);
-    }
-
     /**
      * Session 생성시 발생 이벤트
      * waitingQueue 에 삽입 or Queue 에 대기자 존재시 게임 시작.
@@ -60,6 +57,8 @@ public class GameService {
         WaitingMember nowWaitingMember = new WaitingMember(principal.getName(),memberId);
         waitingQueue.offer(nowWaitingMember);
 
+        log.info("Session Started: {}", principal.getName());
+
         if(waitingQueue.size() > 2) {
             WaitingMember waitingMemberOne = waitingQueue.poll();
             WaitingMember waitingMemberTwo = waitingQueue.poll();
@@ -73,16 +72,20 @@ public class GameService {
         GameRoomUser roomUser1 = new GameRoomUser(memberOne.getPrincipalName(), memberOne.getMemberId(), "","","", 0);
         GameRoomUser roomUser2 = new GameRoomUser(memberTwo.getPrincipalName(), memberTwo.getMemberId(), "","","", 0);
 
+        //GameSessionId 생성
         String gameSessionId = UUID.randomUUID().toString();
         GameRoom gameRoom = new GameRoom(roomUser1,roomUser2,gameSessionId);
         gameRoomMap.put(gameSessionId,gameRoom);
+
         //Openvidu 생성
 
         openViduService.createSession(gameSessionId);
+        String openViduSessionId1 = openViduService.createConnection(gameSessionId);
+        String openViduSessionId2 = openViduService.createConnection(gameSessionId);
 
-        //Client에 시작 시그널, User 정보 전송.
-        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", roomUser2);
-        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", roomUser1);
+        //Client에 상대 user 정보, gameSessionId, openviduSession Token
+        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduSessionId1));
+        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduSessionId2));
 
     }
 }

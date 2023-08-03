@@ -9,9 +9,7 @@ import java.security.Principal;
 @Getter @AllArgsConstructor
 public class GameRoomUser {
 
-    @JsonIgnore
     private String principalName;
-    @JsonIgnore
     private Long memberId;
     private String nickname;
     private String image;

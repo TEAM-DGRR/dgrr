@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
-    final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public void addMember(Member member) {
          memberRepository.save(member);

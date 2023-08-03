@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -75,7 +76,7 @@ public class GameService {
         String openViduToken1 = openViduService.createConnection(gameSessionId);
         String openViduToken2 = openViduService.createConnection(gameSessionId);
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
         template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now,"first"));

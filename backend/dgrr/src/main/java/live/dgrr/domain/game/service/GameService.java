@@ -42,17 +42,14 @@ public class GameService {
      * Session 생성시 발생 이벤트
      * waitingQueue 에 삽입 or Queue 에 대기자 존재시 게임 시작.
      */
-    @EventListener
-    public void handleSessionConnected(SessionConnectEvent event) {
+
+    public void handleMatchingRequest(String principalName) {
         Long memberId = 1L;
 
-        SimpMessageHeaderAccessor wrap = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        Principal principal = wrap.getUser();
-
-        WaitingMember nowWaitingMember = new WaitingMember(principal.getName(),memberId);
+        WaitingMember nowWaitingMember = new WaitingMember(principalName,memberId);
         waitingQueue.offer(nowWaitingMember);
 
-        log.info("Session Started: {}", principal.getName());
+        log.info("Session Started: {}", principalName);
 
         if(waitingQueue.size() > 2) {
             WaitingMember waitingMemberOne = waitingQueue.poll();

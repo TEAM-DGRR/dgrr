@@ -44,7 +44,13 @@ public class MemberController {
     // nickname 중복 처리
     @GetMapping("/nickname-check")
     public ResponseEntity<?> searchMemberByNickname(@RequestParam(value="nickname") String nickname) {
-        boolean result = memberService.findMemberByNickname(nickname);
+        String result = "";
+        boolean isThereNickname = memberService.findMemberByNickname(nickname);
+        if(isThereNickname) {
+            result = "NICKNAME '" + nickname + "' ALREADY EXISTS";
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        result = "NICKNAME '" + nickname + "' DOES NOT EXIST";
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

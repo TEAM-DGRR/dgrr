@@ -169,9 +169,9 @@ public class MemberService {
 
     public boolean findMemberByNickname(String nickname) {
         List<Member> memberList = memberRepository.findByNickname(nickname);
-        if(memberList.size()>0) {
-            return true;
+        if(memberList.isEmpty()) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

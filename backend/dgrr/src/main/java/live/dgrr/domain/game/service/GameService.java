@@ -77,9 +77,9 @@ public class GameService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        //Client에 상대 user 정보, gameSessionId, openviduSession Token
-        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now));
-        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,now));
+        //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
+        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now,"first"));
+        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,now,"second"));
 
     }
 }

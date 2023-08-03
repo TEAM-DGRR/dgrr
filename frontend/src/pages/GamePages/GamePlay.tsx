@@ -15,13 +15,14 @@ export const GamePlay = (props: IGameProps) => {
   const currentVideoDeviceRef = useRef<Device>();
 
   // Stomp
-  const { stompClient, isStompConnected } = props;
+  const { stompClient, isStompConnected, gameConfig } = props;
+  const { gameSessionId } = gameConfig;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // OpenVidu 세션 입장
   useEffect(() => {
-    joinSession("SessionA", "faegawfd")
+    joinSession(gameSessionId, "faegawfd")
       .then(({ session, publisher, subscriber, currentVideoDevice }) => {
         setOVSession(session);
         setPublisher(publisher);
@@ -32,6 +33,9 @@ export const GamePlay = (props: IGameProps) => {
         console.log("There was an error connecting to the session:", error.code, error.message);
       });
   }, []);
+
+  // Stomp 엔드포인트 구독
+  useEffect(() => {});
 
   // 이미지 캡처
   const startWebcamCapture = () => {

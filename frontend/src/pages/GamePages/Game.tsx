@@ -22,7 +22,7 @@ export const Game = () => {
   useEffect(() => {
     const startGame = (message: IGameConfig) => {
       setGameConfig(message);
-      navigate("/play");
+      navigate("/game/play");
     };
 
     // 소켓 통신 연결
@@ -36,7 +36,7 @@ export const Game = () => {
     };
 
     tryConnectStomp();
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

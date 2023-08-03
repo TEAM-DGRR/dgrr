@@ -9,9 +9,9 @@ export const stompConfig = {
   DESTINATION_URI: {
     GAME_URI: "/user/recv/game",
     IMAGE_DATA_URI: "/send/imgData",
-    IMAGE_RESULT_URI: "/recv/imgResult",
-    STATUS_URI: "/recv/status",
-    RESULT_URI: "/recv/result",
+    IMAGE_RESULT_URI: "user/recv/imgResult",
+    STATUS_URI: "user/recv/status",
+    RESULT_URI: "user/recv/result",
   },
 };
 
@@ -25,7 +25,7 @@ export interface IGameConfig {
 
 //OpenVidu
 export const openViduConfig = {
-  APPLICATION_SERVER_URL: process.env.NODE_ENV === "production" ? "" : "https://demos.openvidu.io/",
+  APPLICATION_SERVER_URL: "https://demos.openvidu.io/",
   PUBLISHER_PROPERTIES: {
     audioSource: undefined,
     videoSource: undefined,

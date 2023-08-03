@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 @Service
 public class MemberService {
@@ -164,5 +165,13 @@ public class MemberService {
 
     public Member getMemberByKakaoId(String id) {
         return memberRepository.findByKakaoId(id);
+    }
+
+    public boolean findMemberByNickname(String nickname) {
+        List<Member> memberList = memberRepository.findByNickname(nickname);
+        if(memberList.size()>0) {
+            return true;
+        }
+        return false;
     }
 }

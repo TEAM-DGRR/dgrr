@@ -16,7 +16,7 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/kakaoCallback")
+    @GetMapping("/kakao-callback")
     public ResponseEntity<?> getLogin(@RequestParam("code") String code, HttpServletResponse response) {
         String reponses;
         String token = memberService.getKakaoAccessToken(code);
@@ -39,5 +39,12 @@ public class MemberController {
     public Member addMember(@RequestBody Member member) {
         memberService.addMember(member);
         return member;
+    }
+
+    // nickname 중복 처리
+    @GetMapping("/nickname-check")
+    public ResponseEntity<?> searchMemberByNickname(@RequestParam(value="nickname") String nickname) {
+        boolean result = memberService.findMemberByNickname(nickname);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

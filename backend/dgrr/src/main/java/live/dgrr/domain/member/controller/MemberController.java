@@ -1,5 +1,6 @@
 package live.dgrr.domain.member.controller;
 
+import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,15 @@ public class MemberController {
         result.put("nicknameExists", nicknameExists);
         result.put("message", message);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    //mypage
+    @GetMapping("/member-id")
+    public ResponseEntity<?> mypage() {
+        String id = "1";
+
+        MemberInfoResponseDto memberInfoDto = memberService.getmemberInfo(id);
+
+        return new ResponseEntity<>(memberInfoDto,HttpStatus.OK);
     }
 }

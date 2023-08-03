@@ -8,12 +8,7 @@ import live.dgrr.domain.openvidu.service.OpenViduService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.lang.Nullable;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.simp.SimpAttributesContextHolder;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -80,12 +75,12 @@ public class GameService {
         //Openvidu 생성
 
         openViduService.createSession(gameSessionId);
-        String openViduSessionId1 = openViduService.createConnection(gameSessionId);
-        String openViduSessionId2 = openViduService.createConnection(gameSessionId);
+        String openViduToken1 = openViduService.createConnection(gameSessionId);
+        String openViduToken2 = openViduService.createConnection(gameSessionId);
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token
-        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduSessionId1));
-        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduSessionId2));
+        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1));
+        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2));
 
     }
 }

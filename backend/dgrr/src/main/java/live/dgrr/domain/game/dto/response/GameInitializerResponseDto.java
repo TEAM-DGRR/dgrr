@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class GameInitializerResponseDto {
 
-    public GameInitializerResponseDto(GameRoomUser gameRoomUser, String gameSessionId, String openViduSessionId) {
+    public GameInitializerResponseDto(GameRoomUser gameRoomUser, String gameSessionId, String openViduToken) {
         this.success = "true";
         this.gameSessionId = gameSessionId;
-        this.openViduSessionId = openViduSessionId;
+        this.openViduToken = openViduToken;
         this.nickname = gameRoomUser.getNickname();
         this.profileImage = gameRoomUser.getImage();
         this.description = gameRoomUser.getDescription();
@@ -18,7 +18,7 @@ public class GameInitializerResponseDto {
 
     private String success;
     private String gameSessionId;
-    private String openViduSessionId;
+    private String openViduToken;
     private String nickname;
     private String profileImage;
     private String description;

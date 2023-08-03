@@ -1,5 +1,6 @@
-package live.dgrr.domain.member;
+package live.dgrr.domain.member.repository;
 
+import live.dgrr.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

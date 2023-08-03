@@ -1,5 +1,8 @@
-package live.dgrr.domain.member;
+package live.dgrr.domain.member.controller;
 
+import live.dgrr.domain.member.service.MemberService;
+import live.dgrr.domain.member.entity.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,17 +10,18 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/member")
 @CrossOrigin
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
 
     @GetMapping("/kakao-callback")
-    public ResponseEntity<?> getLogin(@RequestParam("code") String code, HttpServletResponse response) {
+    public ResponseEntity<?> getLogin(@RequestParam String code, HttpServletResponse response) {
         String reponses;
         String token = memberService.getKakaoAccessToken(code);
         String id = memberService.createKakaoMember(token);
@@ -44,13 +48,18 @@ public class MemberController {
     // nickname 중복 처리
     @GetMapping("/nickname-check")
     public ResponseEntity<?> searchMemberByNickname(@RequestParam(value="nickname") String nickname) {
-        String result = "";
+        Map<String, String> result = new HashMap<>();
+        String nicknameExists;
+        String message;
         boolean isThereNickname = memberService.findMemberByNickname(nickname);
+        message = "NICKNAME '" + nickname + "' DOES NOT EXIST";
+        nicknameExists = "false";
         if(isThereNickname) {
-            result = "NICKNAME '" + nickname + "' ALREADY EXISTS";
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            message = "NICKNAME '" + nickname + "' ALREADY EXISTS";
+            nicknameExists = "true";
         }
-        result = "NICKNAME '" + nickname + "' DOES NOT EXIST";
+        result.put("nicknameExists", nicknameExists);
+        result.put("message", message);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

@@ -16,16 +16,18 @@ export const stompConfig = {
 };
 
 export interface IGameConfig {
+  success: string;
   gameSessionId: string;
-  opUserId: string;
-  opUserDesc: string;
-  opUserProfileImg: string;
-  opUserTier: string;
+  nickname: string;
+  profileImage: string;
+  description: string;
+  rating: Number;
+  openViduToken: string;
 }
 
 //OpenVidu
 export const openViduConfig = {
-  APPLICATION_SERVER_URL: "https://demos.openvidu.io/",
+  APPLICATION_SERVER_URL: "",
   PUBLISHER_PROPERTIES: {
     audioSource: undefined,
     videoSource: undefined,

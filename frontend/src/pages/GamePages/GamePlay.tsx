@@ -16,13 +16,13 @@ export const GamePlay = (props: IGameProps) => {
 
   // Stomp
   const { stompClient, isStompConnected, gameConfig } = props;
-  const { gameSessionId } = gameConfig;
+  const { gameSessionId, openViduToken } = gameConfig;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // OpenVidu 세션 입장
   useEffect(() => {
-    joinSession(gameSessionId, "faegawfd")
+    joinSession(openViduToken, "faegawfd")
       .then(({ session, publisher, subscriber, currentVideoDevice }) => {
         setOVSession(session);
         setPublisher(publisher);

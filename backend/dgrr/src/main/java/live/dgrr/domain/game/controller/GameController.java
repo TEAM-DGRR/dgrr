@@ -14,7 +14,8 @@ public class GameController {
     private final GameService gameService;
 
     @MessageMapping("/matching")
-    public void processMessageFromClient(@Payload String messageData, Principal principal) {
+    public void processMessageFromClient(Principal principal) {
         gameService.handleMatchingRequest(principal.getName());
     }
+
 }

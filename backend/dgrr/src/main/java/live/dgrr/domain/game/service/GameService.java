@@ -7,14 +7,10 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
 
 import javax.annotation.PostConstruct;
-import java.security.Principal;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
@@ -54,6 +50,9 @@ public class GameService {
         if(waitingQueue.size() > 2) {
             WaitingMember waitingMemberOne = waitingQueue.poll();
             WaitingMember waitingMemberTwo = waitingQueue.poll();
+
+            //Session 이 실제 살아있는지 확인
+
             gameStart(waitingMemberOne, waitingMemberTwo);
         }
 

@@ -1,0 +1,42 @@
+$mainblack: #121417;
+
+.Button {
+  border: $mainblack solid;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FFF401 0%, #FFD873 100%);
+  box-shadow: 0px -5px 0px #FFA73F inset;
+
+  // 글씨
+  font-weight: bold;
+  color: $mainblack;
+  font-size: 16px;
+  font-family: 'Noto Sans KR';
+
+  // 사이즈
+  &.sm {
+    width: 71px;
+    height: 21px;
+    font-size: small;
+  } 
+
+  &.md {
+    width: 100px;
+    height: 40px;
+    font-size: medium;
+  }
+
+  &.lg {
+    width: calc(100% - 48px);
+    height: 48px;
+  }
+
+  
+  &:hover {
+    background: lighten(#FFF401, 10%); // 색상 10% 밝게
+  }
+
+
+  &:active {
+    background: darken(#FFF401, 10%); // 색상 10% 어둡게
+  }
+}

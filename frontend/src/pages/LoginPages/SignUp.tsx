@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react"
-import blankImg from "assets/images/character.svg"
+import blankImg from "assets/images/logo_character.svg"
 // import axios from "axios";
 
 type UploadImg = {

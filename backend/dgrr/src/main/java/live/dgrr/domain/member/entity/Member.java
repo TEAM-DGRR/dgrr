@@ -1,4 +1,4 @@
-package live.dgrr.domain.member;
+package live.dgrr.domain.member.entity;
 
 import live.dgrr.global.domain.BaseEntity;
 import lombok.Getter;

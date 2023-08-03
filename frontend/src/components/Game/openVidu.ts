@@ -1,6 +1,8 @@
 import axios from "axios";
-import { APPLICATION_SERVER_URL } from "./config";
+import { openViduConfig } from "./config";
 import { OpenVidu, Subscriber } from "openvidu-browser";
+
+const { APPLICATION_SERVER_URL, PUBLISHER_PROPERTIES } = openViduConfig;
 
 export const createSession = async (sessionId: string): Promise<string> => {
   const response = await axios.post(
@@ -29,7 +31,7 @@ export const getToken = async (mySessionId: string) => {
   return await createToken(sessionId);
 };
 
-export const joinSession = async (sessionId: string, myUserName: string) => {
+export const joinSession = async (token: string, myUserName: string) => {
   const OV = new OpenVidu();
   const session = OV.initSession();
 
@@ -42,19 +44,10 @@ export const joinSession = async (sessionId: string, myUserName: string) => {
     console.warn(exception);
   });
 
-  const token = await getToken(sessionId);
+  // const token = await getToken(sessionId);
   await session.connect(token, { clientData: myUserName });
 
-  let publisher = await OV.initPublisherAsync(undefined, {
-    audioSource: undefined,
-    videoSource: undefined,
-    publishAudio: true,
-    publishVideo: true,
-    resolution: "640x480",
-    frameRate: 30,
-    insertMode: "APPEND",
-    mirror: false,
-  });
+  let publisher = await OV.initPublisherAsync(undefined, PUBLISHER_PROPERTIES);
 
   session.publish(publisher);
 

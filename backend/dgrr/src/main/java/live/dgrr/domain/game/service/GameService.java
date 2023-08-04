@@ -166,7 +166,7 @@ public class GameService {
         log.info("Second Round timebefore Publish: {}", recordEndTime);
 
         //대기 후 라운드 종료 알리는 이벤트 발생.
-        publisher.publishEvent(new FirstRoundEndEvent(gameSessionId));
+        publisher.publishEvent(new SecondRoundEndEvent(gameSessionId));
     }
 
     /**

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class ImageProcessingService {
     private final SimpMessagingTemplate template;
     private final ApplicationEventPublisher publisher;
+    private final static double THRESHOLD = 0.5;
 
     public void sendImageDataToPythonClient(String imageData, MessageHeaders headers) {
 
@@ -28,7 +29,6 @@ public class ImageProcessingService {
     }
 
     public void parsingImageResult(String analyzingData) throws ParseException {
-        double threshold = 0.5;
         //파이썬 클라이언트로부터 받은 결과를 JSONParser를 통해 헤더와 결과를 분리
         // 1. JSONParser 인스턴스 생성
         JSONParser parser = new JSONParser();
@@ -51,7 +51,7 @@ public class ImageProcessingService {
         double probability = Double.parseDouble((String) result.get("probability")); // 감정 확률
 
         // 이미지 판정 결과가 Smile이라면 이벤트를 발생시킴
-        if (emotion.equals("Smile") && probability >= threshold) {
+        if (emotion.equals("Smile") && probability >= THRESHOLD) {
             publisher.publishEvent(new LaughEvent(sessionId, gameSessionId, probability));
         }
 

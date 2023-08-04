@@ -39,24 +39,12 @@ public class GameRoom {
         firstRoundResult = result;
     }
 
-    public void setGameStatus(GameStatus gameStatus) {
-        this.gameStatus = gameStatus;
-    }
-
     public void setFirstRoundStartTime(LocalDateTime firstRoundStartTime) {
         this.firstRoundStartTime = firstRoundStartTime;
     }
 
-    public void setFirstLaughTime(LocalDateTime firstLaughTime) {
-        this.firstLaughTime = firstLaughTime;
-    }
-
     public void setSecondRoundStartTime(LocalDateTime secondRoundStartTime) {
         this.secondRoundStartTime = secondRoundStartTime;
-    }
-
-    public void setSecondLaughTime(LocalDateTime secondLaughTime) {
-        this.secondLaughTime = secondLaughTime;
     }
 }
 

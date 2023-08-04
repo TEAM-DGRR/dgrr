@@ -20,8 +20,8 @@ public class GameInitializerResponseDto {
     GameRoomUser gameRoomUser;
 
     private String success;
-    private String turn;
     private String gameSessionId;
     private String openViduToken;
+    private String turn;
     private LocalDateTime startTime;
 }

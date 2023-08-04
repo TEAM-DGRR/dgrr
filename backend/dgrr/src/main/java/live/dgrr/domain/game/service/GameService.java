@@ -7,6 +7,8 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.entity.event.RoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
+import live.dgrr.global.utils.DgrrUtils;
+import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,8 +76,10 @@ public class GameService {
      */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
         //GameRoom 생성.
-        GameRoomUser roomUser1 = new GameRoomUser(memberOne.getPrincipalName(), memberOne.getMemberId(), "","","", 0);
-        GameRoomUser roomUser2 = new GameRoomUser(memberTwo.getPrincipalName(), memberTwo.getMemberId(), "","","", 0);
+        GameRoomUser roomUser1 = new GameRoomUser(memberOne.getPrincipalName(),
+                memberOne.getMemberId(), "","","", 0, Rank.BRONZE);
+        GameRoomUser roomUser2 = new GameRoomUser(memberTwo.getPrincipalName(),
+                memberTwo.getMemberId(), "","","", 0, Rank.BRONZE);
 
         //GameSessionId 생성
         String gameSessionId = UUID.randomUUID().toString();
@@ -88,11 +92,14 @@ public class GameService {
         String openViduToken1 = openViduService.createConnection(gameSessionId);
         String openViduToken2 = openViduService.createConnection(gameSessionId);
 
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+        LocalDateTime firstRoundStartTime = LocalDateTime.now(ZoneId.of("UTC"));
+        gameRoom.setFirstRoundStartTime(firstRoundStartTime);
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
-        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now,"first"));
-        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,now,"second"));
+        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game",
+                new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,firstRoundStartTime,"first"));
+        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game",
+                new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,firstRoundStartTime,"second"));
         runFirstRound(gameSessionId);
     }
 
@@ -105,6 +112,7 @@ public class GameService {
         String gameSessionId = event.getGameSessionId();
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
         gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
+
     }
 
     /**

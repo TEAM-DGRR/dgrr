@@ -1,10 +1,8 @@
 package live.dgrr.domain.game.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import live.dgrr.global.utils.Rank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.security.Principal;
 
 @Getter @AllArgsConstructor
 public class GameRoomUser {
@@ -15,4 +13,5 @@ public class GameRoomUser {
     private String image;
     private String description;
     private int rating;
+    private Rank rank;
 }

@@ -97,9 +97,11 @@ public class GameService {
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
         template.convertAndSendToUser(roomMember1.getPrincipalName(),"/recv/game",
-                new GameInitializerResponseDto(roomMember1,gameSessionId,openViduToken1,firstRoundStartTime,"first"));
+                new GameInitializerResponseDto(roomMember1, roomMember2, gameSessionId,openViduToken1,firstRoundStartTime,"first"));
         template.convertAndSendToUser(roomMember2.getPrincipalName(),"/recv/game",
-                new GameInitializerResponseDto(roomMember2,gameSessionId,openViduToken2,firstRoundStartTime,"second"));
+                new GameInitializerResponseDto(roomMember2, roomMember1, gameSessionId,openViduToken2,firstRoundStartTime,"second"));
+
+        //1라운드 시작
         runFirstRound(gameSessionId);
     }
 

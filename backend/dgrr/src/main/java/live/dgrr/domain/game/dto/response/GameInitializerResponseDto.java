@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 public class GameInitializerResponseDto {
 
-    public GameInitializerResponseDto(GameRoomMember gameRoomMember, String gameSessionId, String openViduToken, LocalDateTime startTime, String turn) {
-        this.gameRoomMember = gameRoomMember;
+    public GameInitializerResponseDto(GameRoomMember myInfo,GameRoomMember enemyInfo, String gameSessionId, String openViduToken, LocalDateTime startTime, String turn) {
+        this.myInfo = myInfo;
+        this.enemyInfo = enemyInfo;
         this.success = "true";
         this.gameSessionId = gameSessionId;
         this.openViduToken = openViduToken;
@@ -17,7 +18,8 @@ public class GameInitializerResponseDto {
         this.startTime = startTime;
     }
 
-    GameRoomMember gameRoomMember;
+    GameRoomMember myInfo;
+    GameRoomMember enemyInfo;
 
     private String success;
     private String gameSessionId;

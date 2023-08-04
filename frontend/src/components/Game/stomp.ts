@@ -1,5 +1,6 @@
 import { Client, IMessage, StompHeaders, messageCallbackType } from "@stomp/stompjs";
-import { stompConfig, IGameConfig } from "./config";
+import { stompConfig } from "./config";
+import { IGameConfig } from "./interface";
 
 const { BROKER_URL, CONNECT_HEADER, DESTINATION_URI } = stompConfig;
 const { GAME_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
@@ -45,13 +46,4 @@ export const onStompError = (client: Client, callback: Function) => {
 
 export const publishMessage = (client: Client, destination: string, body: string) => {
   client.publish({ destination, body });
-};
-
-export const subscribeURI = (
-  client: Client,
-  destination: string,
-  callback: Function,
-  headers: StompHeaders
-) => {
-  client.subscribe(destination, callback as messageCallbackType, headers);
 };

@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.service;
 
+import live.dgrr.domain.game.dto.response.GameFirstRoundEndResponseDto;
 import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomUser;
@@ -113,6 +114,12 @@ public class GameService {
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
         gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
 
+        //GameRound 변화 정보 전송
+        LocalDateTime secondRoundStartTime = LocalDateTime.now();
+        template.convertAndSendToUser(gameRoom.getUserOne().getPrincipalName(), "/recv/status",
+                new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
+        template.convertAndSendToUser(gameRoom.getUserTwo().getPrincipalName(), "/recv/status",
+                new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
     }
 
     /**

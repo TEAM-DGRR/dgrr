@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState, ChangeEvent, MouseEvent } from "react"
 import blankImg from "assets/images/logo_character.svg"
-// import axios from "axios";
+import axios from "axios";
 
 type UploadImg = {
   file: File;
@@ -18,13 +18,47 @@ export const SignUp = () => {
   const fileInput = () => {
     fileInputRef.current?.click();
   };
+
+  // 닉네임 state
+  const [nickname, setNickname] = useState("")
+  // 상태 메세지 state
+  const [description, setDescription] = useState("")
+  // 닉네임 중복 검사 통과 state
+  const [isChecked, setChecked] = useState(false)
+
+
+  // 닉네임 변경상태 받기
+  const onChangeNickname = (e: ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value)
+  }
+  // 상태메시지 변경상태 받기
+  const onChangeDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value)
+  }
+
+  // 닉네임 중복확인
+  const nicknameCheck = (e: MouseEvent<HTMLButtonElement>) => {
+
+    // 닉네임 보내서 중복인지 확인하기
+    axios.get(`http://localhost:8080/member/nickname-check?nickname=${nickname}`)
+    .then((res: any) => {
+      // 존재하면 경고 문구 보여주기
+      if (res.data.nicknameExists) {
+        alert('이미 존재하는 닉네임입니다')
+      }
+      // 없다면 사용 가능하다고 알려주고 중복검사 state 변경해주기
+      alert('사용 가능한 닉네임입니다')
+      setChecked(true)
+    })
+
+  }
+  
   
   // 사진 업로드
   const uploadImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files;
     
     if (fileList !== null && fileList.length > 0) {
-      const formData = new FormData();
       const url = URL.createObjectURL(fileList[0]);
       
       // 미리보기용으로 이미지 state에 저장
@@ -33,19 +67,15 @@ export const SignUp = () => {
         thumbnail: url,
         type: fileList[0].type.slice(0, 5),
       });
-      
-      // formdata에 담아서 서버로 전송
-      formData.append('image', fileList[0]);
-      
-      // axios({
-        //   baseURL: '',
-        //   url: '',
-        //   method: 'POST',
-        //   data: formData,
-        //   headers: {
-          //   },
-          // });
         }
+  }
+
+  // 회원가입
+  const onSubmit = () => {
+    // 닉네임 중복검사 통과했으면 회원가입 시켜주기
+    if (isChecked) {
+    }
+    // 중복검사 통과못했으면 돌려보내기
   }
   
   // 프로필 이미지 미리보기 부분
@@ -63,20 +93,32 @@ export const SignUp = () => {
 
     {ShowImg}
 
-    {/* 프로필 이미지 제출 폼 */}
-    <form>
-      {/* 버튼 누르면 미리보기 안 바뀜 > 고쳐야함 */}
-      <button onClick={fileInput}>
-        파일 업로드 버튼
-        <input hidden type="file" accept="image/*" ref={fileInputRef} onChange={uploadImg} />
-      </button>
+      
+    <form onSubmit={onSubmit}>
+      <label id="profileImg-label">
+        <button onClick={fileInput}>
+          파일 업로드 버튼
+          <input hidden type="file" accept="image/*" ref={fileInputRef} onChange={uploadImg} />
+        </button>
+        <div>
+          <input type="text" id="nickname" name="nickname" value={nickname} onChange={onChangeNickname} />
+        </div>
+      </label>
+      <label id="nickname-label">
+        <span>닉네임</span>
+        <div>
+          <input type="text" id="nickname" name="nickname" value={nickname} onChange={onChangeNickname} />
+        </div>
+        <button onChange={nicknameCheck}>중복검사</button>
+      </label>
+      <label id="description-label">
+        <span>상태 메세지</span>
+        <div>
+          <textarea id="description" name="description" value={description} onChange={onChangeDescription} />
+        </div>
+      </label>
+    <button type="submit">회원가입하고 시작하기</button>
     </form>
-
-    
-    <p>한 줄 소개</p>
-    <input type="search" placeholder="즐겁게 게임해요~" />
-
-    <button>회원가입하고 시작하기</button>
 
     </div>
   )

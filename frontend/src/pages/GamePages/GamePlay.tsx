@@ -1,14 +1,23 @@
 import { UserVideoComponent } from "./UserVideoComponent";
-import { IGameProps } from "./Game";
+import { IGamePlayProps } from "./Game";
 import { joinSession } from "components/Game/openVidu";
 import { useEffect, useRef, useState } from "react";
+import { stompConfig } from "components/Game";
 import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
 import { captureImage } from "components/Game/captureImage";
 import { parseDate } from "components/Game/parseDate";
 import { Client, IMessage } from "@stomp/stompjs";
 
-export const GamePlay = (props: IGameProps) => {
+export const GamePlay = (props: IGamePlayProps) => {
+  // Stomp
+  const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
+  const { IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
+  const { stompClient, isStompConnected, gameConfig } = props;
+  const { gameSessionId, openViduToken, startTime } = gameConfig;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   // OpenVidu
   const [OVSession, setOVSession] = useState<Session>();
   const [publisher, setPublisher] = useState<Publisher>();
@@ -36,20 +45,26 @@ export const GamePlay = (props: IGameProps) => {
 
   // OpenVidu 세션 입장
   useEffect(() => {
-    joinSession(openViduToken, "faegawfd")
-      .then(({ session, publisher, subscriber, currentVideoDevice }) => {
+    joinSession(openViduToken, "myUserName")
+      .then(({ session, publisher, currentVideoDevice }) => {
         setOVSession(session);
         setPublisher(publisher);
-        setSubscriber(subscriber);
         currentVideoDeviceRef.current = currentVideoDevice;
+        console.log("OpenVidu 연결 완료");
       })
       .catch((error) => {
-        console.log("There was an error connecting to the session:", error.code, error.message);
+        console.log("OpenVidu 연결 실패", error.code, error.message);
       });
-  }, []);
+  }, [openViduToken]);
 
-  // Stomp 엔드포인트 구독
-  useEffect(() => {});
+  // 상대방 mediaStream 얻어오기
+  useEffect(() => {
+    if (OVSession !== undefined) {
+      OVSession.on("streamCreated", (event) => {
+        setSubscriber(OVSession.subscribe(event.stream, undefined));
+      });
+    }
+  }, [OVSession]);
 
   useEffect(() => {
     // Stomp 엔드포인트 구독

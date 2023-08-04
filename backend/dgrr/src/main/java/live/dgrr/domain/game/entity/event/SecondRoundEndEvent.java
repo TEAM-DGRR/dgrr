@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter @AllArgsConstructor
-public class RoundEndEvent {
+public class SecondRoundEndEvent {
 
     private String gameSessionId;
-
 }

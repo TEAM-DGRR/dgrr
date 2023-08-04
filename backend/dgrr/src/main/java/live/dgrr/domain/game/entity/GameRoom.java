@@ -1,11 +1,12 @@
 package live.dgrr.domain.game.entity;
 
 import lombok.Getter;
-import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Slf4j
 public class GameRoom {
 
     public GameRoom(GameRoomUser userOne, GameRoomUser userTwo, String gameSessionId) {
@@ -28,6 +29,19 @@ public class GameRoom {
     private LocalDateTime firstLaughTime;
     private LocalDateTime secondRoundStartTime;
     private LocalDateTime secondLaughTime;
+
+    //일라운드 진행 메소드
+    public void runFirstRound() {
+        LocalDateTime recordStartTime = LocalDateTime.now();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        LocalDateTime recordEndTime = LocalDateTime.now();
+        Duration between = Duration.between(recordStartTime, recordEndTime);
+        log.info("Time Passed: {}", between.getSeconds());
+    }
 
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;

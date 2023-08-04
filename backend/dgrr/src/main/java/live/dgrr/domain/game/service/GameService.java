@@ -4,13 +4,17 @@ import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomUser;
 import live.dgrr.domain.game.entity.WaitingMember;
+import live.dgrr.domain.game.entity.event.RoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
@@ -26,6 +30,7 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
+    private final ApplicationEventPublisher publisher;
 
     /**
     Bean 생성시, map 과 queue 초기화.
@@ -55,11 +60,17 @@ public class GameService {
 
             //Session 이 실제 살아있는지 확인
 
+            //game 시작
             gameStart(waitingMemberOne, waitingMemberTwo);
         }
 
     }
 
+    /**
+     * 멤버 두명이 들어와서 GameRoom 생성
+     * Openvidu 채널 생성
+     * Client에 시작 정보 제공, 1라운드 스타트.
+     */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
         //GameRoom 생성.
         GameRoomUser roomUser1 = new GameRoomUser(memberOne.getPrincipalName(), memberOne.getMemberId(), "","","", 0);
@@ -82,5 +93,24 @@ public class GameService {
         template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now,"first"));
         template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,now,"second"));
 
+    }
+
+    @EventListener
+    public void handleRoundEnd(RoundEndEvent event) {
+        log.info("eventListenerTime: {}", LocalDateTime.now());
+    }
+
+    private void runFirstRound(String gameSessionId) {
+        LocalDateTime recordStartTime = LocalDateTime.now();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        LocalDateTime recordEndTime = LocalDateTime.now();
+        Duration between = Duration.between(recordStartTime, recordEndTime);
+        log.info("Time Passed: {}", between.getSeconds());
+        log.info("timebefore Publish: {}", recordEndTime);
+        publisher.publishEvent(new RoundEndEvent(gameSessionId));
     }
 }

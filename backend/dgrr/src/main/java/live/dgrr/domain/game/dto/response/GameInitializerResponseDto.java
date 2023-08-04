@@ -1,6 +1,6 @@
 package live.dgrr.domain.game.dto.response;
 
-import live.dgrr.domain.game.entity.GameRoomUser;
+import live.dgrr.domain.game.entity.GameRoomMember;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 public class GameInitializerResponseDto {
 
-    public GameInitializerResponseDto(GameRoomUser gameRoomUser, String gameSessionId, String openViduToken, LocalDateTime startTime, String turn) {
-        this.gameRoomUser = gameRoomUser;
+    public GameInitializerResponseDto(GameRoomMember gameRoomMember, String gameSessionId, String openViduToken, LocalDateTime startTime, String turn) {
+        this.gameRoomMember = gameRoomMember;
         this.success = "true";
         this.gameSessionId = gameSessionId;
         this.openViduToken = openViduToken;
@@ -17,7 +17,7 @@ public class GameInitializerResponseDto {
         this.startTime = startTime;
     }
 
-    GameRoomUser gameRoomUser;
+    GameRoomMember gameRoomMember;
 
     private String success;
     private String gameSessionId;

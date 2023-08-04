@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter @Slf4j
 public class GameRoom {
 
-    public GameRoom(GameRoomUser userOne, GameRoomUser userTwo, String gameSessionId) {
+    public GameRoom(GameRoomMember userOne, GameRoomMember userTwo, String gameSessionId) {
         this.userOne = userOne;
         this.userTwo = userTwo;
         this.gameSessionId = gameSessionId;
@@ -21,8 +21,8 @@ public class GameRoom {
      * UserOne 이 언제나 선공이다.
      */
 
-    private final GameRoomUser userOne;
-    private final GameRoomUser userTwo;
+    private final GameRoomMember userOne;
+    private final GameRoomMember userTwo;
 
     private final String gameSessionId;
     private GameStatus gameStatus;

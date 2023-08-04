@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter @AllArgsConstructor
-public class GameRoomUser {
+public class GameRoomMember {
 
     private String principalName;
     private Long memberId;

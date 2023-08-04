@@ -3,12 +3,11 @@ package live.dgrr.domain.game.service;
 import live.dgrr.domain.game.dto.response.GameFirstRoundEndResponseDto;
 import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.entity.GameRoom;
-import live.dgrr.domain.game.entity.GameRoomUser;
+import live.dgrr.domain.game.entity.GameRoomMember;
 import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.entity.event.RoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
-import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,9 +76,9 @@ public class GameService {
      */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
         //GameRoom 생성.
-        GameRoomUser roomUser1 = new GameRoomUser(memberOne.getPrincipalName(),
+        GameRoomMember roomUser1 = new GameRoomMember(memberOne.getPrincipalName(),
                 memberOne.getMemberId(), "","","", 0, Rank.BRONZE);
-        GameRoomUser roomUser2 = new GameRoomUser(memberTwo.getPrincipalName(),
+        GameRoomMember roomUser2 = new GameRoomMember(memberTwo.getPrincipalName(),
                 memberTwo.getMemberId(), "","","", 0, Rank.BRONZE);
 
         //GameSessionId 생성

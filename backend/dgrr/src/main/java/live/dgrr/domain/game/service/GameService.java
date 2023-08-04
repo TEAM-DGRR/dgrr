@@ -46,7 +46,7 @@ public class GameService {
     }
 
     /**
-     * Session 생성시 발생 이벤트
+     * 매칭 버튼 클릭 시 실행.
      * waitingQueue 에 삽입 or Queue 에 대기자 존재시 게임 시작.
      */
 

@@ -3,7 +3,7 @@ export interface IGameConfig {
   success: string;
 
   // 게임 정보
-  turn: string;
+  turn: "first" | "second";
   startTime: string;
   gameSessionId: string;
   openViduToken: string;

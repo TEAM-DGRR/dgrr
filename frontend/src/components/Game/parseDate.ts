@@ -11,3 +11,9 @@ export const parseDate = (date: string) => {
     dateArray[6] / 1000000
   );
 };
+
+export const timeRemaining = (date: string) => {
+  const time = 3000 - (new Date().getTime() - parseDate(date).getTime());
+  console.log("남은 시간 : " + time);
+  return time;
+};

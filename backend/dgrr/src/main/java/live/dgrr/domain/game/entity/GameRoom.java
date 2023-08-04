@@ -1,9 +1,10 @@
 package live.dgrr.domain.game.entity;
 
+import live.dgrr.domain.game.entity.enums.GameStatus;
+import live.dgrr.domain.game.entity.enums.RoundResult;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter @Slf4j
@@ -26,21 +27,16 @@ public class GameRoom {
     private final String gameSessionId;
     private GameStatus gameStatus;
     private LocalDateTime firstRoundStartTime;
-    private LocalDateTime firstLaughTime;
+    private LocalDateTime firstRoundEndTime;
+    private RoundResult firstRoundResult;
     private LocalDateTime secondRoundStartTime;
-    private LocalDateTime secondLaughTime;
+    private LocalDateTime secondRoundEndTime;
+    private RoundResult secondRoundResult;
 
-    //일라운드 진행 메소드
-    public void runFirstRound() {
-        LocalDateTime recordStartTime = LocalDateTime.now();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        LocalDateTime recordEndTime = LocalDateTime.now();
-        Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("Time Passed: {}", between.getSeconds());
+    public void changeStatusFirstRoundEnded(LocalDateTime time, RoundResult result) {
+        gameStatus = GameStatus.SECOND_ROUND;
+        firstRoundEndTime = time;
+        firstRoundResult = result;
     }
 
     public void setGameStatus(GameStatus gameStatus) {

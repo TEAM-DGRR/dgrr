@@ -4,6 +4,7 @@ import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomUser;
 import live.dgrr.domain.game.entity.WaitingMember;
+import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.entity.event.RoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import lombok.RequiredArgsConstructor;
@@ -92,16 +93,26 @@ public class GameService {
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
         template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,now,"first"));
         template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game", new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,now,"second"));
-
+        runFirstRound(gameSessionId);
     }
 
+    /**
+    첫 라운드 시간이 다 되서 끝났을 시 이벤트 처리 로직.
+     */
     @EventListener
-    public void handleRoundEnd(RoundEndEvent event) {
+    public void handleFirstRoundEndHoldBack(RoundEndEvent event) {
         log.info("eventListenerTime: {}", LocalDateTime.now());
+        String gameSessionId = event.getGameSessionId();
+        GameRoom gameRoom = gameRoomMap.get(gameSessionId);
+        gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
     }
 
+    /**
+     * 첫번째 라운드 시작하는 로직.
+     */
     private void runFirstRound(String gameSessionId) {
         LocalDateTime recordStartTime = LocalDateTime.now();
+        //시간 대기
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -111,6 +122,8 @@ public class GameService {
         Duration between = Duration.between(recordStartTime, recordEndTime);
         log.info("Time Passed: {}", between.getSeconds());
         log.info("timebefore Publish: {}", recordEndTime);
+
+        //대기 후 라운드 종료 알리는 이벤트 발생.
         publisher.publishEvent(new RoundEndEvent(gameSessionId));
     }
 }

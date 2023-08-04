@@ -28,7 +28,7 @@ public class ImageProcessingService {
     }
 
     public void parsingImageResult(String analyzingData) throws ParseException {
-
+        double threshold = 0.5;
         //파이썬 클라이언트로부터 받은 결과를 JSONParser를 통해 헤더와 결과를 분리
         // 1. JSONParser 인스턴스 생성
         JSONParser parser = new JSONParser();
@@ -48,11 +48,11 @@ public class ImageProcessingService {
 
         // 6. emotion, probability 추출
         String emotion = (String) result.get("emotion"); // emotion
-        String probability = (String) result.get("probability"); // 감정 확률
+        double probability = Double.parseDouble((String) result.get("probability")); // 감정 확률
 
         // 이미지 판정 결과가 Smile이라면 이벤트를 발생시킴
-        if (emotion.equals("Smile")) {
-            publisher.publishEvent(new LaughEvent(sessionId, gameSessionId, emotion, probability));
+        if (emotion.equals("Smile") && probability >= threshold) {
+            publisher.publishEvent(new LaughEvent(sessionId, gameSessionId, probability));
         }
 
     }

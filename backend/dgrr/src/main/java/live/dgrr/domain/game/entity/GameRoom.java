@@ -10,19 +10,18 @@ import java.time.LocalDateTime;
 @Getter @Slf4j
 public class GameRoom {
 
-    public GameRoom(GameRoomMember userOne, GameRoomMember userTwo, String gameSessionId) {
-        this.userOne = userOne;
-        this.userTwo = userTwo;
+    public GameRoom(GameRoomMember memberOne, GameRoomMember memberTwo, String gameSessionId) {
+        this.memberOne = memberOne;
+        this.memberTwo = memberTwo;
         this.gameSessionId = gameSessionId;
         this.gameStatus = GameStatus.READY;
     }
 
     /**
-     * UserOne 이 언제나 선공이다.
+     * memberOne 이 언제나 선공이다.
      */
-
-    private final GameRoomMember userOne;
-    private final GameRoomMember userTwo;
+    private final GameRoomMember memberOne;
+    private final GameRoomMember memberTwo;
 
     private final String gameSessionId;
     private GameStatus gameStatus;

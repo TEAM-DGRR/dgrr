@@ -76,14 +76,14 @@ public class GameService {
      */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
         //GameRoom 생성.
-        GameRoomMember roomUser1 = new GameRoomMember(memberOne.getPrincipalName(),
+        GameRoomMember roomMember1 = new GameRoomMember(memberOne.getPrincipalName(),
                 memberOne.getMemberId(), "","","", 0, Rank.BRONZE);
-        GameRoomMember roomUser2 = new GameRoomMember(memberTwo.getPrincipalName(),
+        GameRoomMember roomMember2 = new GameRoomMember(memberTwo.getPrincipalName(),
                 memberTwo.getMemberId(), "","","", 0, Rank.BRONZE);
 
         //GameSessionId 생성
         String gameSessionId = UUID.randomUUID().toString();
-        GameRoom gameRoom = new GameRoom(roomUser1,roomUser2,gameSessionId);
+        GameRoom gameRoom = new GameRoom(roomMember1,roomMember2,gameSessionId);
         gameRoomMap.put(gameSessionId,gameRoom);
 
         //Openvidu 생성
@@ -96,10 +96,10 @@ public class GameService {
         gameRoom.setFirstRoundStartTime(firstRoundStartTime);
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
-        template.convertAndSendToUser(roomUser1.getPrincipalName(),"/recv/game",
-                new GameInitializerResponseDto(roomUser1,gameSessionId,openViduToken1,firstRoundStartTime,"first"));
-        template.convertAndSendToUser(roomUser2.getPrincipalName(),"/recv/game",
-                new GameInitializerResponseDto(roomUser2,gameSessionId,openViduToken2,firstRoundStartTime,"second"));
+        template.convertAndSendToUser(roomMember1.getPrincipalName(),"/recv/game",
+                new GameInitializerResponseDto(roomMember1,gameSessionId,openViduToken1,firstRoundStartTime,"first"));
+        template.convertAndSendToUser(roomMember2.getPrincipalName(),"/recv/game",
+                new GameInitializerResponseDto(roomMember2,gameSessionId,openViduToken2,firstRoundStartTime,"second"));
         runFirstRound(gameSessionId);
     }
 
@@ -115,9 +115,9 @@ public class GameService {
 
         //GameRound 변화 정보 전송
         LocalDateTime secondRoundStartTime = LocalDateTime.now();
-        template.convertAndSendToUser(gameRoom.getUserOne().getPrincipalName(), "/recv/status",
+        template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/status",
                 new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
-        template.convertAndSendToUser(gameRoom.getUserTwo().getPrincipalName(), "/recv/status",
+        template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/status",
                 new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
     }
 

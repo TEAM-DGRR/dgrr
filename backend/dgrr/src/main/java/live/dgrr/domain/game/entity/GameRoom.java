@@ -38,6 +38,12 @@ public class GameRoom {
         firstRoundResult = result;
     }
 
+    public void changeStatusSecondRoundEnded(LocalDateTime time, RoundResult result) {
+        gameStatus = GameStatus.END;
+        secondRoundEndTime = time;
+        secondRoundResult = result;
+    }
+
     public void setFirstRoundStartTime(LocalDateTime firstRoundStartTime) {
         this.firstRoundStartTime = firstRoundStartTime;
     }

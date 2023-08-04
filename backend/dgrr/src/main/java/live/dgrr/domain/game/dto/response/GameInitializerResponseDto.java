@@ -18,8 +18,8 @@ public class GameInitializerResponseDto {
         this.startTime = startTime;
     }
 
-    GameRoomMember myInfo;
-    GameRoomMember enemyInfo;
+    private GameRoomMember myInfo;
+    private GameRoomMember enemyInfo;
 
     private String success;
     private String gameSessionId;

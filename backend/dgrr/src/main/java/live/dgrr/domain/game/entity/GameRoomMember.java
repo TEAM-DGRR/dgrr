@@ -13,7 +13,7 @@ public class GameRoomMember {
     @JsonIgnore
     private Long memberId;
     private String nickname;
-    private String image;
+    private String profileImage;
     private String description;
     private int rating;
     private Rank rank;

@@ -7,6 +7,7 @@ import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomMember;
 import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.GameResult;
+import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
 import live.dgrr.domain.game.entity.event.SecondRoundEndEvent;
@@ -121,22 +122,27 @@ public class GameService {
         }
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("Time Passed: {}", between.getSeconds());
-        log.info("timebefore Publish: {}", recordEndTime);
+        log.info("First Round Time Passed: {}", between.getSeconds());
 
         //대기 후 라운드 종료 알리는 이벤트 발생.
-        publisher.publishEvent(new FirstRoundEndEvent(gameSessionId));
+        handleFirstRoundEnd(gameSessionId, RoundResult.HOLD_BACK, 0);
     }
 
     /**
-     첫 라운드 시간이 다 되서 끝났을 시 이벤트 처리 로직.
+     첫 라운드 시간이 다 되서 끝났을 시 메소드.
      */
-    @EventListener
-    public void handleFirstRoundEndHoldBack(FirstRoundEndEvent event) {
-        log.info("eventListenerTime: {}", LocalDateTime.now());
-        String gameSessionId = event.getGameSessionId();
+    public void handleFirstRoundEnd(String gameSessionId, RoundResult result, double probability) {
+        //gameRoom 객체 동시성 관리
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
-        gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
+        if(gameRoom.getGameStatus() == GameStatus.SECOND_ROUND) {
+            return;
+        }
+        gameRoomMap.remove(gameSessionId);
+        gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), result);
+        gameRoomMap.put(gameSessionId, gameRoom);
 
         //GameRound 변화 정보 전송
         LocalDateTime secondRoundStartTime = LocalDateTime.now();
@@ -163,22 +169,28 @@ public class GameService {
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
         log.info("Second Round Time Passed: {}", between.getSeconds());
-        log.info("Second Round timebefore Publish: {}", recordEndTime);
 
-        //대기 후 라운드 종료 알리는 이벤트 발생.
-        publisher.publishEvent(new SecondRoundEndEvent(gameSessionId));
+        //대기 후 라운드 2라운드 종료 메소드 실행.
+        handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, 0);
     }
 
     /**
-     두번째 라운드 시간 끝날때 처리하는 메소드.
+     두번째 라운드 종료 처리 메소드.
      */
-    @EventListener
-    public void handleSecondRoundEndHoldBack(SecondRoundEndEvent event) {
-        //두번째 라운드 처리.
-        String gameSessionId = event.getGameSessionId();
+    public void handleSecondRoundEnd(String gameSessionId, RoundResult result, double probability) {
+        //gameRoom 객체 동시성 관리
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
-        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
+        if(gameRoom.getGameStatus() == GameStatus.END) {
+            return;
+        }
+        gameRoomMap.remove(gameSessionId);
+        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(), result);
+        gameRoomMap.put(gameSessionId, gameRoom);
 
+        //게임 결과 처리.
         processGameResult(gameRoom);
     }
 

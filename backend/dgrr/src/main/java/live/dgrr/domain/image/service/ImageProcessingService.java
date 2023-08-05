@@ -1,5 +1,7 @@
 package live.dgrr.domain.image.service;
 
+import live.dgrr.domain.game.entity.enums.RoundResult;
+import live.dgrr.domain.game.service.GameService;
 import live.dgrr.domain.image.entity.event.LaughEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service @Slf4j @RequiredArgsConstructor
 public class ImageProcessingService {
     private final SimpMessagingTemplate template;
-    private final ApplicationEventPublisher publisher;
+    private final GameService gameService;
     private final static double THRESHOLD = 0.5;
 
     public void sendImageDataToPythonClient(String imageData, MessageHeaders headers) {
@@ -42,9 +44,10 @@ public class ImageProcessingService {
         // 4. result 추출
         JSONObject result = (JSONObject) analyzingDataJson.get("result");
 
-        // 5. sessionId, gameSessionId 추출
+        // 5. sessionId, gameSessionId, round 추출
         String sessionId = (String) headers.get("simpSessionId");
         String gameSessionId = (String) headers.get("gameSessionId");
+        String round = (String) headers.get("round");
 
         // 6. emotion, probability 추출
         String emotion = (String) result.get("emotion"); // emotion
@@ -52,7 +55,12 @@ public class ImageProcessingService {
 
         // 이미지 판정 결과가 Smile이라면 이벤트를 발생시킴
         if (emotion.equals("Smile") && probability >= THRESHOLD) {
-            publisher.publishEvent(new LaughEvent(sessionId, gameSessionId, probability));
+            if(round.equals("first")) {
+                gameService.handleFirstRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
+            }
+            if(round.equals("second")) {
+                gameService.handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
+            }
         }
 
     }

@@ -9,14 +9,11 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
-import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
-import live.dgrr.domain.game.entity.event.SecondRoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -201,12 +198,13 @@ public class GameService {
         long firstRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
         long secondRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
 
-        GameResult result = judgeGameResult(gameRoom);
+        GameResult resultForMemberOne = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime,true);
+        GameResult resultForMemberTwo = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime, false);
 
         GameResultResponseDto memberOneResultDto = new GameResultResponseDto(gameRoom.getMemberOne(), gameRoom.getMemberTwo(),
-                firstRoundTime, secondRoundTime, result, 20, Rank.BRONZE);
+                firstRoundTime, secondRoundTime, resultForMemberOne, 20, Rank.BRONZE);
         GameResultResponseDto memberTwoResultDto = new GameResultResponseDto(gameRoom.getMemberTwo(), gameRoom.getMemberOne(),
-                firstRoundTime, secondRoundTime, result, 20, Rank.BRONZE);
+                firstRoundTime, secondRoundTime, resultForMemberTwo, 20, Rank.BRONZE);
 
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/result", memberOneResultDto);
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/result", memberTwoResultDto);
@@ -215,7 +213,44 @@ public class GameService {
     /**
      * 게임 결과 판정 하는 로직
      */
-    private GameResult judgeGameResult(GameRoom gameRoom) {
-        return GameResult.DRAW;
+    private GameResult judgeGameResult(GameRoom gameRoom, long firstRoundTime, long secondRoundTime, boolean userFlag) {
+        //둘 다 안 웃은 경우
+        if(gameRoom.getFirstRoundResult() == RoundResult.HOLD_BACK
+        && gameRoom.getSecondRoundResult() == RoundResult.HOLD_BACK) {
+            return GameResult.DRAW;
+        }
+
+        //MemberOne만 웃은 경우
+        if(gameRoom.getFirstRoundResult() == RoundResult.HOLD_BACK) {
+            if(userFlag) {
+                return GameResult.LOSE;
+            }
+            return GameResult.WIN;
+        }
+        //MemberTwo 만 웃은 경우
+        if(gameRoom.getSecondRoundResult() == RoundResult.HOLD_BACK) {
+            if(userFlag) {
+                return GameResult.WIN;
+            }
+            return GameResult.LOSE;
+        }
+
+        //두 명다 웃은경우
+        //MemberOne이 더 빨리 웃은경우
+        if(firstRoundTime >  secondRoundTime) {
+            if(userFlag) {
+                return GameResult.LOSE;
+            }
+            return GameResult.WIN;
+        }
+        //MemberTwo가 더 빨리 웃은경우
+        if(firstRoundTime < secondRoundTime) {
+            if(userFlag) {
+                return GameResult.WIN;
+            }
+            return GameResult.LOSE;
+        }
+
+        return GameResult.INVALID;
     }
 }

@@ -27,16 +27,17 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
         # 가장 높은 확률을 가진 감정을 결정
         max_index = np.argmax(probabilities)
         emotion = emotions[max_index]
-        max_prob = probabilities[max_index]
+        emotion_prob = probabilities[max_index]
 
         return {
+            "success": "true",
             "emotion": emotion,
-            "probability": labeled_probabilities,
-            "message": "success",
+            "probability": emotion_prob,
+            "allProbability": labeled_probabilities,
         }
 
     return {
-        "emotion": "Not Detected Your Face",
-        "probability": dict(zip(emotions, [-1] * 7)),
-        "message": "failed",
+        "success": "false",
+        "emotion": "Not Detected",
+        "probability": -1,
     }

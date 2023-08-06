@@ -1,8 +1,9 @@
 import { Client } from "@stomp/stompjs";
 
-import { IGameProps } from "./Game";
-
-export const GameLoading = (props: IGameProps) => {
-  const { stompClient } = props;
-  return <></>;
+export const GameLoading = () => {
+  return (
+    <>
+      <div>로딩중...</div>
+    </>
+  );
 };

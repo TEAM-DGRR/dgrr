@@ -2,8 +2,6 @@
 export const stompConfig = {
   BROKER_URL: "ws://localhost:8080/ws",
   CONNECT_HEADER: {
-    username: "1234",
-    password: "1234",
     "heart-beat": "10000,10000",
   },
   DESTINATION_URI: {
@@ -13,17 +11,8 @@ export const stompConfig = {
     STATUS_URI: "user/recv/status",
     RESULT_URI: "user/recv/result",
   },
+  CAPTURE_INTERVAL: 1000,
 };
-
-export interface IGameConfig {
-  success: string;
-  gameSessionId: string;
-  nickname: string;
-  profileImage: string;
-  description: string;
-  rating: Number;
-  openViduToken: string;
-}
 
 //OpenVidu
 export const openViduConfig = {
@@ -36,6 +25,6 @@ export const openViduConfig = {
     resolution: "640x480",
     frameRate: 30,
     insertMode: "APPEND",
-    mirror: false,
+    mirror: true,
   },
 };

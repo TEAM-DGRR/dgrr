@@ -1,26 +1,29 @@
 package live.dgrr.domain.game.dto.response;
 
-import live.dgrr.domain.game.entity.GameRoomUser;
+import live.dgrr.domain.game.entity.GameRoomMember;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class GameInitializerResponseDto {
 
-    public GameInitializerResponseDto(GameRoomUser gameRoomUser, String gameSessionId, String openViduToken) {
+    public GameInitializerResponseDto(GameRoomMember myInfo,GameRoomMember enemyInfo, String gameSessionId, String openViduToken, LocalDateTime startTime, String turn) {
+        this.myInfo = myInfo;
+        this.enemyInfo = enemyInfo;
         this.success = "true";
         this.gameSessionId = gameSessionId;
         this.openViduToken = openViduToken;
-        this.nickname = gameRoomUser.getNickname();
-        this.profileImage = gameRoomUser.getImage();
-        this.description = gameRoomUser.getDescription();
-        this.rating = gameRoomUser.getRating();
+        this.turn = turn;
+        this.startTime = startTime;
     }
+
+    private GameRoomMember myInfo;
+    private GameRoomMember enemyInfo;
 
     private String success;
     private String gameSessionId;
     private String openViduToken;
-    private String nickname;
-    private String profileImage;
-    private String description;
-    private int rating;
+    private String turn;
+    private LocalDateTime startTime;
 }

@@ -1,11 +1,11 @@
-package live.dgrr.domain.member.entity;
+package live.dgrr.domain.game.entity;
 
+import live.dgrr.domain.member.entity.Member;
 import live.dgrr.global.domain.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
@@ -15,15 +15,18 @@ public class BattleDetail extends BaseEntity {
     @Id
     private Long battleDetailId;
 
-    private Long battleId;
+    @ManyToOne
+    private Battle battle;
 
-    private Long memberId;
+    @ManyToOne
+    private Member member;
 
     private String firstFlag;
 
     private Long holdingTime;
 
-    private String battleResult;
+    @Enumerated(EnumType.STRING)
+    private ResultType battleResult;
 
     private Long laughAmount;
 }

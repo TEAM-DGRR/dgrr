@@ -13,7 +13,6 @@ import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
-    private final ApplicationEventPublisher publisher;
+    private static final int ROUND_TIME = 10;
 
     /**
     Bean 생성시, map 과 queue 초기화.
@@ -58,7 +57,7 @@ public class GameService {
 
         log.info("Session Started: {}", principalName);
 
-        if(waitingQueue.size() > 2) {
+        if(waitingQueue.size() >= 2) {
             WaitingMember waitingMemberOne = waitingQueue.poll();
             WaitingMember waitingMemberTwo = waitingQueue.poll();
 
@@ -93,8 +92,9 @@ public class GameService {
         String openViduToken1 = openViduService.createConnection(gameSessionId);
         String openViduToken2 = openViduService.createConnection(gameSessionId);
 
+        //첫번째 라운드 시간 생성.(UTC 기준)
         LocalDateTime firstRoundStartTime = LocalDateTime.now(ZoneId.of("UTC"));
-        gameRoom.setFirstRoundStartTime(firstRoundStartTime);
+        gameRoom.setFirstRoundStartTime(firstRoundStartTime.plusHours(9));
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
         template.convertAndSendToUser(roomMember1.getPrincipalName(),"/recv/game",
@@ -113,13 +113,13 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(10000);
+            Thread.sleep(ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("First Round Time Passed: {}", between.getSeconds());
+        log.info("First Round Time Passed: {}", between.getNano());
 
         //대기 후 라운드 종료 알리는 이벤트 발생.
         handleFirstRoundEnd(gameSessionId, RoundResult.HOLD_BACK, 0);
@@ -138,11 +138,14 @@ public class GameService {
             return;
         }
         gameRoomMap.remove(gameSessionId);
-        gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), result);
+
+        //2라운드 시작 시간 설정.
+        LocalDateTime secondRoundStartTime = LocalDateTime.now(ZoneId.of("UTC"));
+
+        gameRoom.changeStatusFirstRoundEnded(secondRoundStartTime.plusHours(9), result);
         gameRoomMap.put(gameSessionId, gameRoom);
 
         //GameRound 변화 정보 전송
-        LocalDateTime secondRoundStartTime = LocalDateTime.now();
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/status",
                 new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/status",
@@ -159,13 +162,13 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(10000);
+            Thread.sleep(ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("Second Round Time Passed: {}", between.getSeconds());
+        log.info("Second Round Time Passed: {}", between.getNano());
 
         //대기 후 라운드 2라운드 종료 메소드 실행.
         handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, 0);
@@ -196,7 +199,10 @@ public class GameService {
      */
     private void processGameResult(GameRoom gameRoom) {
         long firstRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
-        long secondRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
+        long secondRoundTime = Duration.between(gameRoom.getSecondRoundStartTime(), gameRoom.getSecondRoundEndTime()).toMillis();
+
+        log.info("firstRoundTime: {}", firstRoundTime);
+        log.info("secondRoundTime: {}", secondRoundTime);
 
         GameResult resultForMemberOne = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime,true);
         GameResult resultForMemberTwo = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime, false);

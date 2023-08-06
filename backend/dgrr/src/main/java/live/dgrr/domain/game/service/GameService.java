@@ -33,7 +33,7 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
-    private static final int ROUND_TIME = 10;
+    private static final int ROUND_TIME = 3;
 
     /**
     Bean 생성시, map 과 queue 초기화.
@@ -258,5 +258,9 @@ public class GameService {
         }
 
         return GameResult.INVALID;
+    }
+
+    public void test(String id, String message) {
+        this.template.convertAndSendToUser(id,"/recv/test",message);
     }
 }

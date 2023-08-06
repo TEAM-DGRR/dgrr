@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.entity;
 
+import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.global.domain.BaseEntity;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class BattleDetail extends BaseEntity {
     private Long holdingTime;
 
     @Enumerated(EnumType.STRING)
-    private ResultType battleResult;
+    private GameResult battleResult;
 
     private Long laughAmount;
 }

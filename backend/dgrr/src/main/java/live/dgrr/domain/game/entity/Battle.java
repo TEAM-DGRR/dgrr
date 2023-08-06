@@ -1,5 +1,6 @@
 package live.dgrr.domain.game.entity;
 
+import live.dgrr.domain.game.entity.enums.BattleType;
 import live.dgrr.global.domain.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

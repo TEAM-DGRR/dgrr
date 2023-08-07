@@ -10,4 +10,5 @@ public class LaughEvent {
     private String sessionId;
     private String gameSessionId;
     private double probability;
+    private String round;
 }

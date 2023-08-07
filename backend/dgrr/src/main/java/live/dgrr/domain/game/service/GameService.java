@@ -7,15 +7,12 @@ import live.dgrr.domain.game.entity.GameRoom;
 import live.dgrr.domain.game.entity.GameRoomMember;
 import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.GameResult;
+import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
-import live.dgrr.domain.game.entity.event.FirstRoundEndEvent;
-import live.dgrr.domain.game.entity.event.SecondRoundEndEvent;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +33,9 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
-    private final ApplicationEventPublisher publisher;
+
+    //단위 : 초
+    private static final int ROUND_TIME = 3;
 
     /**
     Bean 생성시, map 과 queue 초기화.
@@ -60,7 +59,7 @@ public class GameService {
 
         log.info("Session Started: {}", principalName);
 
-        if(waitingQueue.size() > 2) {
+        if(waitingQueue.size() >= 2) {
             WaitingMember waitingMemberOne = waitingQueue.poll();
             WaitingMember waitingMemberTwo = waitingQueue.poll();
 
@@ -90,13 +89,13 @@ public class GameService {
         gameRoomMap.put(gameSessionId,gameRoom);
 
         //Openvidu 생성
-
         openViduService.createSession(gameSessionId);
         String openViduToken1 = openViduService.createConnection(gameSessionId);
         String openViduToken2 = openViduService.createConnection(gameSessionId);
 
+        //첫번째 라운드 시간 생성.(UTC 기준)
         LocalDateTime firstRoundStartTime = LocalDateTime.now(ZoneId.of("UTC"));
-        gameRoom.setFirstRoundStartTime(firstRoundStartTime);
+        gameRoom.setFirstRoundStartTime(firstRoundStartTime.plusHours(9));
 
         //Client에 상대 user 정보, gameSessionId, openviduSession Token, 선공여부
         template.convertAndSendToUser(roomMember1.getPrincipalName(),"/recv/game",
@@ -115,31 +114,39 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(10000);
+            Thread.sleep(ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("Time Passed: {}", between.getSeconds());
-        log.info("timebefore Publish: {}", recordEndTime);
+        log.info("First Round Time Passed: {}", between.getNano());
 
         //대기 후 라운드 종료 알리는 이벤트 발생.
-        publisher.publishEvent(new FirstRoundEndEvent(gameSessionId));
+        handleFirstRoundEnd(gameSessionId, RoundResult.HOLD_BACK, 0);
     }
 
     /**
-     첫 라운드 시간이 다 되서 끝났을 시 이벤트 처리 로직.
+     첫 라운드 시간이 다 되서 끝났을 시 메소드.
      */
-    @EventListener
-    public void handleFirstRoundEndHoldBack(FirstRoundEndEvent event) {
-        log.info("eventListenerTime: {}", LocalDateTime.now());
-        String gameSessionId = event.getGameSessionId();
+    public void handleFirstRoundEnd(String gameSessionId, RoundResult result, double probability) {
+        //gameRoom 객체 동시성 관리
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
-        gameRoom.changeStatusFirstRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
+        if(gameRoom.getGameStatus() == GameStatus.SECOND_ROUND) {
+            return;
+        }
+        gameRoomMap.remove(gameSessionId);
+
+        //2라운드 시작 시간 설정.
+        LocalDateTime secondRoundStartTime = LocalDateTime.now(ZoneId.of("UTC"));
+
+        gameRoom.changeStatusFirstRoundEnded(secondRoundStartTime.plusHours(9), result);
+        gameRoomMap.put(gameSessionId, gameRoom);
 
         //GameRound 변화 정보 전송
-        LocalDateTime secondRoundStartTime = LocalDateTime.now();
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/status",
                 new GameFirstRoundEndResponseDto("round changed", gameRoom.getFirstRoundResult(),secondRoundStartTime));
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/status",
@@ -156,29 +163,35 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(10000);
+            Thread.sleep(ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         LocalDateTime recordEndTime = LocalDateTime.now();
         Duration between = Duration.between(recordStartTime, recordEndTime);
-        log.info("Second Round Time Passed: {}", between.getSeconds());
-        log.info("Second Round timebefore Publish: {}", recordEndTime);
+        log.info("Second Round Time Passed: {}", between.getNano());
 
-        //대기 후 라운드 종료 알리는 이벤트 발생.
-        publisher.publishEvent(new SecondRoundEndEvent(gameSessionId));
+        //대기 후 라운드 2라운드 종료 메소드 실행.
+        handleSecondRoundEnd(gameSessionId, RoundResult.HOLD_BACK, 0);
     }
 
     /**
-     두번째 라운드 시간 끝날때 처리하는 메소드.
+     두번째 라운드 종료 처리 메소드.
      */
-    @EventListener
-    public void handleSecondRoundEndHoldBack(SecondRoundEndEvent event) {
-        //두번째 라운드 처리.
-        String gameSessionId = event.getGameSessionId();
+    public void handleSecondRoundEnd(String gameSessionId, RoundResult result, double probability) {
+        //gameRoom 객체 동시성 관리
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
-        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(), RoundResult.HOLD_BACK);
+        if(gameRoom.getGameStatus() == GameStatus.END) {
+            return;
+        }
+        gameRoomMap.remove(gameSessionId);
+        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(), result);
+        gameRoomMap.put(gameSessionId, gameRoom);
 
+        //게임 결과 처리.
         processGameResult(gameRoom);
     }
 
@@ -187,14 +200,18 @@ public class GameService {
      */
     private void processGameResult(GameRoom gameRoom) {
         long firstRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
-        long secondRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
+        long secondRoundTime = Duration.between(gameRoom.getSecondRoundStartTime(), gameRoom.getSecondRoundEndTime()).toMillis();
 
-        GameResult result = judgeGameResult(gameRoom);
+        log.info("firstRoundTime: {}", firstRoundTime);
+        log.info("secondRoundTime: {}", secondRoundTime);
+
+        GameResult resultForMemberOne = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime,true);
+        GameResult resultForMemberTwo = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime, false);
 
         GameResultResponseDto memberOneResultDto = new GameResultResponseDto(gameRoom.getMemberOne(), gameRoom.getMemberTwo(),
-                firstRoundTime, secondRoundTime, result, 20, Rank.BRONZE);
+                firstRoundTime, secondRoundTime, resultForMemberOne, 20, Rank.BRONZE);
         GameResultResponseDto memberTwoResultDto = new GameResultResponseDto(gameRoom.getMemberTwo(), gameRoom.getMemberOne(),
-                firstRoundTime, secondRoundTime, result, 20, Rank.BRONZE);
+                firstRoundTime, secondRoundTime, resultForMemberTwo, 20, Rank.BRONZE);
 
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/result", memberOneResultDto);
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/result", memberTwoResultDto);
@@ -203,7 +220,45 @@ public class GameService {
     /**
      * 게임 결과 판정 하는 로직
      */
-    private GameResult judgeGameResult(GameRoom gameRoom) {
-        return GameResult.DRAW;
+    private GameResult judgeGameResult(GameRoom gameRoom, long firstRoundTime, long secondRoundTime, boolean userFlag) {
+        //둘 다 안 웃은 경우
+        if(gameRoom.getFirstRoundResult() == RoundResult.HOLD_BACK
+        && gameRoom.getSecondRoundResult() == RoundResult.HOLD_BACK) {
+            return GameResult.DRAW;
+        }
+
+        //MemberOne만 웃은 경우
+        if(gameRoom.getFirstRoundResult() == RoundResult.HOLD_BACK) {
+            if(userFlag) {
+                return GameResult.LOSE;
+            }
+            return GameResult.WIN;
+        }
+        //MemberTwo 만 웃은 경우
+        if(gameRoom.getSecondRoundResult() == RoundResult.HOLD_BACK) {
+            if(userFlag) {
+                return GameResult.WIN;
+            }
+            return GameResult.LOSE;
+        }
+
+        //두 명다 웃은경우
+        //MemberOne이 더 빨리 웃은경우
+        if(firstRoundTime >  secondRoundTime) {
+            if(userFlag) {
+                return GameResult.LOSE;
+            }
+            return GameResult.WIN;
+        }
+        //MemberTwo가 더 빨리 웃은경우
+        if(firstRoundTime < secondRoundTime) {
+            if(userFlag) {
+                return GameResult.WIN;
+            }
+            return GameResult.LOSE;
+        }
+
+        return GameResult.INVALID;
     }
+
 }

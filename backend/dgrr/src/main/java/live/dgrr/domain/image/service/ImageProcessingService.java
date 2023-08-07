@@ -2,13 +2,11 @@ package live.dgrr.domain.image.service;
 
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.service.GameService;
-import live.dgrr.domain.image.entity.event.LaughEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -53,7 +51,7 @@ public class ImageProcessingService {
         String emotion = (String) result.get("emotion"); // emotion
         double probability = Double.parseDouble((String) result.get("probability")); // 감정 확률
 
-        // 이미지 판정 결과가 Smile이라면 이벤트를 발생시킴
+        // 이미지 판정 결과가 Smile이라면 gameService 호출.
         if (emotion.equals("Smile") && probability >= THRESHOLD) {
             if(round.equals("first")) {
                 gameService.handleFirstRoundEnd(gameSessionId, RoundResult.LAUGH, probability);

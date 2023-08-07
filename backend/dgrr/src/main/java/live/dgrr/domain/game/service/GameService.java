@@ -87,7 +87,6 @@ public class GameService {
         gameRoomMap.put(gameSessionId,gameRoom);
 
         //Openvidu 생성
-
         openViduService.createSession(gameSessionId);
         String openViduToken1 = openViduService.createConnection(gameSessionId);
         String openViduToken2 = openViduService.createConnection(gameSessionId);
@@ -260,7 +259,4 @@ public class GameService {
         return GameResult.INVALID;
     }
 
-    public void test(String id, String message) {
-        this.template.convertAndSendToUser(id,"/recv/test",message);
-    }
 }

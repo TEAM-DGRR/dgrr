@@ -2,6 +2,7 @@ package live.dgrr.domain.image.service;
 
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.service.GameService;
+import live.dgrr.domain.image.entity.event.ImageResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -13,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Null;
+
 @Service @Slf4j @RequiredArgsConstructor
 public class ImageProcessingService {
     private final SimpMessagingTemplate template;
@@ -23,7 +26,6 @@ public class ImageProcessingService {
 
         // 메세지에 imageData와 headers 붙임
         Message<String> message = MessageBuilder.withPayload(imageData).setHeader("headers", headers).build();
-
         // 파이썬 클라이언트로 헤더와 imageData를 포함한 메세지 보냄
         this.template.convertAndSend("/recv/imgData", message);
     }
@@ -36,30 +38,45 @@ public class ImageProcessingService {
         // 2. String Data를 JSON객체로 파싱
         JSONObject analyzingDataJson = (JSONObject) parser.parse(analyzingData);
 
-        // 3. Header 추출
+        // 3. Headers
         JSONObject headers = (JSONObject) analyzingDataJson.get("headers");
 
-        // 4. result 추출
+        // 4. nativeHeaders
+        JSONObject nativeHeaders = (JSONObject) headers.get("nativeHeaders");
+
+        // 4. result
         JSONObject result = (JSONObject) analyzingDataJson.get("result");
 
-        // 5. sessionId, gameSessionId, round 추출
-        String sessionId = (String) headers.get("simpSessionId");
-        String gameSessionId = (String) headers.get("gameSessionId");
+        // 5. sccuess, sessionId, gameSessionId, round
+        String success = (String) result.get("success");
+//        String sessionId = (String) headers.get("simpSessionId");
         String round = (String) headers.get("round");
+        String gameSessionId = ((String) ((org.json.simple.JSONArray) nativeHeaders.get("gameSessionId")).get(0));
 
-        // 6. emotion, probability 추출
-        String emotion = (String) result.get("emotion"); // emotion
-        double probability = Double.parseDouble((String) result.get("probability")); // 감정 확률
+        // 6. emotion, probability
+        String emotion = (String) result.get("emotion");
+        double probability = (double) result.get("probability");
+        probability = Math.round(probability * 100) / 100.0;
 
-        // 이미지 판정 결과가 Smile이라면 gameService 호출.
-        if (emotion.equals("Smile") && probability >= THRESHOLD) {
-            if(round.equals("first")) {
-                gameService.handleFirstRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
-            }
-            if(round.equals("second")) {
-                gameService.handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
+        ImageResult imageResult = new ImageResult(success, emotion, probability);
+
+        System.out.printf("@@@@@@emotion : %s, prob : %s@@@@@@\n", emotion, probability);
+
+        if (success.equals("true")) {
+
+            // 이미지 판정 결과가 Smile이라면 gameService 호출.
+            if (emotion.equals("Smile") && probability >= THRESHOLD) {
+                if(round.equals("first")) {
+                    gameService.handleFirstRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
+                }
+                if(round.equals("second")) {
+                    gameService.handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
+                }
             }
         }
+        gameService.sendImageResult(gameSessionId, imageResult);
+
+
 
     }
 

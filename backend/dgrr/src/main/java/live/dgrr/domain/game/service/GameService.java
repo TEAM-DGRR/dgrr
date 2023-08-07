@@ -170,7 +170,7 @@ public class GameService {
         log.info("Second Round Time Passed: {}", between.getNano());
 
         //대기 후 라운드 2라운드 종료 메소드 실행.
-        handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, 0);
+        handleSecondRoundEnd(gameSessionId, RoundResult.HOLD_BACK, 0);
     }
 
     /**

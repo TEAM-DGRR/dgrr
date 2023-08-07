@@ -233,10 +233,10 @@ class GameServiceTest {
     }
 
     /**
-     * 웃지 않고 둘째라운드가 끝까지 진행되는지 테스트
+     * 아무도 웃지 않고 둘째라운드가 끝까지 진행되는지 테스트
      */
     @Test
-    public void secondRoundEndLaugh() throws ExecutionException, InterruptedException, TimeoutException, JSONException {
+    public void totalRoundHoldBack() throws ExecutionException, InterruptedException, TimeoutException, JSONException {
         BlockingQueue<String> blockingQueue1 = new LinkedBlockingQueue<>();
         BlockingQueue<String> blockingQueue2 = new LinkedBlockingQueue<>();
 
@@ -274,7 +274,59 @@ class GameServiceTest {
                 blockingQueue2.offer(new String((byte[]) payload));
             }
         });
-        stompSession2.subscribe("/user/recv/status", new StompFrameHandler() {
+
+        //매칭 시그널 전송.
+        String confirmMessage = "sent Message";
+        stompSession1.send("/send/matching", confirmMessage.getBytes());
+        stompSession2.send("/send/matching", confirmMessage.getBytes());
+
+        latch.await(1,TimeUnit.SECONDS);
+
+        //도착한 게임 세션 아이디 저장.
+        String poll = blockingQueue1.poll();
+        JSONObject json = new JSONObject(poll);
+        String gameSessionId = json.getString("gameSessionId");
+
+        //게임 최종 결과가 비김 판정났는지 확인.
+        latch.await(ROUND_TIME*2 + 4,TimeUnit.SECONDS);
+        String secondRoundResult = blockingQueue2.poll();
+        JSONObject firstRoundJson = new JSONObject(secondRoundResult);
+        String result = firstRoundJson.getString("gameResult");
+        Assertions.assertThat(result).isEqualTo("DRAW");
+    }
+
+    /**
+     * 첫번째 라운드만 웃은 경우 결과 테스트
+     */
+    @Test
+    public void onlyFirstRoundLaugh() throws ExecutionException, InterruptedException, TimeoutException, JSONException {
+        BlockingQueue<String> blockingQueue1 = new LinkedBlockingQueue<>();
+        BlockingQueue<String> blockingQueue2 = new LinkedBlockingQueue<>();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        stompSession1 = null;
+        stompSession2 = null;
+        //세션 2 명 열기.
+        stompSession1 = stompClient1.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {
+        }).get(1, TimeUnit.SECONDS);
+        stompSession2 = stompClient1.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {
+        }).get(1, TimeUnit.SECONDS);
+
+        //gameSessionId 를 받기위해 subscribe
+        stompSession1.subscribe("/user/recv/game", new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return byte[].class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                blockingQueue1.offer(new String((byte[]) payload));
+            }
+        });
+
+        //2라운드 결과 subscribe
+        stompSession1.subscribe("/user/recv/result", new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return byte[].class;
@@ -297,14 +349,15 @@ class GameServiceTest {
         String poll = blockingQueue1.poll();
         JSONObject json = new JSONObject(poll);
         String gameSessionId = json.getString("gameSessionId");
+
         //웃음판정 메세지 전송.
         stompSession1.send("/send/imgTest", gameSessionId.getBytes());
 
-        //첫번째 라운드 결과가 웃음 이라고 판정났는지 확인.
+        //게임 최종 결과가 비김 판정났는지 확인.
         latch.await(ROUND_TIME*2 + 4,TimeUnit.SECONDS);
         String secondRoundResult = blockingQueue2.poll();
         JSONObject firstRoundJson = new JSONObject(secondRoundResult);
-        String result = firstRoundJson.getString("result");
-        Assertions.assertThat(result).isEqualTo("LAUGH");
+        String result = firstRoundJson.getString("gameResult");
+        Assertions.assertThat(result).isEqualTo("WIN");
     }
 }

@@ -1,28 +1,36 @@
-$mainblack: #121417;
-$blue: #469FF6;
+@import "App.scss";
 
 .MainPage {
+  background: $blue;
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 
 .MainBody {
   display: flex;
   flex-direction: column;
-
-  img {
-    margin: auto;
-  }
+  height: calc(100% - 45px);
 }
 
 .MainNav {
   margin: auto;
   width: calc(100% - 48px);
+  height: 45px;
   display: flex;
   justify-content: space-between;
+
+  img {
+    width: 24px;
+  }
+}
+
+.MainImages {
+  margin: 46px 0;
 }
 
 .MainBtns {
-  height: 176px;
+  height: 30%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -31,9 +39,9 @@ $blue: #469FF6;
 
 
 #character {
-  width: calc(100% - 172px);
+  width: 60%;
 }
 
 #title {
-  width: calc(100% - 156px);
+  width: 60%;
 }

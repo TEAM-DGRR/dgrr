@@ -14,7 +14,7 @@ public class GameRoom {
         this.memberOne = memberOne;
         this.memberTwo = memberTwo;
         this.gameSessionId = gameSessionId;
-        this.gameStatus = GameStatus.READY;
+        this.gameStatus = GameStatus.FIRST_ROUND;
     }
 
     /**
@@ -35,6 +35,7 @@ public class GameRoom {
     public void changeStatusFirstRoundEnded(LocalDateTime time, RoundResult result) {
         gameStatus = GameStatus.SECOND_ROUND;
         firstRoundEndTime = time;
+        secondRoundStartTime = time;
         firstRoundResult = result;
     }
 
@@ -46,10 +47,6 @@ public class GameRoom {
 
     public void setFirstRoundStartTime(LocalDateTime firstRoundStartTime) {
         this.firstRoundStartTime = firstRoundStartTime;
-    }
-
-    public void setSecondRoundStartTime(LocalDateTime secondRoundStartTime) {
-        this.secondRoundStartTime = secondRoundStartTime;
     }
 }
 

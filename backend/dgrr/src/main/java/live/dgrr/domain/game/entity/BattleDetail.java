@@ -14,12 +14,15 @@ import javax.persistence.*;
 public class BattleDetail extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long battleDetailId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "battleId")
     private Battle battle;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
     private Member member;
 
     private String firstFlag;
@@ -30,4 +33,12 @@ public class BattleDetail extends BaseEntity {
     private GameResult battleResult;
 
     private Long laughAmount;
+
+    public BattleDetail(Member member, String firstFlag, Long holdingTime, GameResult battleResult, Long laughAmount) {
+        this.member = member;
+        this.firstFlag = firstFlag;
+        this.holdingTime = holdingTime;
+        this.battleResult = battleResult;
+        this.laughAmount = laughAmount;
+    }
 }

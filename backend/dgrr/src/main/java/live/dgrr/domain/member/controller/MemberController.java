@@ -67,10 +67,8 @@ public class MemberController {
     //mypage
     @GetMapping("/member-id")
     public ResponseEntity<?> mypage() {
-        String id = "1";
-
-        MemberInfoResponseDto memberInfoDto = memberService.getmemberInfo(id);
-
+        Long id = 2L;
+        MemberInfoResponseDto memberInfoDto = memberService.getMemberInfoWithRatingAndBattleDetail(id);
         return new ResponseEntity<>(memberInfoDto,HttpStatus.OK);
     }
 }

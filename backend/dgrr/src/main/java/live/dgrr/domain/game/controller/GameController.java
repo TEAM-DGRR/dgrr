@@ -24,4 +24,9 @@ public class GameController {
         gameService.handleFirstRoundEnd(message, RoundResult.LAUGH, 0.6);
     }
 
+    @MessageMapping("/imgTest2")
+    public void test2(Principal principal, @Payload String message) {
+        gameService.handleSecondRoundEnd(message, RoundResult.LAUGH, 0.6);
+    }
+
 }

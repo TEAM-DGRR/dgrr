@@ -74,7 +74,7 @@ python -m venv venv
 ```bash
 # 상대 경로를 사용할 것이기 때문에, venv 폴더가 있는 디렉토리에서 실행해야 합니다.
 # 가상환경 진입
-source ./venv/Scripts/activatbe
+source ./venv/Scripts/activate
 ```
 
 #### 6. 패키지 설치

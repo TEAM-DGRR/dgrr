@@ -74,7 +74,6 @@ public class GameService {
             //game 시작
             gameStart(waitingMemberOne, waitingMemberTwo);
         }
-
     }
 
     /**
@@ -290,6 +289,18 @@ public class GameService {
             return DRAW_REWARD;
         }
         return LOSE_REWARD;
+    }
+
+    /**
+     * 이미지 전송 로직
+     */
+    public void sendImageResult(String gameSessionId) {
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
+        GameRoom gameRoom = gameRoomMap.get(gameSessionId);
+        template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/imgResult","a");
+        template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/imgResult", "a");
     }
 
 }

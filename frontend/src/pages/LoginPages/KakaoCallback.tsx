@@ -16,10 +16,11 @@ export const KakaoCallback = () => {
         .then((res: any) => {
             // 없다면 회원가입 화면으로 보내기
             if (res.data.key === "signUp") {
-                navigate('/signup')
+                navigate("/signup", { state: { code: code } })
+            } else {
+                // 유저 정보가 있으면 메인으로 보내기
+                navigate('/main')
             }
-            // 유저 정보가 있으면 메인으로 보내기
-            navigate('/main')
         })
         .catch((Error: any) => {
             console.log(Error)

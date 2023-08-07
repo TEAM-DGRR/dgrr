@@ -3,6 +3,7 @@ package live.dgrr.domain.member.repository;
 import live.dgrr.domain.game.entity.BattleDetail;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.game.repository.BattleDetailRepository;
+import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.entity.RoleType;
@@ -22,7 +23,7 @@ import javax.transaction.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
@@ -57,7 +58,17 @@ class MemberRepositoryTest {
 
         Assertions.assertThat(memberInfoResponseDto.getMember().getMemberId()).isEqualTo(memberId);
         Assertions.assertThat(memberInfoResponseDto.getRatingList().get(0).getMember().getMemberId()).isEqualTo(memberId);
+    }
 
+    @Test
+    public void testUpdateMemberInfo() {
+        Long memberId = 1L;
+        MemberRequestDto memberRequestDto = new MemberRequestDto(memberId,"닉네임 수정3", "프로필이미지 수정3","상태 메세지 수정3");
+        memberService.updateByMember(memberRequestDto);
+
+        Assertions.assertThat(memberRequestDto.getNickname()).isEqualTo(memberRepository.findById(memberId).get().getNickname());
+        Assertions.assertThat(memberRequestDto.getProfileImage()).isEqualTo(memberRepository.findById(memberId).get().getProfileImage());
+        Assertions.assertThat(memberRequestDto.getDescription()).isEqualTo(memberRepository.findById(memberId).get().getDescription());
     }
 
 

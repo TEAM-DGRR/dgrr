@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import live.dgrr.domain.game.entity.BattleDetail;
 import live.dgrr.domain.game.service.BattleDetailService;
+import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
@@ -28,6 +29,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -160,5 +162,11 @@ public class MemberService {
 
         // 조회한 정보를 MemberInfoResponseDto에 담아서 반환
         return new MemberInfoResponseDto(member, ratings, battleDetails);
+    }
+
+    @Transactional
+    public void updateByMember(MemberRequestDto memberRequestDto) {
+        Optional<Member> member = memberRepository.findById(memberRequestDto.getMemberId());
+        member.get().updateMember(memberRequestDto.getNickname(), memberRequestDto.getProfileImage(), memberRequestDto.getDescription());
     }
 }

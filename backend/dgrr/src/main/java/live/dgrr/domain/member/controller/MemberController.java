@@ -1,10 +1,10 @@
 package live.dgrr.domain.member.controller;
 
+import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,4 +71,12 @@ public class MemberController {
         MemberInfoResponseDto memberInfoDto = memberService.getMemberInfoWithRatingAndBattleDetail(id);
         return new ResponseEntity<>(memberInfoDto,HttpStatus.OK);
     }
+
+    //mypage-update
+    @PutMapping
+    public ResponseEntity<?> updateMember(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.updateByMember(memberRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

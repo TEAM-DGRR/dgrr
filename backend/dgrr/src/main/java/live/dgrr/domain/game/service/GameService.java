@@ -33,6 +33,8 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
+
+    //단위 : 초
     private static final int ROUND_TIME = 3;
 
     /**

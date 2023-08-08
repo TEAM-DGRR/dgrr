@@ -1,4 +1,4 @@
-package live.dgrr.domain.game.entity;
+package live.dgrr.domain.battle.entity;
 
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.member.entity.Member;

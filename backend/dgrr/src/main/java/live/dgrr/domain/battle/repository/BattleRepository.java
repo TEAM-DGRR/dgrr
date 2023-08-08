@@ -1,6 +1,6 @@
 package live.dgrr.domain.battle.repository;
 
-import live.dgrr.domain.game.entity.BattleDetail;
+import live.dgrr.domain.battle.entity.BattleDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

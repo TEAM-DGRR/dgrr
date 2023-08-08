@@ -2,7 +2,7 @@ package live.dgrr.domain.member.repository;
 
 import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
-import live.dgrr.domain.game.entity.BattleDetail;
+import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.battle.repository.BattleRepository;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
@@ -13,8 +13,6 @@ import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.rating.entity.Rating;
 import live.dgrr.domain.rating.repository.RatingRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

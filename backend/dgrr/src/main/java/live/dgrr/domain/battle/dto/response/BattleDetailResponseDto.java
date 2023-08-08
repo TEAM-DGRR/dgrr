@@ -1,6 +1,6 @@
 package live.dgrr.domain.battle.dto.response;
 
-import live.dgrr.domain.game.entity.Battle;
+import live.dgrr.domain.battle.entity.Battle;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.member.entity.Member;
 import lombok.AllArgsConstructor;

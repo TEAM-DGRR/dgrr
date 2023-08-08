@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
 public class Member extends BaseEntity {
 
     @Id

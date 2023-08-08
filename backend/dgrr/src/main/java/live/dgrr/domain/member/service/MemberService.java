@@ -2,7 +2,7 @@ package live.dgrr.domain.member.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import live.dgrr.domain.game.entity.BattleDetail;
+import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
@@ -12,8 +12,9 @@ import live.dgrr.domain.rating.entity.Rating;
 import live.dgrr.domain.rating.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -139,7 +140,7 @@ public class MemberService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly= true)
     public MemberInfoResponseDto getMemberInfoWithRatingAndBattleDetail(Long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
 

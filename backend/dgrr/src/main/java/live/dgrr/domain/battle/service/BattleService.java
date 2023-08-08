@@ -1,7 +1,7 @@
 package live.dgrr.domain.battle.service;
 
 import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
-import live.dgrr.domain.game.entity.BattleDetail;
+import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.battle.repository.BattleRepository;
 import live.dgrr.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,10 @@
 package live.dgrr.domain.member.repository;
 
+import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.game.entity.BattleDetail;
 import live.dgrr.domain.game.entity.enums.GameResult;
-import live.dgrr.domain.game.repository.BattleDetailRepository;
+import live.dgrr.domain.battle.repository.BattleRepository;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.entity.Member;
@@ -20,56 +22,104 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private RatingRepository ratingRepository;
     @Autowired
-    private BattleDetailRepository battleDetailRepository;
+    private BattleRepository battleRepository;
     @Autowired
     private MemberService memberService;
-
-
-    @BeforeEach
-    @DisplayName("멤버가 저장이 잘 되는지 확인")
-    void saveMember() {
-        Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
-        memberRepository.save(member);
-
-        Rating rating = new Rating(member, 11, 1);
-        ratingRepository.save(rating);
-
-        BattleDetail battleDetail = new BattleDetail(member, "True", 10L, GameResult.WIN, 90L);
-        battleDetailRepository.save(battleDetail);
-
-    }
-
+    @Autowired
+    private BattleService battleService;
 
 
     @Test
-    public void testGetMemberInfo() {
-        Long memberId = memberRepository.findAll().get(0).getMemberId();
+    public void testGetMemberInfoWithBattleDetailAndRating() {
+        //given
+        Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
+        memberRepository.save(member);
+
+        int ratingNum = 3;
+        for (int i = 0; i < ratingNum; i++) {
+            Rating rating = new Rating(member, i, 1);
+            ratingRepository.save(rating);
+        }
+
+        long battleDetailNum = 5;
+        for (long i = 0; i < battleDetailNum; i++) {
+            BattleDetail battleDetail = new BattleDetail(member, "True", 10L, GameResult.WIN, i);
+            battleRepository.save(battleDetail);
+        }
+
+        //when
+        Long memberId = member.getMemberId();
         MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfoWithRatingAndBattleDetail(memberId);
 
+
+        //then
         Assertions.assertThat(memberInfoResponseDto.getMember().getMemberId()).isEqualTo(memberId);
-        Assertions.assertThat(memberInfoResponseDto.getRatingList().get(0).getMember().getMemberId()).isEqualTo(memberId);
+        Assertions.assertThat(memberInfoResponseDto.getRatingList().get(ratingNum-1).getMember().getMemberId()).isEqualTo(memberId);
+        Assertions.assertThat(memberInfoResponseDto.getBattleDetailList().get(0).getMember().getMemberId()).isEqualTo(memberId);
+
     }
 
     @Test
     public void testUpdateMemberInfo() {
-        Long memberId = 1L;
-        MemberRequestDto memberRequestDto = new MemberRequestDto(memberId,"닉네임 수정3", "프로필이미지 수정3","상태 메세지 수정3");
+        //given
+        Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
+        memberRepository.save(member);
+
+
+        Rating rating = new Rating(member, 11, 1);
+        ratingRepository.save(rating);
+
+        long battleDetailNum = 5;
+        for (long i = 0; i < battleDetailNum; i++) {
+            BattleDetail battleDetail = new BattleDetail(member, "True", 10L, GameResult.WIN, i);
+            battleRepository.save(battleDetail);
+        }
+
+        //given-update 할 데이터들
+        Long memberId = member.getMemberId();
+        String newNickname = "닉네임 수정테스트";
+        String newProfileImage = "프로필이미지 수정테스트";
+        String newDescription = "상태메세지 수정테스트";
+
+        //when
+        MemberRequestDto memberRequestDto = new MemberRequestDto(memberId, newNickname, newProfileImage, newDescription);
         memberService.updateByMember(memberRequestDto);
 
-        Assertions.assertThat(memberRequestDto.getNickname()).isEqualTo(memberRepository.findById(memberId).get().getNickname());
-        Assertions.assertThat(memberRequestDto.getProfileImage()).isEqualTo(memberRepository.findById(memberId).get().getProfileImage());
-        Assertions.assertThat(memberRequestDto.getDescription()).isEqualTo(memberRepository.findById(memberId).get().getDescription());
+        //then
+        Assertions.assertThat(memberRepository.findById(memberId).get().getNickname()).isEqualTo(newNickname);
+        Assertions.assertThat(memberRepository.findById(memberId).get().getProfileImage()).isEqualTo(newProfileImage);
+        Assertions.assertThat(memberRepository.findById(memberId).get().getDescription()).isEqualTo(newDescription);
     }
 
+    @Test
+    public void testBattleDetailList() {
+        //given
+        Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
+        memberRepository.save(member);
 
+        long num = 4;
+        for (long i = 0; i < num; i++) {
+            BattleDetail battleDetail = new BattleDetail(member, "True", 10L, GameResult.WIN, i);
+            battleRepository.save(battleDetail);
+        }
+
+        //when
+        Long memberId = member.getMemberId();
+        List<BattleDetailResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
+
+        //then
+        Assertions.assertThat(battleDetails.size()).isEqualTo(num);
+
+    }
 }

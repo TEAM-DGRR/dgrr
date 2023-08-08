@@ -1,28 +1,17 @@
 package live.dgrr.domain.member.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import live.dgrr.domain.game.entity.BattleDetail;
-import live.dgrr.domain.game.service.BattleDetailService;
+import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
-import live.dgrr.domain.oauth.OauthToken;
 import live.dgrr.domain.rating.entity.Rating;
 import live.dgrr.domain.rating.service.RatingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.io.*;
@@ -37,7 +26,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final RatingService ratingService;
-    private final BattleDetailService battleDetailService;
+    private final BattleService battleService;
 
     public void addMember(Member member) {
          memberRepository.save(member);
@@ -158,7 +147,7 @@ public class MemberService {
         List<Rating> ratings = ratingService.findRatingByMember(member);
 
         // BattleDetail 조회
-        List<BattleDetail> battleDetails = battleDetailService.findBattleDetailByMember(member);
+        List<BattleDetail> battleDetails = battleService.findBattleDetailByMember(member);
 
         // 조회한 정보를 MemberInfoResponseDto에 담아서 반환
         return new MemberInfoResponseDto(member, ratings, battleDetails);

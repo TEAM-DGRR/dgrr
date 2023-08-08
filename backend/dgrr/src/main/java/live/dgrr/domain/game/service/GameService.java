@@ -10,6 +10,7 @@ import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.repository.GameRepository;
+import live.dgrr.domain.image.entity.event.ImageResult;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
@@ -293,12 +294,12 @@ public class GameService {
     /**
      * 이미지 전송 로직
      */
-    public void sendImageResult(String gameSessionId) {
+    public void sendImageResult(String gameSessionId, ImageResult imageResult) {
         if(!gameRoomMap.containsKey(gameSessionId)) {
             return;
         }
         GameRoom gameRoom = gameRoomMap.get(gameSessionId);
-        template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/imgResult","a");
-        template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/imgResult", "a");
+        template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/imgResult",imageResult);
+        template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/imgResult", imageResult);
     }
 }

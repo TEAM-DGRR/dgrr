@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import "assets/scss/App.scss";
-import { Route, Routes } from "react-router-dom";
 import { Game } from "pages/GamePages/Game";
-import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
+import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { SignUp } from "pages/LoginPages/SignUp";
 import { Main } from "pages/MainPages/Main";
+import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 
 export const App = () => {
   // 모바일 뷰포트 계산
@@ -26,7 +26,7 @@ export const App = () => {
         <Route path="/signup" element={<SignUp />} />
 
         <Route path="/main" element={<Main />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/game/*" element={<Game />} />
       </Routes>
     </div>
   );

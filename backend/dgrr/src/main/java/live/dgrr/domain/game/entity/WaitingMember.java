@@ -11,7 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-@Getter @NoArgsConstructor @ToString
+@Getter
+@NoArgsConstructor
 public class WaitingMember {
 
     public WaitingMember(String principalName, Long memberId) {

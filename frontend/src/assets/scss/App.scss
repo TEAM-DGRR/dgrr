@@ -1,0 +1,17 @@
+$mainblack: #121417;
+$blue: #469FF6;
+
+:root {
+  --vh: 100%;
+}
+
+.App {
+  // 여백없이 고정
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  // 뷰포트 크기에 맞게 변경
+  width: 100vw;
+  height: calc(var(--vh, 1vh) * 100);
+}

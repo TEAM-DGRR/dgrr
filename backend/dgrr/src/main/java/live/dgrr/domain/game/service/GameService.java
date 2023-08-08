@@ -234,6 +234,10 @@ public class GameService {
         //dto 전송
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/result", memberOneResultDto);
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/result", memberTwoResultDto);
+
+        //openvidu connection 종료
+        openViduService.closeConnection(gameRoom.getGameSessionId());
+
     }
 
     /**

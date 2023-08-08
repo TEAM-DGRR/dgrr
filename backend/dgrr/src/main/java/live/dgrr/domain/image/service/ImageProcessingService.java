@@ -60,8 +60,6 @@ public class ImageProcessingService {
 
         ImageResult imageResult = new ImageResult(success, emotion, probability);
 
-        System.out.printf("@@@@@@emotion : %s, prob : %s@@@@@@\n", emotion, probability);
-
         if (success.equals("true")) {
 
             // 이미지 판정 결과가 Smile이라면 gameService 호출.
@@ -75,9 +73,6 @@ public class ImageProcessingService {
             }
         }
         gameService.sendImageResult(gameSessionId, imageResult);
-
-
-
     }
 
 

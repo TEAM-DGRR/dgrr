@@ -3,6 +3,7 @@ import blankImg from "assets/images/logo_character.svg"
 import axios from "axios";
 import "assets/scss/Signup.scss"
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 type UploadImg = {
   file: File;
@@ -13,7 +14,7 @@ type UploadImg = {
 export const SignUp = () => {
   // code 받아오기
   const location = useLocation();
-  const code = location.state?.code;
+  const id = location.state?.id;
 
   // 올린 파일 경로
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -105,6 +106,7 @@ export const SignUp = () => {
         }
   }
 
+  const navigate = useNavigate();
 
   // 회원가입
   const onSubmit = (e: FormEvent) => {
@@ -119,10 +121,18 @@ export const SignUp = () => {
       }).then((res: any) => {
         
         // code를 다시 담아서 로그인 요청
-        axios.get(
-          `${process.env.REACT_APP_API_URL}/member/kakaoCallback?code=${code}`,
+        axios.post(
+          `${process.env.REACT_APP_API_URL}/member`,
+          {
+            kakaoId: id,
+            nickname: nickname,
+            profileImg: profileImg,
+            description: description,
+          }
         ).then((res: any) => {
         console.log(res.data)
+
+        navigate("/main");
       })
       }).catch((err: any) => {
         console.log(err)

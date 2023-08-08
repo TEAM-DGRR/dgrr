@@ -11,18 +11,20 @@ export const KakaoCallback = () => {
 
         // 인가 코드 보내기
         axios.get(
-            `http://localhost:8080/member/kakaoCallback?code=${code}`,
+            `http://localhost:8080/member/kakao-callback?code=${code}`,
         )
         .then((res: any) => {
             // 없다면 회원가입 화면으로 보내기
             if (res.data.key === "signUp") {
-                navigate("/signup", { state: { code: code } })
+                navigate("/signup", { state: { id: res.data.id } })
             } else {
                 // 유저 정보가 있으면 메인으로 보내기
+                console.log(res.data);
                 navigate('/main')
             }
         })
         .catch((Error: any) => {
+            console.log("hi")
             console.log(Error)
         })
     })

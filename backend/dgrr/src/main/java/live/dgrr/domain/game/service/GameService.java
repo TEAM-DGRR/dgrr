@@ -9,6 +9,7 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
+import live.dgrr.domain.game.repository.GameRepository;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
@@ -34,6 +37,7 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
+    private final GameRepository gameRepository;
 
     //단위 : 초
     private static final int ROUND_TIME = 3;
@@ -57,23 +61,20 @@ public class GameService {
      * waitingQueue 에 삽입 or Queue 에 대기자 존재시 게임 시작.
      */
 
+
     public void handleMatchingRequest(String principalName) {
+        log.info("Matching Session Started: {}", principalName);
         Long memberId = 1L;
 
-        WaitingMember nowWaitingMember = new WaitingMember(principalName,memberId);
-        waitingQueue.offer(nowWaitingMember);
-
-        log.info("Session Started: {}", principalName);
-
-        if(waitingQueue.size() >= 2) {
-            WaitingMember waitingMemberOne = waitingQueue.poll();
-            WaitingMember waitingMemberTwo = waitingQueue.poll();
-
-            //Session 이 실제 살아있는지 확인
-
-            //game 시작
-            gameStart(waitingMemberOne, waitingMemberTwo);
+        WaitingMember nowWaitingMember = new WaitingMember(principalName, memberId);
+        WaitingMember pollWaitingMember = gameRepository.poll();
+        log.info("pollWaitingMember: {}", pollWaitingMember);
+        if(pollWaitingMember == null) {
+            gameRepository.saveQueue(nowWaitingMember);
+            return;
         }
+
+        gameStart(pollWaitingMember,nowWaitingMember);
     }
 
     /**
@@ -82,6 +83,7 @@ public class GameService {
      * Client에 시작 정보 제공, 1라운드 스타트.
      */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
+        log.info("Game Started");
         //GameRoom 생성.
         GameRoomMember roomMember1 = new GameRoomMember(memberOne.getPrincipalName(),
                 memberOne.getMemberId(), "","","", 1400, Rank.BRONZE);

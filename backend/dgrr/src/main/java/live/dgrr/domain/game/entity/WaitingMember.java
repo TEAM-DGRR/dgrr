@@ -2,12 +2,26 @@ package live.dgrr.domain.game.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.security.Principal;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Getter @AllArgsConstructor
+@Entity
+@Getter @NoArgsConstructor @ToString
 public class WaitingMember {
 
+    public WaitingMember(String principalName, Long memberId) {
+        this.principalName = principalName;
+        this.memberId = memberId;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long waitingMemberId;
     private String principalName;
     private Long memberId;
 }

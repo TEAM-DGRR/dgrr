@@ -26,14 +26,4 @@ public class ImageController {
     public void receiveAnalyzingDataFromPythonClient(@Payload String analyzingData) throws ParseException {
         imageProcessingService.parsingImageResult(analyzingData);
     }
-
-    // 세션 ID(변경 필요)를 사용하여 메세지 헤더를 생성하는 메서드
-    private MessageHeaders createHeaders(String sessionId) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-        if (sessionId != null) {
-            headerAccessor.setSessionId(sessionId);
-        }
-        headerAccessor.setLeaveMutable(true);
-        return headerAccessor.getMessageHeaders();
-    }
 }

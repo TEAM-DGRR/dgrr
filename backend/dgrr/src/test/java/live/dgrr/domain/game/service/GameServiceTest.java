@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -20,6 +21,7 @@ import java.util.concurrent.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 class GameServiceTest {
 
     private static final int ROUND_TIME = 3;
@@ -46,12 +48,59 @@ class GameServiceTest {
 
     @AfterEach
     void clear() {
-        if(stompSession1.isConnected()) {
+        if(stompSession1 != null && stompSession1.isConnected()) {
             stompSession1.disconnect();
         }
         if(stompSession2 != null && stompSession2.isConnected()) {
             stompSession2.disconnect();
         }
+    }
+
+    /**
+     * 대량의 connection이 언결되었을 때 게임 생성 다 가능한지 체크
+     */
+    @Test
+    public void bunchOfConnection() throws ExecutionException, InterruptedException, TimeoutException {
+        BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
+        CountDownLatch latch = new CountDownLatch(1);
+
+        int numberOfConnection = 20;
+
+        //Client array 생성, 초기화
+        WebSocketStompClient[] clientArr = new WebSocketStompClient[numberOfConnection];
+        for(int i = 0; i < numberOfConnection; i++) {
+            clientArr[i] = new WebSocketStompClient(new StandardWebSocketClient());
+        }
+
+        //Session Arr 생성, 초기화
+        StompSession[] sessionArr = new StompSession[numberOfConnection];
+        for(int i = 0; i < numberOfConnection; i++) {
+            sessionArr[i] = clientArr[i].connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {
+            }).get(1, TimeUnit.SECONDS);
+        }
+
+        //Subscribe
+        for(int i = 0; i < numberOfConnection; i++) {
+            sessionArr[i].subscribe("/user/recv/game", new StompFrameHandler() {
+                @Override
+                public Type getPayloadType(StompHeaders headers) {
+                    return byte[].class;
+                }
+
+                @Override
+                public void handleFrame(StompHeaders headers, Object payload) {
+                    blockingQueue.offer(new String((byte[]) payload));
+                }
+            });
+        }
+        String message = "m";
+        for(int i = 0; i < numberOfConnection; i++) {
+            sessionArr[i].send("/send/matching", message.getBytes());
+            latch.await(1,TimeUnit.SECONDS);
+        }
+
+        latch.await(4,TimeUnit.SECONDS);
+        Assertions.assertThat(blockingQueue.size()).isEqualTo(numberOfConnection);
     }
 
     /**
@@ -96,9 +145,10 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
-        latch.await(1,TimeUnit.SECONDS);
+        latch.await(2,TimeUnit.SECONDS);
         Assertions.assertThat(blockingQueue.size()).isEqualTo(2);
     }
 
@@ -144,6 +194,7 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
         latch.await(ROUND_TIME + 2,TimeUnit.SECONDS);
@@ -212,6 +263,7 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
         latch.await(1,TimeUnit.SECONDS);
@@ -277,6 +329,7 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
         latch.await(1,TimeUnit.SECONDS);
@@ -340,6 +393,7 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
         latch.await(1,TimeUnit.SECONDS);
@@ -406,6 +460,7 @@ class GameServiceTest {
         //매칭 시그널 전송.
         String confirmMessage = "sent Message";
         stompSession1.send("/send/matching", confirmMessage.getBytes());
+        latch.await(1,TimeUnit.SECONDS);
         stompSession2.send("/send/matching", confirmMessage.getBytes());
 
         latch.await(1,TimeUnit.SECONDS);

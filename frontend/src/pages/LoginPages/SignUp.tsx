@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, ChangeEvent, FormEvent } from "react"
+import { useMemo, useRef, useState, ChangeEvent, FormEvent, useEffect } from "react"
 import blankImg from "assets/images/logo_character.svg"
 import axios from "axios";
 import "assets/scss/Signup.scss"
@@ -89,6 +89,18 @@ export const SignUp = () => {
     }
 
   }
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/member/check/member-id/${id}`)
+      .then((response) => {
+        console.log("memberId: " + JSON.stringify(response.data));
+        console.log("headers: " + JSON.stringify(response.headers));
+      })
+      .catch((error) => {
+        console.error("signUp에서 member check 실패 : " + error);
+      });
+  }, );
   
   
   // 사진 업로드

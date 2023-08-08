@@ -16,11 +16,23 @@ export const KakaoCallback = () => {
         .then((res: any) => {
             // 없다면 회원가입 화면으로 보내기
             if (res.data.key === "signUp") {
+                alert("res.data + " + JSON.stringify(res.data));
                 navigate("/signup", { state: { id: res.data.id } })
             } else {
                 // 유저 정보가 있으면 메인으로 보내기
                 console.log(res.data);
-                navigate('/main')
+                axios.get(`http://localhost:8080/member/login?id=${res.data.id}`,)
+                .then((res:any) => {
+                    alert("res.data : " + JSON.stringify(res.data));
+                    alert("res.header: " + JSON.stringify(res.headers))
+                    axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.accessToken}`
+                    navigate('/main');
+                })
+                .catch((Error: any) => {
+                    console.log("hhhiii")
+                    console.log(Error)
+                })
+                // axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
             }
         })
         .catch((Error: any) => {

@@ -1,7 +1,6 @@
-.venv
-venv
-.__pycache__
-__pycache__
+.venv/
+venv/
+**/__pycache__/
 .test
 test
 

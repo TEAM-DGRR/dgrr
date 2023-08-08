@@ -1,0 +1,121 @@
+@import "App.scss";
+$grey: #505050;
+$font-family-beautiful: 'Helvetica', sans-serif; 
+$nick-name-color: #11477e; 
+$intro-color: #d4c9da; 
+
+.MatchPage {
+  background: $grey;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+
+  img {
+  max-height: 50vh;
+  }
+}
+
+.MatchedPerson1 {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+
+  img {
+    position: relative; 
+    top: 10vh; 
+    max-height: 50vh;
+  }
+
+
+  .MatchedPersonProfile {
+    position: absolute;
+    flex-direction: column;
+    top: 15vh;
+    left: 5vw;
+
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%; 
+      object-fit: cover;
+      object-position: center; 
+    }
+
+  }
+  .MatchedPersonNickName {
+    position: absolute;
+    flex-direction: column;
+    top: 30vh;
+    left: 45vw;
+    font-family: $font-family-beautiful;
+    color: $nick-name-color;
+    font-size: 18px; 
+    font-weight: bold; 
+  }
+
+  .MatchedPersonIntro {
+    position: absolute;
+    flex-direction: column;
+    top: 33vh;
+    left: 45vw;
+    font-family: $font-family-beautiful;
+    color: $intro-color;
+    font-size: 16px;
+    font-style: italic;
+    width: 200px; 
+    overflow-wrap: break-word;
+    text-align:left; 
+    }
+}
+
+.MatchedPerson2 {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+
+  img {
+    position: relative;
+    bottom: 10vh;
+    max-height: 50vh;
+  }
+  
+    .MatchedPersonProfile {
+        position: absolute;
+        flex-direction: column;
+        bottom: 15vh;
+        right: 5vw;
+
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+          }
+      }
+
+    .MatchedPersonNickName {
+      position: absolute;
+      flex-direction: column;
+      bottom: 38vh;
+      right: 45vw;
+      font-family: $font-family-beautiful;
+      color: $nick-name-color;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .MatchedPersonIntro {
+      position: absolute;
+      flex-direction: column;
+      bottom: 30vh;
+      right: 45vw;
+      font-family: $font-family-beautiful;
+      color: $intro-color;
+      font-size: 16px; 
+      font-style: italic;
+      width: 200px;
+      overflow-wrap: break-word;
+      text-align: right;
+    }
+}

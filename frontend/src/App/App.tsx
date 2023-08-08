@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect } from "react";
+import "assets/scss/App.scss";
 import { Route, Routes } from "react-router-dom";
 import { Game } from "pages/GamePages/Game";
 import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
@@ -7,6 +8,15 @@ import { SignUp } from "pages/LoginPages/SignUp";
 import { Main } from "pages/MainPages/Main";
 
 export const App = () => {
+  // 모바일 뷰포트 계산
+  function setScreenSize() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+  useEffect(() => {
+    setScreenSize();
+  });
+
   return (
     <div className="App">
       <Routes>

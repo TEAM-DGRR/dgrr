@@ -17,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -304,5 +301,4 @@ public class GameService {
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/imgResult","a");
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/imgResult", "a");
     }
-
 }

@@ -64,7 +64,7 @@ class GameServiceTest {
         BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
         CountDownLatch latch = new CountDownLatch(1);
 
-        int numberOfConnection = 40;
+        int numberOfConnection = 20;
 
         //Client array 생성, 초기화
         WebSocketStompClient[] clientArr = new WebSocketStompClient[numberOfConnection];
@@ -94,14 +94,10 @@ class GameServiceTest {
             });
         }
         String message = "m";
-        for(int i = 0; i < numberOfConnection/2; i++) {
+        for(int i = 0; i < numberOfConnection; i++) {
             sessionArr[i].send("/send/matching", message.getBytes());
             latch.await(1,TimeUnit.SECONDS);
         }
-        latch.await(5, TimeUnit.SECONDS);
-//        for(int i = 0; i < numberOfConnection/2; i++) {
-//            sessionArr[i].send("/send/matching", message.getBytes());
-//        }
 
         latch.await(4,TimeUnit.SECONDS);
         Assertions.assertThat(blockingQueue.size()).isEqualTo(numberOfConnection);

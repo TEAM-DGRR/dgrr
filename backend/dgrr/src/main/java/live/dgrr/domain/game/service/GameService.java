@@ -64,14 +64,16 @@ public class GameService {
         log.info("Matching Session Started: {}", principalName);
         Long memberId = 1L;
 
+        //신규 매칭 요청.
         WaitingMember nowWaitingMember = new WaitingMember(principalName, memberId);
+        //db에 저장되어 있던 요청
         WaitingMember pollWaitingMember = gameRepository.poll();
-        log.info("pollWaitingMember: {}", pollWaitingMember);
+        //만약 db에 저장되어 있던 요청이 없다면 신규 요청을 db에 저장하고 return
         if(pollWaitingMember == null) {
             gameRepository.saveQueue(nowWaitingMember);
             return;
         }
-
+        //db에 저장되어 있던 요청이 존재한다면 게임 시작.
         gameStart(pollWaitingMember,nowWaitingMember);
     }
 

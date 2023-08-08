@@ -5,6 +5,7 @@ import live.dgrr.domain.game.service.GameService;
 import live.dgrr.domain.image.entity.event.ImageResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -44,16 +45,15 @@ public class ImageProcessingService {
         // 4. nativeHeaders
         JSONObject nativeHeaders = (JSONObject) headers.get("nativeHeaders");
 
-        // 4. result
+        // 5. result
         JSONObject result = (JSONObject) analyzingDataJson.get("result");
 
-        // 5. sccuess, sessionId, gameSessionId, round
+        // 6. sccuess, round, gameSessionId
         String success = (String) result.get("success");
-//        String sessionId = (String) headers.get("simpSessionId");
         String round = (String) headers.get("round");
-        String gameSessionId = ((String) ((org.json.simple.JSONArray) nativeHeaders.get("gameSessionId")).get(0));
+        String gameSessionId = ((String) ((JSONArray) nativeHeaders.get("gameSessionId")).get(0));
 
-        // 6. emotion, probability
+        // 7. emotion, probability
         String emotion = (String) result.get("emotion");
         double probability = (double) result.get("probability");
         probability = Math.round(probability * 100) / 100.0;

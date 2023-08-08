@@ -1,14 +1,129 @@
+@import 'App.scss';
+
 .MyProfile {
-  margin: 0 24px;
+	width: 100%;
+	height: 100%;
 }
 
+.MarginFrame {
+	margin: 10px;
+}
 
 .navbar {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.navbar-left {
+	display: flex;
+	align-items: center;
+
+	span {
+		margin: 8px;
+		font-weight: bold;
+	}
 }
 
 .profileBody {
-  display: flex;
+	display: flex;
+	justify-content: space-evenly;
+	margin: 20px 0;
+	.profileImage {
+		width: 150px;
+		border-radius: 50%;
+		overflow: hidden;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	.profileInfo {
+		margin: 0 30px;
+		width: 200px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		.nickname {
+			font-weight: bold;
+			margin: 10px 0;
+		}
+		.description {
+			font-size: small;
+			margin: 10px 0;
+		}
+	}
+}
+
+.tier {
+	margin: 20px 0;
+	span {
+		font-weight: bold;
+	}
+	.tierImage {
+		width: 150px;
+		margin: 0 auto;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 10px;
+	}
+
+	.progress-bar__container {
+		width: 80%;
+		height: 2rem;
+		border-radius: 2rem;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.5s;
+		will-change: transform;
+		box-shadow: 0 0 5px #feca39;
+	}
+
+	.progress-bar {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		content: '';
+		background-color: #feca39;
+		top: 0;
+		bottom: 0;
+		left: -100%;
+		border-radius: inherit;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+		font-family: sans-serif;
+	}
+
+	.progress-bar__text {
+		display: none;
+	}
+}
+
+.record {
+	margin: 20px 0;
+	.recordTitle {
+		.recentlyBattle {
+			font-weight: bold;
+		}
+	}
+
+	.divisionLine {
+		border-top: 1px solid #444444;
+		margin: 10px 0px;
+	}
 }

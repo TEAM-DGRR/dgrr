@@ -8,11 +8,13 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
     # 얼굴 검출을 수행
     faces = face_cascade.detectMultiScale(gray_image, 1.3, 5)
 
+    print("faces = ", faces)
     for x, y, w, h in faces:
         # 얼굴 영역을 추출하고 사이즈를 조정합니다.
         roi_gray = gray_image[y : y + h, x : x + w]
         roi_gray = cv2.resize(roi_gray, (64, 64), interpolation=cv2.INTER_AREA)
         # 이미지를 정규화
+
         roi_gray = roi_gray / 255.0
         # Keras 모델에 입력하기 위해 차원을 확장
         roi_gray = np.expand_dims(roi_gray, axis=0)
@@ -22,7 +24,9 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
         probabilities = prediction[0]
 
         # 각각의 감정에 대한 확률을 딕셔너리로 생성
-        labeled_probabilities = dict(zip(emotions, probabilities.tolist()))
+        labeled_probabilities = {
+            emotion: float(prob) for emotion, prob in zip(emotions, probabilities)
+        }
 
         # 가장 높은 확률을 가진 감정을 결정
         max_index = np.argmax(probabilities)
@@ -33,11 +37,10 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
             "success": "true",
             "emotion": emotion,
             "probability": emotion_prob,
-            "allProbability": labeled_probabilities,
         }
 
     return {
         "success": "false",
         "emotion": "Not Detected",
-        "probability": -1,
+        "probability": -1.0,
     }

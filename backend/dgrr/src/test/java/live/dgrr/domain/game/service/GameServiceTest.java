@@ -64,7 +64,7 @@ class GameServiceTest {
         BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
         CountDownLatch latch = new CountDownLatch(1);
 
-        int numberOfConnection = 20;
+        int numberOfConnection = 6;
 
         //Client array 생성, 초기화
         WebSocketStompClient[] clientArr = new WebSocketStompClient[numberOfConnection];

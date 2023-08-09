@@ -1,5 +1,7 @@
 package live.dgrr.domain.member.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import live.dgrr.domain.battle.entity.BattleDetail;
@@ -10,7 +12,9 @@ import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.rating.entity.Rating;
 import live.dgrr.domain.rating.service.RatingService;
+import live.dgrr.global.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,16 +33,26 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RatingService ratingService;
     private final BattleService battleService;
+    @Value("${jwt.secret}")
+    private String SECRET;
 
-    public void addMember(Member member) {
+    public Member addMember(Member member) {
          memberRepository.save(member);
+         return member;
+    }
+
+    public String createToken(Member member) {
+        String token = JWT.create()
+                .withSubject(member.getKakaoId())
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
+                .withClaim("id", member.getMemberId())
+                .sign(Algorithm.HMAC512(SECRET));
+        return token;
     }
 
     public String getKakaoAccessToken(String code) {
         String access_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
-
-        System.out.println("code: " + code);
 
         try {
             URL url = new URL(reqURL);
@@ -57,8 +72,8 @@ public class MemberService {
             bw.flush();
 
             // 결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-            System.out.println("response Code: " + responseCode);
+//            int responseCode = conn.getResponseCode();
+//            System.out.println("response Code: " + responseCode);
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -73,16 +88,15 @@ public class MemberService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result.toString());
 
-            System.out.println("access_token: " + access_Token);
-            System.out.println("result: " + result);
+//            System.out.println("access_token: " + access_Token);
+//            System.out.println("result: " + result);
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             br.close();
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println(":::\nmemberService: " + e.getMessage());
-            System.out.println(e.toString());
+//            System.out.println(":::\nmemberService: " + e.getMessage());
         }
 
         return access_Token;
@@ -93,7 +107,7 @@ public class MemberService {
         String id = "";
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
-        System.out.println("token: " + token);
+//        System.out.println("token: " + token);
 
         //access_token을 이용하여 사용자 정보 조회
         try {
@@ -118,13 +132,19 @@ public class MemberService {
 
             id = element.getAsJsonObject().get("id").getAsString();
 
-            System.out.println("id: " + id);
+//            System.out.println("id: " + id);
             br.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public Long getIdFromToken(String token) {
+        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
+                .getClaim("id").asLong();
+        return memberId;
     }
 
     public Member getMemberByKakaoId(String id) {

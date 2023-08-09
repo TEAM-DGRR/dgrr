@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/dgrr
     username: root
-    password: root
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
@@ -13,3 +13,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: ${JWT_SECRETKEY}

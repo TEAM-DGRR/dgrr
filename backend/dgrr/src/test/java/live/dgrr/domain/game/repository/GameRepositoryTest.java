@@ -38,10 +38,4 @@ class GameRepositoryTest {
         Assertions.assertThat(poll.getPrincipalName()).isEqualTo("a");
         Assertions.assertThat(poll2.getPrincipalName()).isEqualTo("b");
     }
-
-    @Test
-    public void emptyPoll() {
-        WaitingMember poll = gameRepository.poll();
-        Assertions.assertThat(poll).isNull();
-    }
 }

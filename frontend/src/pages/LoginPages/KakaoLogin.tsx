@@ -1,5 +1,5 @@
 import kakaoImg from 'assets/images/kakao_login_large_wide.png'
-import logo from 'assets/images/logo.svg'
+import logo from 'assets/images/logo.png'
 import "assets/scss/Login.scss"
 
 export const KakaoLogin = () => {

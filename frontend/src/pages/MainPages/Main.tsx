@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import personIco from "assets/images/ico_person_24px.svg"
 import menuIco from "assets/images/ico_menu_24px.svg"
-import character from "assets/images/logo_character.svg"
+import character from "assets/images/logo_character.png"
 import title from "assets/images/logo_title.png"
 import "assets/scss/Main.scss"
 import { Button } from "components/Game/Elements/Button/BasicButton"

@@ -1,21 +1,10 @@
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import personIco from "assets/images/ico_person_24px.svg";
 import menuIco from "assets/images/ico_menu_24px.svg";
-import character from "assets/images/logo_character.svg";
+import character from "assets/images/logo_character.png";
 import title from "assets/images/logo_title.png";
 import "assets/scss/Main.scss";
-import { Button } from "components/Elements/Button/BasicButton";
-=======
-import { useNavigate } from "react-router-dom"
-import personIco from "assets/images/ico_person_24px.svg"
-import menuIco from "assets/images/ico_menu_24px.svg"
-import character from "assets/images/logo_character.png"
-import title from "assets/images/logo_title.png"
-import "assets/scss/Main.scss"
-import { Button } from "components/Game/Elements/Button/BasicButton"
-
->>>>>>> 2aeb64ebcaf3ce26a79de47bc71c393a6ff2af7b
+import { Button } from "components/Game/Elements/Button/BasicButton";
 
 export const Main = () => {
   const navigate = useNavigate();

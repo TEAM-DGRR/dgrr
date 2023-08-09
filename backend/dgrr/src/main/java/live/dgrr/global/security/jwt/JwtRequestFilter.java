@@ -35,12 +35,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //            System.out.println("aaa " + s);
 //        }
         String jwtHeader = (request).getHeader(JwtProperties.HEADER_STRING);
-        System.out.println("JwtRequestFilter 진입");
-        System.out.println("SECRET: " + SECRET);
         // header 가 정상적인 형식인지 확인
         if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            System.out.println("::: jwtHeader가 없거나 token prefix로 시작하지 않음");
-//            System.out.println("jwtHeader: " + jwtHeader);
             filterChain.doFilter(request, response);
             return;
         }

@@ -54,8 +54,6 @@ public class MemberService {
         String access_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
-        System.out.println("code: " + code);
-
         try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -74,8 +72,8 @@ public class MemberService {
             bw.flush();
 
             // 결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-            System.out.println("response Code: " + responseCode);
+//            int responseCode = conn.getResponseCode();
+//            System.out.println("response Code: " + responseCode);
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -90,16 +88,15 @@ public class MemberService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result.toString());
 
-            System.out.println("access_token: " + access_Token);
-            System.out.println("result: " + result);
+//            System.out.println("access_token: " + access_Token);
+//            System.out.println("result: " + result);
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             br.close();
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println(":::\nmemberService: " + e.getMessage());
-            System.out.println(e.toString());
+//            System.out.println(":::\nmemberService: " + e.getMessage());
         }
 
         return access_Token;
@@ -110,7 +107,7 @@ public class MemberService {
         String id = "";
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
-        System.out.println("token: " + token);
+//        System.out.println("token: " + token);
 
         //access_token을 이용하여 사용자 정보 조회
         try {
@@ -135,7 +132,7 @@ public class MemberService {
 
             id = element.getAsJsonObject().get("id").getAsString();
 
-            System.out.println("id: " + id);
+//            System.out.println("id: " + id);
             br.close();
 
         } catch (IOException e) {

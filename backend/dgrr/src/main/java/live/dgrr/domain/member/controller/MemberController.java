@@ -1,7 +1,10 @@
 package live.dgrr.domain.member.controller;
 
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
+import live.dgrr.domain.member.dto.response.KakaoLoginResponseDto;
+import live.dgrr.domain.member.dto.response.LoginResponseDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
+import live.dgrr.domain.member.dto.response.NicknameCheckResponseDto;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.global.security.jwt.JwtProperties;
@@ -11,9 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/member")
@@ -24,23 +24,18 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/kakao-callback")
-    public ResponseEntity<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+    public ResponseEntity<?> kakaoLogin(@RequestParam String code) {
         String responses;
         String token = memberService.getKakaoAccessToken(code);
         String id = memberService.createKakaoMember(token);
         Member member = memberService.getMemberByKakaoId(id);
-        HashMap<String, Object> map = new HashMap<>();
+        KakaoLoginResponseDto response;
         if(member == null) { // 멤버가 없으면 회원가입
-            responses = "signUp";
-            map.put("key", responses);
-            map.put("id", id);
-            return new ResponseEntity<>(map, HttpStatus.OK);
+            response = new KakaoLoginResponseDto("signUp", id, null);
         }else { // 멤버가 있다면 로그인
-            responses = "login";
-            map.put("key", responses);
-            map.put("member", member);
-            return new ResponseEntity<>(map, HttpStatus.OK);
+            response = new KakaoLoginResponseDto("login", null, member);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping({"/", ""})
@@ -52,10 +47,8 @@ public class MemberController {
     @GetMapping("/login")
     public ResponseEntity login(@RequestParam("kakaoId") String kakaoId) {
         String token = memberService.createToken(memberService.getMemberByKakaoId(kakaoId));
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", JwtProperties.TOKEN_PREFIX + token);
-        map.put("member", memberService.getMemberByKakaoId(kakaoId));
-        return new ResponseEntity(map, HttpStatus.OK);
+        LoginResponseDto response = new LoginResponseDto(JwtProperties.TOKEN_PREFIX + token, memberService.getMemberByKakaoId(kakaoId));
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     // member 확인 kakao id로
@@ -68,7 +61,7 @@ public class MemberController {
     // nickname 중복 처리
     @GetMapping("/nickname-check")
     public ResponseEntity<?> searchMemberByNickname(@RequestParam(value="nickname") String nickname) {
-        Map<String, String> result = new HashMap<>();
+        NicknameCheckResponseDto response;
         String nicknameExists;
         String message;
         boolean isThereNickname = memberService.findMemberByNickname(nickname);
@@ -78,9 +71,8 @@ public class MemberController {
             message = "NICKNAME '" + nickname + "' ALREADY EXISTS";
             nicknameExists = "true";
         }
-        result.put("nicknameExists", nicknameExists);
-        result.put("message", message);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        response = new NicknameCheckResponseDto(nicknameExists, message);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //mypage

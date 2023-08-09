@@ -1,17 +1,55 @@
 import arrowleft from 'assets/images/ico_arrow-left_24px.svg';
 import editImg from 'assets/images/ico_edit_24px.svg';
-import personImg from 'assets/images/ico_person_24px.svg';
 import profileImg from 'assets/images/peeps-avatar.png';
 import tierGold from 'assets/images/tier_gold.png';
+import winImg from 'assets/images/result_win.svg';
+import loseImg from 'assets/images/result_lose.svg';
+import drawImg from 'assets/images/result_draw.svg';
+import questionImg from 'assets/images/question.svg';
 import 'assets/scss/Profile.scss';
 import { useNavigate } from 'react-router';
 import gsap from 'gsap';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import TierInfoModal from 'components/Game/Elements/TierInfoModal'; // 모달 컴포넌트 임포트
 
 export const MyProfile = () => {
 	const navigate = useNavigate();
 	// 회원정보 받아오기 나중에 추가예정
 
+	//modal
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const openModal = () => {
+		setIsModalOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsModalOpen(false);
+	};
+
+	//battleDetailList
+	const battleDetailList = [
+		{
+			result: 'WIN',
+			profileImage: 'path_to_profile_image_1.jpg',
+			nickname: '미정미정',
+			date: '2023-08-09',
+		},
+		{
+			result: 'DRAW',
+			profileImage: 'path_to_profile_image_2.jpg',
+			nickname: '웃어웃으라고',
+			date: '2023-08-08',
+		},
+		{
+			result: 'LOSE',
+			profileImage: 'path_to_profile_image_2.jpg',
+			nickname: '마라탕 0단계먹는 명하',
+			date: '2023-08-08',
+		},
+		// ...
+	];
+
+	//progressBar
 	const progressBarContainerRef = useRef(null);
 	const progressBarRef = useRef(null);
 	const progressBarTextRef = useRef(null);
@@ -45,6 +83,7 @@ export const MyProfile = () => {
 
 	return (
 		<div className='MyProfile'>
+			<TierInfoModal isOpen={isModalOpen} closeModal={closeModal} />
 			<div className='MarginFrame'>
 				<div className='navbar'>
 					<div className='navbar-left'>
@@ -75,6 +114,9 @@ export const MyProfile = () => {
 
 				<div className='tier'>
 					<span>내 티어</span>
+					<div className='tierInfo'>
+						<img src={questionImg} alt='티어 정보 보기' onClick={openModal} />
+					</div>
 					<div className='tierImage'>
 						<img src={tierGold} alt='티어 예시' />
 					</div>
@@ -97,7 +139,35 @@ export const MyProfile = () => {
 						<span className='moreBattle'>더보기+</span>
 					</div>
 					<div className='divisionLine'></div>
-					<div>list</div>
+					<div className='recordList'>
+						<ul className='list_ul'>
+							{battleDetailList.map((item, index) => (
+								<li key={index} className='battle-item'>
+									<div className='battle-result'>
+										<div className='result-left'>
+											<img
+												className='result-image'
+												src={
+													item.result === 'WIN'
+														? winImg
+														: item.result === 'LOSE'
+														? loseImg
+														: drawImg
+												}
+												alt='승리 이미지'
+											/>
+											<img className='profile-image' src={profileImg} alt='프로필 이미지' />
+											<span className='nickname'>{item.nickname}</span>
+										</div>
+
+										<div className='result-right'>
+											<span className='date'>{item.date}</span>
+										</div>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -5,6 +5,27 @@
 	height: 100%;
 }
 
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background-color: white;
+	width: 70%;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .MarginFrame {
 	margin: 10px;
 }
@@ -60,9 +81,14 @@
 }
 
 .tier {
-	margin: 20px 0;
+	margin: 40px 0;
 	span {
 		font-weight: bold;
+	}
+	.tierInfo {
+		width: 20px;
+		position: absolute;
+		right: 20px;
 	}
 	.tierImage {
 		width: 150px;
@@ -115,15 +141,55 @@
 }
 
 .record {
-	margin: 20px 0;
+	margin: 40px 0;
 	.recordTitle {
+		display: flex;
+		justify-content: space-between;
 		.recentlyBattle {
 			font-weight: bold;
+		}
+		.moreBattle {
+			font-size: small;
+			align-self: center;
 		}
 	}
 
 	.divisionLine {
 		border-top: 1px solid #444444;
-		margin: 10px 0px;
+		margin: 10px 0;
+	}
+
+	.recordList {
+		.list_ul {
+			.battle-item {
+				.battle-result {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					.result-left {
+						display: flex;
+						align-items: center;
+						.result-image {
+							margin: 3px;
+						}
+						.profile-image {
+							width: 24px;
+							border-radius: 50%;
+							margin: 3px;
+						}
+						.nickname {
+							margin: 3px;
+							font-size: small;
+						}
+					}
+					.result-right {
+						.date {
+							font-size: small;
+							margin: 3px;
+						}
+					}
+				}
+			}
+		}
 	}
 }

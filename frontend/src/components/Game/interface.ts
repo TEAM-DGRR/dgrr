@@ -22,12 +22,14 @@ export interface IMemberInfo {
 }
 
 export interface IImageResult {
-  detected: boolean;
-  laugh: number;
+  success: boolean;
+  emotion: string;
+  probability: string;
+  allProbability?: string;
 }
 
 export interface IGameStatus {
-  status: "READY" | "FIRST_ROUND" | "SECOND_ROUND";
+  status: "round changed";
   result: "LAUGH" | "HOLD_BACK";
   startTime: string;
 }

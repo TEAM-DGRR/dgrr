@@ -59,4 +59,15 @@ public class OpenViduService {
         }
         return connection.getToken();
     }
+
+    public void closeConnection(String sessionId) {
+        Session session = openvidu.getActiveSession(sessionId);
+        try {
+            session.close();
+        } catch (OpenViduJavaClientException e) {
+            throw new RuntimeException(e);
+        } catch (OpenViduHttpException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

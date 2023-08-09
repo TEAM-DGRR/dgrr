@@ -5,16 +5,26 @@ import character from "assets/images/logo_character.svg"
 import title from "assets/images/logo_title.png"
 import "assets/scss/Main.scss"
 import { Button } from "components/Game/Elements/Button/BasicButton"
-
+import axios from "axios"
 
 export const Main = () => {
   const navigate = useNavigate();
+
+  const onClick = () => {
+    axios.get(`${process.env.REACT_APP_API_URL}/member/member-id`)
+    .then((res: any) => {
+      alert("::: " + JSON.stringify(res.data));
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+  }
 
 
   return (
     <div className="MainPage">
       <div className="MainNav">
-        <img src={menuIco} alt="메뉴 아이콘" />
+        <img src={menuIco} onClick={onClick} alt="메뉴 아이콘" />
         <img src={personIco} alt="프로필 아이콘" onClick={()=>{navigate('/profile')}} />
       </div>
       <div className="MainBody">

@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, ChangeEvent, FormEvent, useEffect } from "react"
 import blankImg from "assets/images/logo_character.svg"
 import axios from "axios";
-import "assets/scss/Signup.scss"
+// import "assets/scss/Signup.scss"
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 

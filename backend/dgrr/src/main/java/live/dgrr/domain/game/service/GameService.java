@@ -9,13 +9,15 @@ import live.dgrr.domain.game.entity.WaitingMember;
 import live.dgrr.domain.game.entity.enums.GameResult;
 import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
+import live.dgrr.domain.game.repository.GameRepository;
+import live.dgrr.domain.image.entity.event.ImageResult;
 import live.dgrr.domain.openvidu.service.OpenViduService;
+import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -33,9 +35,15 @@ public class GameService {
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
+    private final GameRepository gameRepository;
 
     //단위 : 초
     private static final int ROUND_TIME = 3;
+
+    //보상
+    private static final int WIN_REWARD = 20;
+    private static final int DRAW_REWARD = 5;
+    private static final int LOSE_REWARD = 0;
 
     /**
     Bean 생성시, map 과 queue 초기화.
@@ -51,24 +59,22 @@ public class GameService {
      * waitingQueue 에 삽입 or Queue 에 대기자 존재시 게임 시작.
      */
 
+
     public void handleMatchingRequest(String principalName) {
+        log.info("Matching Session Started: {}", principalName);
         Long memberId = 1L;
 
-        WaitingMember nowWaitingMember = new WaitingMember(principalName,memberId);
-        waitingQueue.offer(nowWaitingMember);
-
-        log.info("Session Started: {}", principalName);
-
-        if(waitingQueue.size() >= 2) {
-            WaitingMember waitingMemberOne = waitingQueue.poll();
-            WaitingMember waitingMemberTwo = waitingQueue.poll();
-
-            //Session 이 실제 살아있는지 확인
-
-            //game 시작
-            gameStart(waitingMemberOne, waitingMemberTwo);
+        //신규 매칭 요청.
+        WaitingMember nowWaitingMember = new WaitingMember(principalName, memberId);
+        //db에 저장되어 있던 요청
+        WaitingMember pollWaitingMember = gameRepository.poll();
+        //만약 db에 저장되어 있던 요청이 없다면 신규 요청을 db에 저장하고 return
+        if(pollWaitingMember == null) {
+            gameRepository.saveQueue(nowWaitingMember);
+            return;
         }
-
+        //db에 저장되어 있던 요청이 존재한다면 게임 시작.
+        gameStart(pollWaitingMember,nowWaitingMember);
     }
 
     /**
@@ -77,11 +83,12 @@ public class GameService {
      * Client에 시작 정보 제공, 1라운드 스타트.
      */
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
+        log.info("Game Started");
         //GameRoom 생성.
         GameRoomMember roomMember1 = new GameRoomMember(memberOne.getPrincipalName(),
-                memberOne.getMemberId(), "","","", 0, Rank.BRONZE);
+                memberOne.getMemberId(), "","","", 1400, Rank.BRONZE);
         GameRoomMember roomMember2 = new GameRoomMember(memberTwo.getPrincipalName(),
-                memberTwo.getMemberId(), "","","", 0, Rank.BRONZE);
+                memberTwo.getMemberId(), "","","", 1400, Rank.BRONZE);
 
         //GameSessionId 생성
         String gameSessionId = UUID.randomUUID().toString();
@@ -199,20 +206,32 @@ public class GameService {
      * 게임 결과 처리후, 각 유저에게 결과내용 전송하는 메소드
      */
     private void processGameResult(GameRoom gameRoom) {
+        //라운드별 진행 시간
         long firstRoundTime = Duration.between(gameRoom.getFirstRoundStartTime(), gameRoom.getFirstRoundEndTime()).toMillis();
         long secondRoundTime = Duration.between(gameRoom.getSecondRoundStartTime(), gameRoom.getSecondRoundEndTime()).toMillis();
 
         log.info("firstRoundTime: {}", firstRoundTime);
         log.info("secondRoundTime: {}", secondRoundTime);
 
+        //멤버들 게임 결과 판정
         GameResult resultForMemberOne = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime,true);
         GameResult resultForMemberTwo = judgeGameResult(gameRoom, firstRoundTime, secondRoundTime, false);
 
-        GameResultResponseDto memberOneResultDto = new GameResultResponseDto(gameRoom.getMemberOne(), gameRoom.getMemberTwo(),
-                firstRoundTime, secondRoundTime, resultForMemberOne, 20, Rank.BRONZE);
-        GameResultResponseDto memberTwoResultDto = new GameResultResponseDto(gameRoom.getMemberTwo(), gameRoom.getMemberOne(),
-                firstRoundTime, secondRoundTime, resultForMemberTwo, 20, Rank.BRONZE);
+        //결과에 따른 reward 확인
+        int memberOneReward = reward(resultForMemberOne);
+        int memberTwoReward = reward(resultForMemberTwo);
 
+        //Reward 이후 rank 변경사항.
+        Rank memberOneAfterRank = DgrrUtils.rankCalculator(gameRoom.getMemberOne().getRating() + memberOneReward);
+        Rank memberTwoAfterRank = DgrrUtils.rankCalculator(gameRoom.getMemberTwo().getRating() + memberTwoReward);
+
+        //게임 결과 반환하는 DTO 생성
+        GameResultResponseDto memberOneResultDto = new GameResultResponseDto(gameRoom.getMemberOne(), gameRoom.getMemberTwo(),
+                firstRoundTime, secondRoundTime, resultForMemberOne, memberOneReward, memberOneAfterRank);
+        GameResultResponseDto memberTwoResultDto = new GameResultResponseDto(gameRoom.getMemberTwo(), gameRoom.getMemberOne(),
+                firstRoundTime, secondRoundTime, resultForMemberTwo, memberTwoReward, memberTwoAfterRank);
+
+        //dto 전송
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/result", memberOneResultDto);
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/result", memberTwoResultDto);
     }
@@ -261,4 +280,28 @@ public class GameService {
         return GameResult.INVALID;
     }
 
+    /**
+     * 게임 Reward 반환하는 로직
+     */
+    private int reward(GameResult result) {
+        if(result == GameResult.WIN) {
+            return WIN_REWARD;
+        }
+        if(result == GameResult.DRAW) {
+            return DRAW_REWARD;
+        }
+        return LOSE_REWARD;
+    }
+
+    /**
+     * 이미지 전송 로직
+     */
+    public void sendImageResult(String gameSessionId, ImageResult imageResult) {
+        if(!gameRoomMap.containsKey(gameSessionId)) {
+            return;
+        }
+        GameRoom gameRoom = gameRoomMap.get(gameSessionId);
+        template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/imgResult",imageResult);
+        template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/imgResult", imageResult);
+    }
 }

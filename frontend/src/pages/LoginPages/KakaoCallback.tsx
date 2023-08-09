@@ -14,7 +14,7 @@ export const KakaoCallback = () => {
         // }
         // 인가 코드 보내기
         axios.get(
-            `http://localhost:8080/member/kakao-callback?code=${code}`,
+            `${process.env.REACT_APP_API_URL}/member/kakao-callback?code=${code}`,
         )
         .then((res: any) => {
             console.log("res: " + JSON.stringify(res.data))

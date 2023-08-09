@@ -20,7 +20,7 @@ export const NicknameCheck = () => {
     e.preventDefault();
     const nickname = NicknameValue
 
-    axios.get(`http://localhost:8080/member/nickname-check?nickname=${nickname}`,)
+    axios.get(`${process.env.REACT_APP_API_URL}/member/nickname-check?nickname=${nickname}`,)
       .then((res: any) => {
         // true면 다른 닉네임하라고 알려주기
         if (res.data.nicknameExits === true) {

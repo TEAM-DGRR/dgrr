@@ -62,7 +62,7 @@ export const SignUp = () => {
     const regex = /^[a-zA-Z가-힣0-9]*$/;
     if (nickname.length >= 2 && regex.test(nickname)) {
       // 닉네임 보내서 중복인지 확인하기
-      axios.get(`http://localhost:8080/member/nickname-check?nickname=${nickname}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/member/nickname-check?nickname=${nickname}`)
       .then((res: any) => {
         // 없다면 사용 가능하다고 알려주고 중복검사 state 변경해주기
         if (res.data.nicknameExists === 'false') {

@@ -2,10 +2,6 @@ $mainblack: #121417;
 $blue: #469FF6;
 $grey: #505050;
 
-:root {
-  --vh: 100%;
-}
-
 .App {
   // 여백없이 고정
   position: absolute;
@@ -16,3 +12,18 @@ $grey: #505050;
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+

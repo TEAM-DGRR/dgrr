@@ -3,6 +3,10 @@ import blankImg from "assets/images/logo_character.png";
 import axios from "axios";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
+import photoUpload from "assets/images/ico_photo.png";
+import "assets/scss/Signup.scss";
+import { Input } from "components/Elements/Form/Input";
+
 
 type UploadImg = {
   file: File;
@@ -46,7 +50,7 @@ export const SignUp = () => {
     setCheckbtn('중복확인')
   }
   // 상태메시지 변경상태 받기
-  const onChangeDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeDescription = (e: ChangeEvent<HTMLInputElement>) => {
     setDescription(e.target.value)
   }
 
@@ -154,39 +158,64 @@ export const SignUp = () => {
   // 프로필 이미지 미리보기 부분
   const ShowImg = useMemo(() => {
     if (!profileImg && profileImg == null) {
-      return <img src={blankImg} alt="기본 이미지" />;
+      return <img src={blankImg} alt="기본 이미지" id="ex-profile" />;
     }
-    return <img src={profileImg.thumbnail} alt={profileImg.type} onClick={fileInput} />;
+    return <img src={profileImg.thumbnail} alt={profileImg.type} onClick={fileInput} id="ex-profile" />;
   }, [profileImg]);
 
   return (
     <div className="SignUp">
-      <p>데구르르에 오신 것을 환영합니다.</p>
-
-      {/* 이미지 미리보기 */}
-      {ShowImg}
+      <div className="signup-title">
+        <p>데구르르에 오신 것을 환영합니다.</p>
+      </div>
 
       <form onSubmit={onSubmit} className="signupForm">
         <label id="profileImg-label">
-          <label htmlFor="profileImg">프로필 이미지 업로드</label><br/>
-          <input hidden id="profileImg" type="file" accept="image/*" ref={fileInputRef} onChange={uploadImg} />
+          {/* 이미지 미리보기 */}
+          {ShowImg}
+
+          <label htmlFor="profileImg">
+            <img src={photoUpload} id="photo-upload" alt="업로드버튼" />
+          </label>
+          <br />
+
+          <input
+            id="profileImg"
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={uploadImg}
+          />
         </label>
         <label id="nickname-label">
           <div>
-            <span>닉네임 </span>
-            <span>한글/영어/숫자 최소 2자~ 최대 12자 가능</span>
+            <span>닉네임 * </span>
+            <span style={{ color: "grey" }}>
+              한글/영어/숫자 최소 2자~ 최대 12자 가능
+            </span>
           </div>
-          <input type="text" id="nickname" name="nickname" value={nickname} onChange={onChangeNickname} />
-          <div>
-            <span style={{ visibility: see ? 'visible' : 'hidden', color: 'red' }}>{checkstate}</span>
-            <button onClick={nicknameCheck}>{checkbtn}</button><br/>
+          <div className="input-container">
+            <Input width={240} onChange={onChangeNickname} placeholder={'닉네임을 입력해주세요'} />
+            <button id="nicknamebtn" onClick={nicknameCheck}>
+              {checkbtn}
+            </button>
+          </div>
+          <div className="check-state">
+            <span
+              style={{ visibility: see ? "visible" : "hidden", color: "red" }}
+            >
+              {checkstate}
+            </span>
+            <br />
           </div>
         </label>
         <label id="description-label">
           <span>상태 메세지</span>
-          <textarea id="description" name="description" value={description} onChange={onChangeDescription} />
+          <Input width={320} onChange={onChangeDescription} placeholder={'상태메세지를 입력해주세요'} />
         </label>
-        <button type="submit">회원가입하고 시작하기</button>
+        <button id="signupbtn" type="submit">
+          회원가입하고 시작하기
+        </button>
       </form>
     </div>
   );

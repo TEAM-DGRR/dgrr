@@ -35,10 +35,10 @@ export const joinSession = async (token: string, myUserName: string) => {
   const OV = new OpenVidu();
   const session = OV.initSession();
 
-  let subscriber: Subscriber | undefined = undefined;
-  session.on("streamCreated", (event) => {
-    subscriber = session.subscribe(event.stream, undefined);
-  });
+  // let subscriber: Subscriber | undefined = undefined;
+  // session.on("streamCreated", (event) => {
+  //   subscriber = session.subscribe(event.stream, undefined);
+  // });
 
   session.on("exception", (exception) => {
     console.warn(exception);
@@ -61,5 +61,5 @@ export const joinSession = async (token: string, myUserName: string) => {
     (device) => device.deviceId === currentVideoDeviceId
   );
 
-  return { session, publisher, subscriber, currentVideoDevice };
+  return { session, publisher, currentVideoDevice };
 };

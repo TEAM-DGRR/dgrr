@@ -1,5 +1,7 @@
 package live.dgrr.domain.member.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import live.dgrr.domain.battle.entity.BattleDetail;
@@ -10,7 +12,9 @@ import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.rating.entity.Rating;
 import live.dgrr.domain.rating.service.RatingService;
+import live.dgrr.global.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +33,21 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RatingService ratingService;
     private final BattleService battleService;
+    @Value("${jwt.secret}")
+    private String SECRET;
 
-    public void addMember(Member member) {
+    public Member addMember(Member member) {
          memberRepository.save(member);
+         return member;
+    }
+
+    public String createToken(Member member) {
+        String token = JWT.create()
+                .withSubject(member.getKakaoId())
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
+                .withClaim("id", member.getMemberId())
+                .sign(Algorithm.HMAC512(SECRET));
+        return token;
     }
 
     public String getKakaoAccessToken(String code) {
@@ -125,6 +142,12 @@ public class MemberService {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public Long getIdFromToken(String token) {
+        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
+                .getClaim("id").asLong();
+        return memberId;
     }
 
     public Member getMemberByKakaoId(String id) {

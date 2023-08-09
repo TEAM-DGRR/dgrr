@@ -1,0 +1,10 @@
+.signupForm {
+  label {
+    display: flex;
+    flex-direction: column
+  }
+
+  label > * {
+    width: auto;
+  }
+}

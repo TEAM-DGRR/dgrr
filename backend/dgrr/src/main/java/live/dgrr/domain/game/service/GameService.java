@@ -38,7 +38,7 @@ public class GameService {
     private final GameRepository gameRepository;
 
     //단위 : 초
-    private static final int ROUND_TIME = 3;
+    private static final int ROUND_TIME = 20;
 
     //보상
     private static final int WIN_REWARD = 20;

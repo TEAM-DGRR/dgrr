@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { GameLoading } from "./GameLoading";
 import { GamePlay } from "./GamePlay";
 import { IGameConfig } from "components/Game";
-import { GameMatch } from "./GameMatch";
+// import { GameMatch } from "./GameMatch";
 
 export interface IGamePlayProps {
   stompClient: Client | undefined;
@@ -51,7 +51,7 @@ export const Game = () => {
           path="/play"
           element={<GamePlay stompClient={stompClient} gameConfig={gameConfig} isStompConnected />}
         />
-        <Route path="/match" element={<GameMatch/>}></Route>
+        {/* <Route path="/match" element={<GameMatch/>}></Route> */}
       </Routes>
     </div>
   );

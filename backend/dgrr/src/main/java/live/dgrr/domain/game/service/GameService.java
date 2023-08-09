@@ -38,7 +38,7 @@ public class GameService {
     private final GameRepository gameRepository;
 
     //단위 : 초
-    private static final int ROUND_TIME = 3;
+    private static final int ROUND_TIME = 20;
 
     //보상
     private static final int WIN_REWARD = 20;
@@ -234,6 +234,10 @@ public class GameService {
         //dto 전송
         template.convertAndSendToUser(gameRoom.getMemberOne().getPrincipalName(), "/recv/result", memberOneResultDto);
         template.convertAndSendToUser(gameRoom.getMemberTwo().getPrincipalName(), "/recv/result", memberTwoResultDto);
+
+        //openvidu connection 종료
+        openViduService.closeConnection(gameRoom.getGameSessionId());
+
     }
 
     /**

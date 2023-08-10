@@ -204,7 +204,7 @@ export const SignUp = () => {
         </label>
         <label id="nickname-label">
           <div>
-            <span>닉네임 * </span>
+            <span>닉네임 </span>
             <span style={{ color: "grey" }}>
               한글/영어/숫자 최소 2자~ 최대 12자 가능
             </span>
@@ -213,7 +213,7 @@ export const SignUp = () => {
             <Input
               width={240}
               onChange={onChangeNickname}
-              placeholder={"닉네임을 입력해주세요"}
+              placeholder={"(필수)닉네임을 입력해주세요"}
             />
             <button id="nicknamebtn" onClick={nicknameCheck}>
               {checkbtn}

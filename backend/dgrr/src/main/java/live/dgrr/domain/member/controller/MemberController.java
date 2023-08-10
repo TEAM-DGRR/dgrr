@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/v1/member")
+@RequestMapping("/member")
 @CrossOrigin(exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 public class MemberController {

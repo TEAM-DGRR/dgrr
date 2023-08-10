@@ -5,9 +5,12 @@ import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
 import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { SignUp } from "pages/LoginPages/SignUp";
 import { Main } from "pages/MainPages/Main";
+// import { KakaoLogout } from "pages/LoginPages/KakaoLogout";
+// import { Menu } from "pages/MainPages/Menu";
+import axios from "axios";
+import { GameLoading } from "pages/GamePages/GameLoading";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { GameLoading } from "pages/GamePages/GameLoading";
 
 export const App = () => {
   // 모바일 뷰포트 계산
@@ -15,8 +18,12 @@ export const App = () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
+  const token = localStorage.getItem("token");
   useEffect(() => {
     setScreenSize();
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = token;
+    }
   });
 
   return (

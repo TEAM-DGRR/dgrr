@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeRequests()
-                .antMatchers("/member/**", "/member/", "member").permitAll() // 인증 절차 없이 허용할 URI
+                .antMatchers("/ws","/api/v1/member/**", "/api/v1/member/", "/api/v1/member").permitAll() // 인증 절차 없이 허용할 URI
                 .anyRequest().authenticated()  // 위에서 허용한 URI를 제외한 모든 요청은 인증을 완료해야 접근 가능
                 .and()
                 .exceptionHandling()

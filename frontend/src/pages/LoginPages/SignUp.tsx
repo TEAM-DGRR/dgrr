@@ -121,14 +121,7 @@ export const SignUp = () => {
 
     // 닉네임 중복검사 통과했으면 회원가입 시켜주기
     if (isChecked) {
-      axios.post(`${process.env.REACT_APP_API_URL}/member`, {
-        nickname: nickname,
-        description: description,
-        profileImage: profileImg
-      }).then((res: any) => {
-        
-        // code를 다시 담아서 로그인 요청
-        axios.post(
+      axios.post(
           `${process.env.REACT_APP_API_URL}/member`,
           {
             kakaoId: id,
@@ -138,12 +131,20 @@ export const SignUp = () => {
           }
         ).then((res: any) => {
         console.log(res.data)
+        axios.get(`${process.env.REACT_APP_API_URL}/member/login?kakaoId=${res.data.kakaoId}`)
+        .then((res: any) => {
+          console.log("login data: " + JSON.stringify(res.data));
+          localStorage.setItem("token", res.data.token);
+          axios.defaults.headers.common["Authorization"] = `${res.data.token}`;
+          axios.get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${res.data.member.kakaoId}`)
+          .then((res :any) => {
+            console.log(JSON.stringify(res.data))
+          })
+        });
 
         navigate("/main");
       })
-      }).catch((err: any) => {
-        console.log(err)
-      })
+      
     } else {
       // 중복검사 통과못했으면 경고
       setCheckstate('닉네임을 확인해주세요')

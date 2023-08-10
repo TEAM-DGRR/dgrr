@@ -24,7 +24,7 @@ import java.util.concurrent.*;
 @Transactional
 class GameServiceTest {
 
-    private static final int ROUND_TIME = 3;
+    private static final int ROUND_TIME = 20;
     String WEBSOCKET_URI;
 
     WebSocketStompClient stompClient1;

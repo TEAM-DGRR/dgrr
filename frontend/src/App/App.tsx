@@ -13,8 +13,12 @@ export const App = () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
+  const token = localStorage.getItem("token");
   useEffect(() => {
     setScreenSize();
+    if(token) {
+      axios.defaults.headers.common["Authorization"] = token;
+    }
   });
 
   return (

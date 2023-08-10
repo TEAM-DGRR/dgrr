@@ -138,6 +138,16 @@ export const SignUp = () => {
           }
         ).then((res: any) => {
         console.log(res.data)
+        axios.get(`${process.env.REACT_APP_API_URL}/member/login?kakaoId=${res.data.kakaoId}`)
+        .then((res: any) => {
+          console.log("login data: " + JSON.stringify(res.data));
+          localStorage.setItem("token", res.data.token);
+          axios.defaults.headers.common["Authorization"] = `${res.data.token}`;
+          axios.get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${res.data.member.kakaoId}`)
+          .then((res :any) => {
+            console.log(JSON.stringify(res.data))
+          })
+        });
 
         navigate("/main");
       })

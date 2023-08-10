@@ -22,11 +22,10 @@ $font-main: "Arial", sans-serif;
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px); // 원하는 높이로 조절 가능
+    transform: translateY(-20px); 
   }
 }
 
-// Base style
 body {
   font-family: $font-main;
   background-color: $bg-color;
@@ -34,11 +33,11 @@ body {
   overflow: hidden;
 }
 
-// Loading screen container
 .GameLoadingScreen {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly; // 이것이 균등한 간격을 제공합니다.
+  justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
   flex-direction: column;
   height: 100vh;
   position: relative;
@@ -48,7 +47,7 @@ body {
   border-radius: 50%;
   animation: rotate 5s infinite linear;
   z-index: 5;
-  margin-bottom: 30vw;
+  margin-bottom: 20vw;
 
   img {
     width: 30vw;
@@ -56,11 +55,19 @@ body {
   }
 }
 
-.LoadingText {
-  margin-top: 5vw;
+.Timer {
   font-size: 5vw;
+  font-weight: bold;
+  color: $accent-color2;
+  margin-bottom: 20vw;
+}
+
+.LoadingText {
+  font-size: 6vw;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 3vw;
+  letter-spacing: 4vw;
+  color: $accent-color1;
 
   span {
     display: inline-block;
@@ -68,7 +75,8 @@ body {
   }
 }
 
-@for $i from 1 through 12 {
+
+@for $i from 1 through 11 {
   .LoadingText span:nth-child(#{$i}) {
     animation-delay: 0.1s * $i;
   }

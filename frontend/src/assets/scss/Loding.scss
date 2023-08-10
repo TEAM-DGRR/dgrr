@@ -36,7 +36,6 @@ body {
 .GameLoadingScreen {
   display: flex;
   align-items: center;
-  justify-content: space-evenly; // 이것이 균등한 간격을 제공합니다.
   justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
   flex-direction: column;
   height: 100vh;

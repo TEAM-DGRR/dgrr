@@ -6,6 +6,9 @@ import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
 import { SignUp } from "pages/LoginPages/SignUp";
 import { Main } from "pages/MainPages/Main";
+// import { KakaoLogout } from "pages/LoginPages/KakaoLogout";
+// import { Menu } from "pages/MainPages/Menu";
+import axios from "axios";
 
 export const App = () => {
   // 모바일 뷰포트 계산

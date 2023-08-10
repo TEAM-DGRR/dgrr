@@ -22,6 +22,9 @@ export const App = () => {
     if(token) {
       axios.defaults.headers.common["Authorization"] = token;
     }
+    alert(`key: +${process.env.REACT_APP_REST_API_KEY}`);
+    alert(`redirect_uri: +${process.env.REACT_APP_REDIRECT_URI}`)
+    alert(`url: +${process.env.REACT_APP_API_URL}`)
   });
 
   return (

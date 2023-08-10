@@ -6,12 +6,16 @@ interface IButtonProps {
   children: string;
   size?: string;
   onClick?: Function;
+  color?: string;
 }
 
 export const Button = (props: IButtonProps) => {
-  const { children, size = "lg", onClick } = props;
+  const { children, size = "lg", color = "yellow", onClick } = props;
   return (
-    <button className={classNames("Button", size)} onClick={onClick as React.MouseEventHandler}>
+    <button
+      className={classNames("Button", size, color)}
+      onClick={onClick as React.MouseEventHandler}
+    >
       {children}
     </button>
   );

@@ -23,14 +23,6 @@ services:
       - "80:80"
       - "443:443"
     network_mode: host
-  python:
-    container_name: python
-    build:
-      context: ./backend/python
-    ports:
-      - "8000:8000"
-    network_mode: host
-    restart: always
   certbot:
     image: certbot/certbot
     container_name: certbot_service

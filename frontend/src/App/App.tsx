@@ -7,6 +7,7 @@ import { SignUp } from "pages/LoginPages/SignUp";
 import { Main } from "pages/MainPages/Main";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { GameLoading } from "pages/GamePages/GameLoading";
 
 export const App = () => {
   // 모바일 뷰포트 계산
@@ -29,6 +30,7 @@ export const App = () => {
         <Route path="/main" element={<Main />} />
         <Route path="/game/*" element={<Game />} />
         <Route path="/match" element={<GameMatch />} />
+        <Route path="/loading" element={<GameLoading />} />
       </Routes>
     </div>
   );

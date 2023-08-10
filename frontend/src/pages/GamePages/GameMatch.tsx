@@ -1,7 +1,7 @@
 import "assets/scss/Match.scss";
 
-import vsPersonProfile1 from "assets/images/match-pserson1.png";
-import vsPersonProfile2 from "assets/images/match-pserson2.png";
+import vsPersonProfile1 from "assets/images/match-person1.png";
+import vsPersonProfile2 from "assets/images/match-person2.png";
 
 const USER1_NICKNAME = "나 이수연인데";
 const USER1_INTRO = "대표적인 양서류 중 하나. 고어로는 '머구리'라 했으며[2], 사투리로 '개구락지'라고도 한다.";

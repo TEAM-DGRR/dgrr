@@ -1,0 +1,96 @@
+@import "App.scss";
+// Colors and Fonts
+$bg-color: #469ff6;
+$accent-color1: #fee500;
+$accent-color2: #424a52;
+$logo-character: url("../images/logo_character.png");
+$font-main: "Arial", sans-serif;
+
+// Animations
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px); // 원하는 높이로 조절 가능
+  }
+}
+
+// Base style
+body {
+  font-family: $font-main;
+  background-color: $bg-color;
+  color: white;
+  overflow: hidden;
+}
+
+// Loading screen container
+.GameLoadingScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.RotatingElement {
+  border-radius: 50%;
+  animation: rotate 5s infinite linear;
+  z-index: 5;
+  margin-bottom: 30vw;
+
+  img {
+    width: 30vw;
+    height: 30vw;
+  }
+}
+
+.LoadingText {
+  margin-top: 5vw;
+  font-size: 5vw;
+  text-transform: uppercase;
+  letter-spacing: 3vw;
+
+  span {
+    display: inline-block;
+    animation: float 2s infinite;
+  }
+}
+
+@for $i from 1 through 12 {
+  .LoadingText span:nth-child(#{$i}) {
+    animation-delay: 0.1s * $i;
+  }
+}
+
+// Background effects
+.GameLoadingScreen::before,
+.GameLoadingScreen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: 50vw;
+  z-index: -1;
+}
+
+.GameLoadingScreen::before {
+  background: linear-gradient(to left, $bg-color, transparent);
+}
+
+.GameLoadingScreen::after {
+  left: 0;
+  background: linear-gradient(to right, $bg-color, transparent);
+}

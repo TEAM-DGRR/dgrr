@@ -8,7 +8,6 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
     # 얼굴 검출을 수행
     faces = face_cascade.detectMultiScale(gray_image, 1.3, 5)
 
-    print("faces = ", faces)
     for x, y, w, h in faces:
         # 얼굴 영역을 추출하고 사이즈를 조정합니다.
         roi_gray = gray_image[y : y + h, x : x + w]

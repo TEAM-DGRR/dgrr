@@ -37,7 +37,6 @@ async def receive_and_process_message(websocket, face_cascade, emotion_model, em
             f"SEND\ndestination:/send/imgResult\n\n{result_with_headers_json}\0"
         )
         send_count += 1
-        print(f"이미지 분석 결과와 원래의 헤더를 웹소켓 서버로 전송합니다. count = {send_count}")
         await websocket.send(analyze_message)
 
 

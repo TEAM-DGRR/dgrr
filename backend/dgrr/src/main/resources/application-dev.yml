@@ -1,8 +1,5 @@
 OPENVIDU_URL: https://sdrg.myvnc.com
 OPENVIDU_SECRET: 1234
-server:
-  servlet:
-    context-path: /api/v1
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

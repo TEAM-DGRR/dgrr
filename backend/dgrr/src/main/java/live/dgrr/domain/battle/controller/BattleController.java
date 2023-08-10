@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/battle")
+@RequestMapping("/api/v1/battle")
 @CrossOrigin
 @RequiredArgsConstructor
 public class BattleController {
@@ -27,4 +27,6 @@ public class BattleController {
         List<BattleDetailResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
         return new ResponseEntity<>(battleDetails, HttpStatus.OK);
     }
+
+
 }

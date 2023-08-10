@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/v1/member")
 @CrossOrigin(exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 public class MemberController {
@@ -89,6 +89,11 @@ public class MemberController {
     public ResponseEntity<?> updateMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.updateByMember(memberRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Test has done";
     }
 
 }

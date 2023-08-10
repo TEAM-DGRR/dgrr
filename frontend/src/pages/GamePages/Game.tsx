@@ -1,11 +1,11 @@
-import react, { useEffect, useRef, useState } from "react";
+import { Client } from "@stomp/stompjs";
+import { IGameConfig } from "components/Game";
 import { connectStomp, getGameConfig } from "components/Game/stomp";
-import { Client, IMessage } from "@stomp/stompjs";
+import { useEffect, useRef, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { GameLoading } from "./GameLoading";
-import { GamePlay } from "./GamePlay";
-import { IGameConfig } from "components/Game";
 import { GameMatch } from "./GameMatch";
+import { GamePlay } from "./GamePlay";
 
 export interface IGamePlayProps {
   stompClient: Client | undefined;

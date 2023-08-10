@@ -1,5 +1,6 @@
 import "assets/scss/App.scss";
 import { Game } from "pages/GamePages/Game";
+import { GameMatch } from "pages/GamePages/GameMatch";
 import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
 import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { SignUp } from "pages/LoginPages/SignUp";
@@ -27,6 +28,7 @@ export const App = () => {
 
         <Route path="/main" element={<Main />} />
         <Route path="/game/*" element={<Game />} />
+        <Route path="/match" element={<GameMatch />} />
       </Routes>
     </div>
   );

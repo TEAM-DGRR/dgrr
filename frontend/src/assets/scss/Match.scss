@@ -1,121 +1,293 @@
 @import "App.scss";
+
 $grey: #505050;
-$font-family-beautiful: 'Helvetica', sans-serif; 
-$nick-name-color: #11477e; 
-$intro-color: #d4c9da; 
+$grey-dark: darken($grey, 10%);
+$font-family-nickname: 'Helvetica', sans-serif;
+$font-family-intro: 'Overpass', sans-serif;
+$nick-name-color: #1969b9;
+$intro-color: #b3a1bd;
+$background-gradient-start: #38393a;
+$background-gradient-end: #141414;
+
+@keyframes slideFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+
+@keyframes slideToRight {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slideToLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+// 
+@keyframes spreadLight {
+  0% {
+    background-size: 0.5% 100%;
+    background-position: center;
+  }
+
+  100% {
+    background-size: 100% 100%;
+    background-position: center;
+  }
+}
+
 
 .MatchPage {
-  background: $grey;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient($grey, $grey-dark); 
   width: 100%;
   height: 100%;
   text-align: center;
+  position: relative; 
+  background: linear-gradient($background-gradient-start, $background-gradient-end);
 
-  img {
-  max-height: 50vh;
+
+  &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+      background-repeat: no-repeat;
+      animation: spreadLight 0.6s;
+    }
+
+  .VersusImage {
+      position: absolute;
+      top: 47%;
+      left: 40%;
+      transform: translate(-50%, -50%);
+      width: 20vw; 
+      height: 20vw;
+      background-image: url("../images/match-versus.png");
+      background-size: cover;
+      background-position: center;
+      animation: popIn 1s forwards 0s, popOut 1s forwards 5s; 
+      opacity: 0;
+      z-index: 3;
+    }
+}
+
+.MatchedPerson1,
+.MatchedPerson2 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 50%;
+  gap: 2rem;
+  z-index: 2;
+
+  &:not(:last-child) {
+    margin-bottom: 5%;
+  }
+
+  &:not(:first-child) {
+    margin-top: 5%;
   }
 }
 
 .MatchedPerson1 {
-  display: flex;
-  position: relative;
-  flex-direction: column;
+  transform: translateX(100%); 
+  align-items: center;
+  justify-content: flex-end;
+  animation: slideFromRight 0.5s forwards 1s, slideToRight 0.5s forwards 5s;
 
-  img {
-    position: relative; 
-    top: 10vh; 
-    max-height: 50vh;
+  .MatchedPersonBackground1 {
+    width: 100%;
+    height: 50%;
+    background-color: #F0133B;
+    clip-path: polygon(-20% 102%, 41% 0, 102% 0, 102% 102%, -20% 102%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 10); 
   }
 
-
-  .MatchedPersonProfile {
-    position: absolute;
-    flex-direction: column;
-    top: 15vh;
-    left: 5vw;
-
-    img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%; 
-      object-fit: cover;
-      object-position: center; 
-    }
-
-  }
-  .MatchedPersonNickName {
-    position: absolute;
-    flex-direction: column;
-    top: 30vh;
-    left: 45vw;
-    font-family: $font-family-beautiful;
-    color: $nick-name-color;
-    font-size: 18px; 
-    font-weight: bold; 
-  }
-
+  .MatchedPersonProfile,
+  .MatchedPersonNickName,
   .MatchedPersonIntro {
     position: absolute;
-    flex-direction: column;
-    top: 33vh;
-    left: 45vw;
-    font-family: $font-family-beautiful;
-    color: $intro-color;
-    font-size: 16px;
-    font-style: italic;
-    width: 200px; 
-    overflow-wrap: break-word;
-    text-align:left; 
+    bottom: 15%;
+  }
+
+  .MatchedPersonProfile {
+    left: 5%;
+
+    img {
+      left: -15%;
+      top: -5%;
     }
+  }
+
+  .MatchedPersonNickName,
+  .MatchedPersonIntro {
+    left: 45%; 
+    max-width: 50%;
+  }
+
+  .MatchedPersonNickName {
+    bottom: 32%; 
+  }
+   .MatchedPersonIntro {
+    bottom:15%;
+    text-align: left;
+   } 
 }
 
 .MatchedPerson2 {
-  display: flex;
-  position: relative;
-  flex-direction: column;
+  transform: translateX(-100%); 
+  align-items: center;
+  justify-content: flex-start;
+  animation: slideFromLeft 0.5s forwards 1s, slideToLeft 0.5s forwards 5s;
 
-  img {
-    position: relative;
-    bottom: 10vh;
-    max-height: 50vh;
+  .MatchedPersonBackground2 {
+    width: 100%;
+    height: 50%;
+    background-color: #F0133B;
+    clip-path: polygon(120% -2%, 59% 100%, -2% 100%, -2% -2%, 120% -2%);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 10);
   }
+
+  .MatchedPersonProfile,
+  .MatchedPersonNickName,
+  .MatchedPersonIntro {
+    position: absolute;
+    top: 15%;
+  }
+
+  .MatchedPersonProfile {
+    right: 5%;
+
+    img {
+      right: -5%;
+      bottom: -5%;
+
+      transition: transform 0.3s ease, box-shadow 0.5s ease;
+    }
+  }
+
+  .MatchedPersonNickName,
+  .MatchedPersonIntro {
+    right: 45%;
+    max-width: 50%;
+  }
+
+  .MatchedPersonNickName {
+    top: 8%; 
+    margin-bottom:10%;
+  }
+
+  .MatchedPersonIntro {
+    top: 20%;
+    text-align: left;
+  }
+
   
-    .MatchedPersonProfile {
-        position: absolute;
-        flex-direction: column;
-        bottom: 15vh;
-        right: 5vw;
+}
 
-        img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: center;
-          }
-      }
+.MatchedPersonProfile {
+  img {
+    width: 35vw;
+    height: 35vw;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    border: 3px solid #ffffff6e; 
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5); 
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
 
-    .MatchedPersonNickName {
-      position: absolute;
-      flex-direction: column;
-      bottom: 38vh;
-      right: 45vw;
-      font-family: $font-family-beautiful;
-      color: $nick-name-color;
-      font-size: 18px;
-      font-weight: bold;
+    &:hover {
+      transform: scale(1.05); // 확대 효과
+      box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.6); 
     }
+  }
+}
 
-    .MatchedPersonIntro {
-      position: absolute;
-      flex-direction: column;
-      bottom: 30vh;
-      right: 45vw;
-      font-family: $font-family-beautiful;
-      color: $intro-color;
-      font-size: 16px; 
-      font-style: italic;
-      width: 200px;
-      overflow-wrap: break-word;
-      text-align: right;
-    }
+.MatchedPersonNickName {
+  font-family: $font-family-nickname;
+  color: $nick-name-color;
+  font-size: calc(2vw + 2vh);
+  font-weight: bold;
+  z-index: 2;
+}
+
+.MatchedPersonIntro {
+  font-family: $font-family-intro;
+  color: $intro-color;
+  font-size: calc(1vw + 1vh);
+  // font-style: italic;
+  max-width: 60vw;
+  text-align: center;
+  overflow-wrap: break-word;
+  z-index: 3;
 }

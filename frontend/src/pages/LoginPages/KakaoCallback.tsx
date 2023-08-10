@@ -1,41 +1,52 @@
 import { useEffect } from "react";
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 export const KakaoCallback = () => {
+    const navigate = useNavigate();
+
     useEffect(() => {
         // 인가 코드 받기
-        const REST_API_KEY = `${process.env.REACT_APP_REST_API_KEY}`;
-        const REDIRECT_URI = `${process.env.REACT_APP_REDIRECT_URI}`;
         const code = new URL(window.location.href).searchParams.get("code");
-        const grantType = "authorization_code";
+        
+        // const login = () => {
 
-        // 토큰 받기
-        axios.post(
-            `https://kauth.kakao.com/oauth/token?grant_type=${grantType}&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${code}`,
-            {},
-            { headers: { "Content-type": "application/x-www-form-urlencoded;charset=utf-8" } }
+        // }
+        // 인가 코드 보내기
+        axios.get(
+            `${process.env.REACT_APP_API_URL}/member/kakao-callback?code=${code}`,
         )
         .then((res: any) => {
-            console.log(res);
-            // const { access_token } = res.data;
-            // axios.post(
-            //     `/kakao/kakaoCallback`,
-            //     {
-            //         headers: {
-            //             code: access_token,
-            //         }
-            //     }
-            // )
-            // .then((res: any) => {
-            //     // 유저 정보가 있으면 메인으로 보내기
+            console.log("res: " + JSON.stringify(res.data))
+            // 없다면 회원가입 화면으로 보내기
+            if (res.data.key === "signUp") {
+                navigate("/signup", { state: { id: res.data.id } })
+            } else {
+                // 유저 정보가 있으면 로그인 후 메인으로 보내기
+                console.log("signUp: " + JSON.stringify(res.data));
+                axios.get(
+                        `${process.env.REACT_APP_API_URL}/member/login?kakaoId=${res.data.member.kakaoId}`
+                ).then((res: any) => {
+                    // const { member } = res.data;
+                    console.log("login data: " + JSON.stringify(res.data))
+                    axios.defaults.headers.common["Authorization"] = `${res.data.token}`;
+                    axios.get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${res.data.member.kakaoId}`
+                    ).then((res:any) => {
+                        console.log(JSON.stringify(res.data))
+                    })
+                    navigate('/main')
+                }).catch((err: any) => {
+                    console.log(err);
+                })
+                
+            }
 
-            //     // 없다면 회원가입 화면으로 보내기
-            // })
         })
         .catch((Error: any) => {
+            console.log("hi")
             console.log(Error)
         })
-    }, [])
+    })
     
     return(
         <>

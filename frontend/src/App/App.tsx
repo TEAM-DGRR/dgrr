@@ -1,6 +1,5 @@
 import "assets/scss/App.scss";
 import { Game } from "pages/GamePages/Game";
-import { GameMatch } from "pages/GamePages/GameMatch";
 import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
 import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
 import { SignUp } from "pages/LoginPages/SignUp";
@@ -8,7 +7,6 @@ import { Main } from "pages/MainPages/Main";
 // import { KakaoLogout } from "pages/LoginPages/KakaoLogout";
 // import { Menu } from "pages/MainPages/Menu";
 import axios from "axios";
-import { GameLoading } from "pages/GamePages/GameLoading";
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -36,8 +34,6 @@ export const App = () => {
 
         <Route path="/main" element={<Main />} />
         <Route path="/game/*" element={<Game />} />
-        <Route path="/match" element={<GameMatch />} />
-        <Route path="/loading" element={<GameLoading />} />
       </Routes>
     </div>
   );

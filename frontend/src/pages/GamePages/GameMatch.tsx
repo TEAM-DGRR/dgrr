@@ -1,4 +1,9 @@
 import "assets/scss/Match.scss";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { IGamePlayProps } from "./GameLoading";
+import { stompConfig } from "components/Game";
+
 
 import vsPersonProfile1 from "assets/images/match-person1.png";
 import vsPersonProfile2 from "assets/images/match-person2.png";
@@ -8,12 +13,31 @@ const USER1_INTRO = "대표적인 양서류 중 하나. 고어로는 '머구리'
 const USER2_NICKNAME = "개구락지";
 const USER2_INTRO = "비개구리처럼 알에서 태어날 때 즈음에 이미 개구리인 종류도 존재한다.";
 
-export const GameMatch = () => {
-  return (
-    <>
-    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;700&display=swap" rel="stylesheet"></link>
-    <div className="MatchPage">
+export const GameMatch = (props: IGamePlayProps) => {
+  const navigate = useNavigate();
+  const [seconds, setSeconds] = useState(0);
 
+  // Stomp
+  const { stompClient, isStompConnected, gameConfig } = props;
+  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
+  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1);
+      console.log("GameMatch에서 찍히는 gameConfig : ", props.gameConfig);
+    }, 1000);
+
+    if (seconds == 5) {
+      navigate("/game/play");
+    }
+    // Cleanup on unmount
+    return () => clearInterval(interval);
+
+  }, [seconds]);
+
+  return (
+    <div className="MatchPage">
       {/* Adding the VersusImage in the center of MatchPage */}
       <div className="VersusImage"></div>
 
@@ -43,6 +67,5 @@ export const GameMatch = () => {
         </div>
       </div>
       </div>
-    </>
   );
 };

@@ -1,5 +1,10 @@
 package live.dgrr.domain.game.service;
 
+import live.dgrr.domain.battle.entity.Battle;
+import live.dgrr.domain.battle.entity.BattleDetail;
+import live.dgrr.domain.battle.entity.BattleType;
+import live.dgrr.domain.battle.repository.BattleDetailRepository;
+import live.dgrr.domain.battle.repository.BattleRepository;
 import live.dgrr.domain.game.dto.response.GameFirstRoundEndResponseDto;
 import live.dgrr.domain.game.dto.response.GameInitializerResponseDto;
 import live.dgrr.domain.game.dto.response.GameResultResponseDto;
@@ -11,6 +16,8 @@ import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.repository.GameRepository;
 import live.dgrr.domain.image.entity.event.ImageResult;
+import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
@@ -18,24 +25,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service @Slf4j @RequiredArgsConstructor
 public class GameService {
 
-    private Queue<WaitingMember> waitingQueue;
+
     private Map<String, GameRoom> gameRoomMap;
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
     private final GameRepository gameRepository;
+    private final BattleRepository battleRepository;
+    private final MemberRepository memberRepository;
+    private final BattleDetailRepository battleDetailRepository;
 
     //단위 : 초
     private static final int ROUND_TIME = 20;
@@ -50,7 +60,6 @@ public class GameService {
      */
     @PostConstruct
     private void initialize() {
-        waitingQueue = new ArrayBlockingQueue<>(10);
         gameRoomMap = new ConcurrentHashMap<>();
     }
 
@@ -238,7 +247,27 @@ public class GameService {
         //openvidu connection 종료
         openViduService.closeConnection(gameRoom.getGameSessionId());
 
+        //db에 battle 저장
+        saveGameResult(gameRoom, firstRoundTime, secondRoundTime, resultForMemberOne, resultForMemberTwo);
+    }
 
+    @Transactional
+    public void saveGameResult(GameRoom gameRoom, long firstRoundTime, long secondRoundTime, GameResult resultForMemberOne, GameResult resultForMemberTwo) {
+        Battle battle = new Battle(BattleType.ONE_ON_ONE, firstRoundTime + secondRoundTime);
+        battleRepository.save(battle);
+
+        //battleDetail 저장.
+        Member memberOne = memberRepository.findById(gameRoom.getMemberOne().getMemberId()).get();
+        Member memberTwo = memberRepository.findById(gameRoom.getMemberTwo().getMemberId()).get();
+
+
+        BattleDetail battleDetailMemberOne = new BattleDetail(battle, memberOne, "FIRST", firstRoundTime + secondRoundTime,
+                resultForMemberOne, 50L);
+        BattleDetail battleDetailMemberTwo = new BattleDetail(battle, memberTwo, "SECOND", firstRoundTime + secondRoundTime,
+                resultForMemberTwo, 50L);
+
+        battleDetailRepository.save(battleDetailMemberOne);
+        battleDetailRepository.save(battleDetailMemberTwo);
     }
 
     /**

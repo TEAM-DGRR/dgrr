@@ -238,6 +238,7 @@ public class GameService {
         //openvidu connection 종료
         openViduService.closeConnection(gameRoom.getGameSessionId());
 
+
     }
 
     /**

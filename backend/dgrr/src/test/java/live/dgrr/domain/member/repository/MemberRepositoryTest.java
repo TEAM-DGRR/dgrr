@@ -4,7 +4,7 @@ import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.game.entity.enums.GameResult;
-import live.dgrr.domain.battle.repository.BattleRepository;
+import live.dgrr.domain.battle.repository.BattleDetailRepository;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.entity.Member;
@@ -31,7 +31,7 @@ class MemberRepositoryTest {
     @Autowired
     private RatingRepository ratingRepository;
     @Autowired
-    private BattleRepository battleRepository;
+    private BattleDetailRepository battleRepository;
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -65,6 +65,16 @@ class MemberRepositoryTest {
         Assertions.assertThat(memberInfoResponseDto.getMember().getMemberId()).isEqualTo(memberId);
         Assertions.assertThat(memberInfoResponseDto.getRatingList().get(ratingNum-1).getMember().getMemberId()).isEqualTo(memberId);
         Assertions.assertThat(memberInfoResponseDto.getBattleDetailList().get(0).getMember().getMemberId()).isEqualTo(memberId);
+
+    }
+
+    @Test
+    public void memberRepositorySaveAndFind() {
+        Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
+        Member save = memberRepository.save(member);
+
+        Assertions.assertThat(memberService.getMemberByMemberId(save.getMemberId()).get().getKakaoId()).isEqualTo("kakaoId");
+
 
     }
 

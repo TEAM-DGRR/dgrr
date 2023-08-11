@@ -102,6 +102,10 @@ public class MemberService {
         return access_Token;
     }
 
+    public Optional<Member> getMemberByMemberId(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
 
     public String createKakaoMember(String token) {
         String id = "";

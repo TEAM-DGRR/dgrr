@@ -2,7 +2,7 @@ package live.dgrr.domain.battle.service;
 
 import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
 import live.dgrr.domain.battle.entity.BattleDetail;
-import live.dgrr.domain.battle.repository.BattleRepository;
+import live.dgrr.domain.battle.repository.BattleDetailRepository;
 import live.dgrr.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BattleService {
-    private final BattleRepository battleRepository;
+    private final BattleDetailRepository battleRepository;
 
     public List<BattleDetail> findBattleDetailByMember(Member member) {
         return battleRepository.findTop3ByMember_MemberIdOrderByCreatedAtAsc(member.getMemberId());

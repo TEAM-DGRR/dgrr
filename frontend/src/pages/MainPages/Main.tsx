@@ -35,7 +35,7 @@ export const Main = () => {
         <div className="MainBtns">
           <Button>코드 입력</Button>
           <Button>방 만들기</Button>
-          <Button>랜덤 매칭</Button>
+          <Button onClick={() => { navigate('/game') }}>랜덤 매칭</Button>
         </div>
       </div>
     </div>

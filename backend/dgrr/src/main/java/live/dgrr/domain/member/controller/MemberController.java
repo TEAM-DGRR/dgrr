@@ -7,6 +7,7 @@ import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
 import live.dgrr.domain.member.dto.response.NicknameCheckResponseDto;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.rating.service.RatingService;
 import live.dgrr.global.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MemberController {
 
     private final MemberService memberService;
+    private final RatingService ratingService;
 
     @GetMapping("/kakao-callback")
     public ResponseEntity<?> kakaoLogin(@RequestParam String code) {
@@ -40,8 +42,9 @@ public class MemberController {
 
     @PostMapping({"/", ""})
     public Member addMember(@RequestBody Member member) {
-
-        return memberService.addMember(member);
+        memberService.addMember(member);
+        ratingService.addRating(member);
+        return member;
     }
 
     @GetMapping("/login")

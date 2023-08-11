@@ -29,6 +29,7 @@ export const KakaoCallback = () => {
                 ).then((res: any) => {
                     // const { member } = res.data;
                     console.log("login data: " + JSON.stringify(res.data))
+                    localStorage.setItem("token", res.data.token);
                     axios.defaults.headers.common["Authorization"] = `${res.data.token}`;
                     axios.get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${res.data.member.kakaoId}`
                     ).then((res:any) => {

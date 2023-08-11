@@ -22,10 +22,12 @@ export const App = () => {
 	const token = localStorage.getItem('token');
 	useEffect(() => {
 		setScreenSize();
+		console.log(token);
 		if (token) {
+			console.log('여기 오냐고');
 			axios.defaults.headers.common['Authorization'] = token;
 		}
-	});
+	}, []);
 
 	return (
 		<div className='App'>
@@ -37,6 +39,7 @@ export const App = () => {
 
 				<Route path='/main' element={<Main />} />
 				<Route path='/game' element={<Game />} />
+				<Route path='/myprofile' element={<MyProfile />} />
 			</Routes>
 		</div>
 	);

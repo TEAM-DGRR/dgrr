@@ -12,8 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RatingService {
     private final RatingRepository ratingRepository;
-    private final int INITIAL_RATING = 1400;
-    private final int CURRENT_SEASON = 1;
+    private static final int INITIAL_RATING = 1400;
+    private static final int CURRENT_SEASON = 1;
 
     public List<Rating> findRatingByMember(Member member) {
         return ratingRepository.findByMember_MemberId(member.getMemberId());

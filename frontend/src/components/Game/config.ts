@@ -1,6 +1,5 @@
 //Stomp
 export const stompConfig = {
-  BROKER_URL: "wss://dgrr.live/ws",
   CONNECT_HEADER: {
     "heart-beat": "10000,10000",
   },
@@ -24,7 +23,7 @@ export const openViduConfig = {
     publishAudio: true,
     publishVideo: true,
     resolution: "1280x720",
-    frameRate: 30,
+    frameRate: 60,
     insertMode: "APPEND",
     mirror: true,
   },

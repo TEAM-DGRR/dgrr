@@ -1,30 +1,24 @@
-import { UserVideoComponent } from "./UserVideoComponent";
-import { IGamePlayProps } from "./GameLoading";
-import { joinSession } from "components/Game/openVidu";
-import { useEffect, useRef, useState } from "react";
-import { IGameResult, IGameStatus, IImageResult, stompConfig } from "components/Game";
-import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
-import { connectStomp, publishMessage } from "components/Game/stomp";
-import { captureImage } from "components/Game/captureImage";
-import { parseDate, timeRemaining } from "components/Game/parseDate";
 import { Client, IMessage } from "@stomp/stompjs";
-import { openViduConfig } from "components/Game";
+import { IGameResult, IGameStatus, IImageResult, openViduConfig, stompConfig } from "components/Game";
+import { captureImage } from "components/Game/captureImage";
+import { joinSession } from "components/Game/openVidu";
+import { timeRemaining } from "components/Game/parseDate";
+import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
+import { useEffect, useRef, useState } from "react";
+import { useGameContext } from "./GameContext"; // Assuming GameContext is in the same directory.
+import { UserVideoComponent } from "./UserVideoComponent";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
 }
-// export interface IGamePlayProps {
-//   stompClient: Client | undefined;
-//   isStompConnected: boolean;
-//   gameConfig: IGameConfig;
-// }
 
-export const GamePlay = (props: IGamePlayProps) => {
+export const GamePlay = () => {
+  const { stompClient, isStompConnected, gameConfig } = useGameContext();
+  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
+
   // Stomp
   const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
   const { IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
-  const { stompClient, isStompConnected, gameConfig } = props;
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
 
   // 이미지 처리
   const childRef = useRef<ChildMethods | null>(null);
@@ -49,8 +43,7 @@ export const GamePlay = (props: IGamePlayProps) => {
 
   // 1) 게임 시작 준비
   useEffect(() => {
-
-    console.log("GamePlay에서 찍는 props : ", props);
+    console.log("Stomp Client : ", stompClient);
     if (gameConfig.turn === "first") setTurn("attack");
     else setTurn("defense");
 
@@ -209,7 +202,7 @@ export const GamePlay = (props: IGamePlayProps) => {
       <div id="main-video2">
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
-      <canvas ref={canvasRef} style={{ display: "none" }} width="320" height="480"></canvas>
+      <canvas ref={canvasRef} style={{ display: "none" }} width="640" height="480"></canvas>
     </div>
   );
 };

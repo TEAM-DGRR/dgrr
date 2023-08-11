@@ -95,8 +95,8 @@ $versus-image: url("../images/match-versus.png");
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  // width: 100%;
+  height: 100vh;
   background: rgb(70, 159, 246, 1);
   text-align: center;
   position: relative;
@@ -192,7 +192,7 @@ $versus-image: url("../images/match-versus.png");
   transform: translateX(100%);
   align-items: center;
   justify-content: flex-end;
-  animation: slideFromRight 0.5s forwards 1s, slideToRight 0.5s forwards 5s;
+  animation: slideFromRight 0.5s forwards 1s, slideToRight 0.5s forwards 4s;
 
   .MatchedPersonBackground1 {
     width: 100%;
@@ -239,7 +239,7 @@ $versus-image: url("../images/match-versus.png");
   transform: translateX(-100%);
   align-items: center;
   justify-content: flex-start;
-  animation: slideFromLeft 0.5s forwards 1s, slideToLeft 0.5s forwards 5s;
+  animation: slideFromLeft 0.5s forwards 1s, slideToLeft 0.5s forwards 4s;
 
   .MatchedPersonBackground2 {
     width: 100%;

@@ -22,7 +22,7 @@ $font-main: "Arial", sans-serif;
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px); 
+    transform: translateY(-20px);
   }
 }
 
@@ -74,7 +74,6 @@ body {
   }
 }
 
-
 @for $i from 1 through 11 {
   .LoadingText span:nth-child(#{$i}) {
     animation-delay: 0.1s * $i;
@@ -85,7 +84,7 @@ body {
 .GameLoadingScreen::before,
 .GameLoadingScreen::after {
   content: "";
-  position: absolute;
+  // position: absolute;
   top: 0;
   left: 50%;
   height: 100%;

@@ -9,6 +9,7 @@ import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.global.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/v1/member")
 @CrossOrigin(exposedHeaders = "Authorization")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -77,10 +79,11 @@ public class MemberController {
 
     //mypage
     @GetMapping("/member-id")
-    public ResponseEntity<?> mypage(HttpServletRequest request) {
+    public ResponseEntity<MemberInfoResponseDto> mypage(HttpServletRequest request) {
         String token = request.getHeader("Authorization").replace(JwtProperties.TOKEN_PREFIX, "");
         Long memberId = memberService.getIdFromToken(token);
         MemberInfoResponseDto memberInfoDto = memberService.getMemberInfoWithRatingAndBattleDetail(memberId);
+
         return new ResponseEntity<>(memberInfoDto,HttpStatus.OK);
     }
 

@@ -15,19 +15,24 @@ import java.util.List;
 public class BattleService {
     private final BattleRepository battleRepository;
 
-    public List<BattleDetail> findBattleDetailByMember(Member member) {
-        return battleRepository.findTop3ByMember_MemberIdOrderByCreatedAtAsc(member.getMemberId());
+    public List<BattleDetailResponseDto> findTop3BattleDetailByMemberId(Member member) {
+        List<BattleDetail> battleDetails = battleRepository.findTop3ByMember_MemberIdOrderByCreatedAtAsc(member.getMemberId());
+        return getBattleDetailResponseDto(battleDetails);
     }
 
     public List<BattleDetailResponseDto> findBattleDetailByMemberId(Long memberId) {
         List<BattleDetail> battleDetails = battleRepository.findByMember_MemberIdOrderByCreatedAtAsc(memberId);
+        return getBattleDetailResponseDto(battleDetails);
+    }
+
+    private List<BattleDetailResponseDto> getBattleDetailResponseDto(List<BattleDetail> battleDetails) {
         List<BattleDetailResponseDto> responseDtoList = new ArrayList<>();
 
         for (BattleDetail battleDetail : battleDetails) {
-            BattleDetailResponseDto responseDto = new BattleDetailResponseDto(battleDetail.getBattleDetailId(),battleDetail.getBattle(), battleDetail.getMember(),battleDetail.getFirstFlag(), battleDetail.getHoldingTime(), battleDetail.getBattleResult(), battleDetail.getLaughAmount());
+            BattleDetailResponseDto responseDto = new BattleDetailResponseDto(battleDetail.getBattleDetailId(), battleDetail.getMember(),battleDetail.getFirstFlag(), battleDetail.getHoldingTime(), battleDetail.getBattleResult(), battleDetail.getLaughAmount());
             responseDtoList.add(responseDto);
         }
-        
         return responseDtoList;
     }
+
 }

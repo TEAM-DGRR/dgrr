@@ -4,16 +4,18 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import live.dgrr.domain.battle.entity.BattleDetail;
+import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
+import live.dgrr.domain.member.dto.response.MemberResponseDto;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
-import live.dgrr.domain.rating.entity.Rating;
+import live.dgrr.domain.rating.dto.response.RatingResponseDto;
 import live.dgrr.domain.rating.service.RatingService;
 import live.dgrr.global.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -162,16 +165,17 @@ public class MemberService {
 
     @Transactional(readOnly= true)
     public MemberInfoResponseDto getMemberInfoWithRatingAndBattleDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = memberRepository.findByMemberId(memberId);
+        MemberResponseDto memberDto = new MemberResponseDto(member.getMemberId(),member.getNickname(),member.getProfileImage(),member.getDescription());
 
         // Rating 조회
-        List<Rating> ratings = ratingService.findRatingByMember(member);
+        List<RatingResponseDto> ratings = ratingService.findRatingByMember(member);
 
         // BattleDetail 조회
-        List<BattleDetail> battleDetails = battleService.findBattleDetailByMember(member);
+        List<BattleDetailResponseDto> battleDetails = battleService.findTop3BattleDetailByMemberId(member);
 
         // 조회한 정보를 MemberInfoResponseDto에 담아서 반환
-        return new MemberInfoResponseDto(member, ratings, battleDetails);
+        return new MemberInfoResponseDto(memberDto, ratings, battleDetails);
     }
 
     @Transactional

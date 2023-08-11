@@ -10,7 +10,8 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findByKakaoId(String kakaoId);
-
+    
     List<Member> findByNickname(String nickname);
 
+    Member findByMemberId(Long memberId);
 }

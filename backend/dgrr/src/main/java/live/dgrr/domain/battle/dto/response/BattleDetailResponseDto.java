@@ -12,8 +12,6 @@ public class BattleDetailResponseDto {
 
     private Long battleDetailId;
 
-    private Battle battle;
-
     private Member member;
 
     private String firstFlag;

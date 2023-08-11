@@ -1,18 +1,19 @@
 package live.dgrr.domain.member.dto.response;
 
-import live.dgrr.domain.battle.entity.BattleDetail;
-import live.dgrr.domain.member.entity.Member;
-import live.dgrr.domain.rating.entity.Rating;
+import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.rating.dto.response.RatingResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberInfoResponseDto {
-    private final Member member;
-    private final List<Rating> ratingList;
-    private final List<BattleDetail> battleDetailList;
+    private MemberResponseDto member;
+    private List<RatingResponseDto> ratingList;
+    private List<BattleDetailResponseDto> battleDetailList;
 
 }

@@ -1,4 +1,4 @@
-import { Client, IMessage, StompHeaders, messageCallbackType } from "@stomp/stompjs";
+import { Client, StompHeaders } from "@stomp/stompjs";
 import { stompConfig } from "./config";
 import { IGameConfig } from "./interface";
 

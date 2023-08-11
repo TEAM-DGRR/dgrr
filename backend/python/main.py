@@ -33,18 +33,10 @@ async def client():
         try:
             uri = "ws://localhost:8080/ws"  # 자바 웹소켓 서버의 주소
 
-            # Spring boot Security 사용자 이름
-            username = "1234"
-
-            # Spring Boot Security 비밀번호
-            password = "1234"
-            encoded_credentials = base64.b64encode(
-                f"{username}:{password}".encode()
-            ).decode()
-
             # 웹소켓 서버에 연결
             async with websockets.connect(
-                uri, extra_headers={"Authorization": f"Basic {encoded_credentials}"}
+                uri,
+                max_size=2**30
             ) as websocket:
                 await connect_to_server(websocket)
                 await receive_and_process_message(

@@ -19,10 +19,9 @@ emotion_model = load_model("./models/emotion_model.hdf5")
 # 감정 레이블
 emotions = ["Angry", "Disgust", "Fear", "Smile", "Sad", "Surprise", "Neutral"]
 
+
 app = FastAPI()
 
-uri = "ws://localhost:8080/ws"  # 자바 웹소켓 서버의 주소
-max_size = 2**30 # 최대 사이즈를 32MB로 설정
 
 @app.on_event("startup")
 async def startup_event():
@@ -32,8 +31,13 @@ async def startup_event():
 async def client():
     while True :
         try:
+            uri = "ws://localhost:8080/ws"  # 자바 웹소켓 서버의 주소
+
             # 웹소켓 서버에 연결
-            async with websockets.connect(uri, max_size) as websocket:
+            async with websockets.connect(
+                uri,
+                max_size=2**30
+            ) as websocket:
                 await connect_to_server(websocket)
                 await receive_and_process_message(
                     websocket, face_cascade, emotion_model, emotions

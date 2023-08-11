@@ -1,25 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { StreamManager } from "openvidu-browser";
+import { ChildMethods } from "pages/GamePages/GamePlay";
 
 interface IUserVideoComponent {
-  streamManager: StreamManager;
-  onGetVideoRef?: Function;
+  streamManager: StreamManager | undefined;
 }
 
-export const UserVideoComponent = ({ onGetVideoRef, streamManager }: IUserVideoComponent) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+export const UserVideoComponent = forwardRef<ChildMethods, IUserVideoComponent>(
+  ({ streamManager }: IUserVideoComponent, ref) => {
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  if (onGetVideoRef !== undefined) onGetVideoRef(videoRef);
+    // 외부에서 사용할 함수 또는 프로퍼티 정의
+    useImperativeHandle(ref, () => ({
+      // 외부에서 video 요소에 접근할 수 있는 함수 제공
+      getVideoElement: () => {
+        return videoRef.current;
+      },
+    }));
 
-  useEffect(() => {
-    if (streamManager && !!videoRef.current) {
-      streamManager.addVideoElement(videoRef.current);
-    }
-  }, [streamManager]);
+    useEffect(() => {
+      if (streamManager && !!videoRef.current) {
+        streamManager.addVideoElement(videoRef.current);
+      }
+    }, [streamManager]);
 
-  return (
-    <div className="streamcomponent">
-      <video autoPlay={true} ref={videoRef} />
-    </div>
-  );
-};
+    return (
+      <div className="streamcomponent">
+        <video autoPlay={true} ref={videoRef} />
+      </div>
+    );
+  }
+);

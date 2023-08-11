@@ -8,36 +8,63 @@ import { connectStomp, publishMessage } from "components/Game/stomp";
 import { captureImage } from "components/Game/captureImage";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
 import { Client, IMessage } from "@stomp/stompjs";
+import { openViduConfig } from "components/Game";
+
+export interface ChildMethods {
+  getVideoElement: () => HTMLVideoElement | null;
+}
 
 export const GamePlay = (props: IGamePlayProps) => {
   // Stomp
   const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
   const { IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
   const { stompClient, isStompConnected, gameConfig } = props;
-  const { gameSessionId, openViduToken, startTime } = gameConfig;
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
+
+  // 이미지 처리
+  const childRef = useRef<ChildMethods | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const startWebcamCapture = useRef<NodeJS.Timer>();
+  const webcamCapture = useRef<() => void>(() => {});
 
   // OpenVidu
   const [OVSession, setOVSession] = useState<Session>();
   const [publisher, setPublisher] = useState<Publisher>();
   const [subscriber, setSubscriber] = useState<Subscriber>();
   const currentVideoDeviceRef = useRef<Device>();
+  const { PUBLISHER_PROPERTIES } = openViduConfig;
 
   // 게임 상태
-  const [status, setStatus] = useState<string>("READY");
-  const [turn, setTurn] = useState<string>("준비");
-  const [detected, setDetected] = useState<boolean>(false);
-  const [laugh, setLaugh] = useState<number>(0);
+  const [status, setStatus] = useState<string>("ready");
+  const [turn, setTurn] = useState<string>("ready");
+  const [success, setSuccess] = useState<boolean>(false);
+  const [emotion, setEmotion] = useState<string>("");
+  const [probability, setProbability] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
   // 1) 게임 시작 준비
   useEffect(() => {
-    const gameStart = () => {
-      setStatus("1라운드");
-    };
+    if (gameConfig.turn === "first") setTurn("attack");
+    else setTurn("defense");
 
-    if (gameConfig.turn === "first") setTurn("공격");
-    else setTurn("방어");
+    setMessage(`
+    상대 정보 :
+        닉네임 : ${enemyInfo.nickname}
+        한줄소개 : ${enemyInfo.description}
+        티어 : ${enemyInfo.rank}
+        점수 : ${enemyInfo.rating}
+    내 정보 :
+        닉네임 : ${myInfo.nickname}
+        한줄소개 : ${myInfo.description}
+        티어 : ${myInfo.rank}
+        점수 : ${myInfo.rating}
+    게임 준비 중...
+    나 : ${turn}`);
+
+    const gameStart = () => {
+      setStatus("round 1");
+      setMessage(`게임 시작! ${turn}`);
+    };
 
     setTimeout(gameStart, timeRemaining(startTime));
   }, []);
@@ -67,14 +94,33 @@ export const GamePlay = (props: IGamePlayProps) => {
 
   useEffect(() => {
     const roundEnd = (gameStatus: IGameStatus) => {
-      const roundStart = () => {};
+      const roundStart = () => {
+        if (gameConfig.turn === "first") setTurn("defense");
+        else setTurn("attack");
+        setStatus("round 2");
+        setMessage(`2라운드 시작! ${turn}`);
+      };
 
-      if (gameStatus.status === "SECOND_ROUND") {
-        setStatus("2라운드");
+      setMessage(`
+      1 라운드 종료!
+      ${gameStatus.result === "LAUGH" ? "웃음 참기 실패!" : "시간 초과!"}
+      2 라운드 준비 중...
+      `);
+      if (gameStatus.status === "round changed") {
+        setTurn("ready");
+        setStatus("ready");
       } else {
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
       }
+
       setTimeout(roundStart, timeRemaining(gameStatus.startTime));
+    };
+
+    const gameEnd = (gameResult: IGameResult) => {
+      console.log("게임 종료");
+      setStatus("end");
+      setTurn("ready");
+      stompClient?.deactivate();
     };
 
     // Stomp 엔드포인트 구독
@@ -83,8 +129,9 @@ export const GamePlay = (props: IGamePlayProps) => {
         console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
-          setDetected(imageResult.detected);
-          setLaugh(imageResult.laugh);
+          setSuccess(imageResult.success);
+          setEmotion(imageResult.emotion);
+          setProbability(imageResult.probability);
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
@@ -104,54 +151,56 @@ export const GamePlay = (props: IGamePlayProps) => {
         console.log("게임 결과 수신 : " + message.body);
         try {
           const gameResult: IGameResult = JSON.parse(message.body);
+          gameEnd(gameResult);
         } catch {
           console.log("게임 상태 파싱 오류");
         }
       });
     }
-  }, [stompClient]);
+  }, []);
 
   // 이미지 캡처
   useEffect(() => {
-    // 웹캠 캡쳐 함수
-    const startWebcamCapture = () => {
-      setInterval(() => {
-        if (isStompConnected && stompClient instanceof Client) {
-          if (videoRef.current && canvasRef.current) {
-            captureImage(videoRef.current, canvasRef.current, (base64data: string) => {
-              publishMessage(stompClient, IMAGE_DATA_URI, base64data);
+    webcamCapture.current = () => {
+      if (isStompConnected && stompClient instanceof Client) {
+        const videoElement = childRef.current?.getVideoElement();
+        if (videoElement && canvasRef.current) {
+          captureImage(videoElement, canvasRef.current, (base64data: string) => {
+            stompClient.publish({
+              destination: IMAGE_DATA_URI,
+              headers: {
+                round: status === "round 1" ? "first" : "second",
+                gameSessionId: gameSessionId,
+              },
+              body: base64data,
             });
-          }
-        } else {
-          connectStomp({});
+          });
         }
-      }, CAPTURE_INTERVAL);
+      } else {
+        console.log("이미지 전송 실패. 연결 확인");
+      }
     };
+  }, [stompClient]);
 
-    if (status !== "대기" && status !== "종료") {
-      startWebcamCapture();
+  useEffect(() => {
+    // 웹캠 캡쳐 함수
+    clearInterval(startWebcamCapture.current);
+    if (turn === "defense") {
+      console.log("메시지 전송 시작");
+      startWebcamCapture.current = setInterval(webcamCapture.current, CAPTURE_INTERVAL);
     }
-  }, [stompClient, status, isStompConnected]);
-
-  const handleGetVideoRef = (videoRefFromChild: React.RefObject<HTMLVideoElement>) => {
-    videoRef.current = videoRefFromChild.current;
-  };
+  }, [turn]);
 
   return (
     <div>
-      {detected ? <div>웃음 레벨 : {laugh}</div> : <div> 안 웃었지롱</div>}
-
-      {subscriber !== undefined ? (
-        <div id="main-video">
-          <UserVideoComponent streamManager={subscriber} />
-        </div>
-      ) : null}
+      {message}
+      <div id="main-video">
+        <UserVideoComponent streamManager={subscriber} />
+      </div>
       <div>{turn}</div>
-      {publisher !== undefined ? (
-        <div id="main-video2">
-          <UserVideoComponent onGetVideoRef={handleGetVideoRef} streamManager={publisher} />
-        </div>
-      ) : null}
+      <div id="main-video2">
+        <UserVideoComponent ref={childRef} streamManager={publisher} />
+      </div>
       <canvas ref={canvasRef} style={{ display: "none" }} width="640" height="480"></canvas>
     </div>
   );

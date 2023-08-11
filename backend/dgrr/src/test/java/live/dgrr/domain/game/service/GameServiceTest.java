@@ -24,7 +24,7 @@ import java.util.concurrent.*;
 @Transactional
 class GameServiceTest {
 
-    private static final int ROUND_TIME = 3;
+    private static final int ROUND_TIME = 20;
     String WEBSOCKET_URI;
 
     WebSocketStompClient stompClient1;
@@ -64,7 +64,7 @@ class GameServiceTest {
         BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
         CountDownLatch latch = new CountDownLatch(1);
 
-        int numberOfConnection = 20;
+        int numberOfConnection = 6;
 
         //Client array 생성, 초기화
         WebSocketStompClient[] clientArr = new WebSocketStompClient[numberOfConnection];

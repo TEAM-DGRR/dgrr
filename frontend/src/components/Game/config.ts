@@ -1,15 +1,16 @@
 //Stomp
 export const stompConfig = {
-  BROKER_URL: "ws://localhost:8080/ws",
+  BROKER_URL: "wss://dgrr.live/ws",
   CONNECT_HEADER: {
     "heart-beat": "10000,10000",
   },
   DESTINATION_URI: {
+    MATCHING_URI: "/send/matching",
     GAME_URI: "/user/recv/game",
     IMAGE_DATA_URI: "/send/imgData",
-    IMAGE_RESULT_URI: "user/recv/imgResult",
-    STATUS_URI: "user/recv/status",
-    RESULT_URI: "user/recv/result",
+    IMAGE_RESULT_URI: "/user/recv/imgResult",
+    STATUS_URI: "/user/recv/status",
+    RESULT_URI: "/user/recv/result",
   },
   CAPTURE_INTERVAL: 1000,
 };
@@ -22,7 +23,7 @@ export const openViduConfig = {
     videoSource: undefined,
     publishAudio: true,
     publishVideo: true,
-    resolution: "640x480",
+    resolution: "1280x720",
     frameRate: 30,
     insertMode: "APPEND",
     mirror: true,

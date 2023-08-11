@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { StreamManager } from "openvidu-browser";
 import { ChildMethods } from "pages/GamePages/GamePlay";
+import "assets/scss/GamePlay.scss";
 
 interface IUserVideoComponent {
   streamManager: StreamManager | undefined;
@@ -24,9 +25,10 @@ export const UserVideoComponent = forwardRef<ChildMethods, IUserVideoComponent>(
       }
     }, [streamManager]);
 
+
     return (
       <div className="streamcomponent">
-        <video autoPlay={true} ref={videoRef} />
+        <video autoPlay={true} ref={videoRef} width="320" style={{ width: '320', height: '450' }} />
       </div>
     );
   }

@@ -2,13 +2,13 @@ import { Client, IMessage, StompHeaders, messageCallbackType } from "@stomp/stom
 import { stompConfig } from "./config";
 import { IGameConfig } from "./interface";
 
-const { BROKER_URL, CONNECT_HEADER, DESTINATION_URI } = stompConfig;
+const { CONNECT_HEADER, DESTINATION_URI } = stompConfig;
 const { GAME_URI, MATCHING_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } =
   DESTINATION_URI;
 
 export const connectStomp = (headers: StompHeaders) => {
   const client = new Client({
-    brokerURL: BROKER_URL,
+    brokerURL: process.env.REACT_APP_BROKER_URL,
     connectHeaders: {
       ...CONNECT_HEADER,
       ...headers,

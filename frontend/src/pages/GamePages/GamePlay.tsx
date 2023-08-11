@@ -121,6 +121,7 @@ export const GamePlay = (props: IGamePlayProps) => {
       setStatus("end");
       setTurn("ready");
       stompClient?.deactivate();
+      OVSession?.disconnect();
     };
 
     // Stomp 엔드포인트 구독

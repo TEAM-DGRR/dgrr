@@ -162,14 +162,13 @@ export const SignUp = () => {
       </div>
 
       <form onSubmit={onSubmit} className="signupForm">
-        <label id="profileImg-label">
+        <label className="label" id="profileImg-label">
           {/* 이미지 미리보기 */}
           {ShowImg}
 
           <label htmlFor="profileImg">
             <img src={photoUpload} id="photo-upload" alt="업로드버튼" />
           </label>
-          <br />
 
           <input
             id="profileImg"
@@ -179,7 +178,7 @@ export const SignUp = () => {
             onChange={uploadImg}
           />
         </label>
-        <label id="nickname-label">
+        <label className="label" id="nickname-label">
           <p className="label-title">닉네임</p>
           <p style={{ color: "#8E8E90" }}>
             한글/영어/숫자 최소 2자~최대 12자 가능
@@ -195,7 +194,7 @@ export const SignUp = () => {
             {checkstate}
           </p>
         </label>
-        <label id="description-label">
+        <label className="label" id="description-label">
           <p className="label-title">상태 메세지</p>
           <Input
             maxlength={30}
@@ -203,7 +202,7 @@ export const SignUp = () => {
             placeholder={"상태 메세지를 입력해주세요"}
           />
         </label>
-        <label><Button onClick={onSubmit} color="blue">시작하기</Button></label>
+        <label className="label"><Button onClick={onSubmit} color="blue">시작하기</Button></label>
       </form>
     </div>
   );

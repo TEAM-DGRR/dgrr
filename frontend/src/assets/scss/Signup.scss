@@ -1,6 +1,6 @@
 .signupForm {
   text-align: left;
-  label {
+  .label {
     display: flex;
     flex-direction: column;
     width: calc(100% - 48px);
@@ -61,4 +61,8 @@
   height: 49px;
   width: 72px;
   margin-top: 12px;
+}
+
+#photo-upload {
+  width: 100%;
 }

@@ -11,7 +11,7 @@ export const Main = () => {
   
   const onClick = () => {
     // 메뉴로
-    navigate("/main/menu");
+    navigate("/menu");
   }
   
   return (

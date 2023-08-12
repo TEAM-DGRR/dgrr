@@ -221,7 +221,7 @@ public class GameService {
             return;
         }
         gameRoomMap.remove(gameSessionId);
-        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(), result);
+        gameRoom.changeStatusSecondRoundEnded(LocalDateTime.now(ZoneId.of("UTC")).plusHours(9), result);
         gameRoomMap.put(gameSessionId, gameRoom);
 
         //게임 결과 처리.
@@ -278,9 +278,9 @@ public class GameService {
         Member memberTwo = memberRepository.findById(gameRoom.getMemberTwo().getMemberId()).get();
 
 
-        BattleDetail battleDetailMemberOne = new BattleDetail(battle, memberOne, "FIRST", firstRoundTime + secondRoundTime,
+        BattleDetail battleDetailMemberOne = new BattleDetail(battle, memberOne, "FIRST", secondRoundTime,
                 resultForMemberOne, 50L);
-        BattleDetail battleDetailMemberTwo = new BattleDetail(battle, memberTwo, "SECOND", firstRoundTime + secondRoundTime,
+        BattleDetail battleDetailMemberTwo = new BattleDetail(battle, memberTwo, "SECOND", firstRoundTime,
                 resultForMemberTwo, 50L);
 
         battleDetailRepository.save(battleDetailMemberOne);

@@ -10,6 +10,8 @@
   // 양옆 마진 12px씩 빼고 계산
   width: calc(100% - 24px);
   margin: 0 12px;
+
+  position: relative;
 }
 
 .streamcomponent {

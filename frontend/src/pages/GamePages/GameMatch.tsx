@@ -29,25 +29,25 @@ export const GameMatch = () => {
   const USER2_NICKNAME = myInfo.nickname;
   const USER2_INTRO = myInfo.description;
 
-  useEffect(() => {
+ useEffect(() => {    
+    console.log("GameMatch Page로 넘어왔습니다.")
+
     const interval = setInterval(() => {
       setSeconds(prev => prev + 1);
     }, 1000);
-    console.log("GameMatch에서 찍히는 useGameContext : ", useGameContext);
-    console.log("GameMatch에서 찍히는 isStompConnected : ", isStompConnected);
-
-    if (seconds === 5) {
-      navigate("/game/play");
-    }
 
     // Cleanup on unmount
     return () => clearInterval(interval);
+}, [gameConfig, navigate]);
 
-  }, [seconds, gameConfig, navigate]);
+useEffect(() => {
+    if (seconds === 5) {
+      navigate("/game/play");
+    }
+}, [seconds, navigate]);
 
   return (
     <div className="MatchPage">
-      {/* Adding the VersusImage in the center of MatchPage */}
       <div className="VersusImage"></div>
 
       <div className="MatchedPerson1">

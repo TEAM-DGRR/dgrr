@@ -18,7 +18,6 @@ export const GameLoading = () => {
     setGameConfig,
     connectStompClient,
     getGameConfiguration,
-    isStompConnected,
   } = useGameContext();
 
   useEffect(() => {
@@ -26,8 +25,6 @@ export const GameLoading = () => {
     const tryConnectStomp = async () => {
       if (!stompClient) {
         const client = await connectStompClient({});
-        console.log("Loding의 isStompConnected : ", isStompConnected);
-
 
         // 2) 구독, 구독 완료 메시지 전송, 게임 시작 메시지를 수신하도록 대기
         startGameSession(await getGameConfiguration(client));
@@ -38,7 +35,7 @@ export const GameLoading = () => {
     const startGameSession = (message: IGameConfig) => {
       if (message.success === "true") {
         setGameConfig(message);
-        console.log("message : ", message);
+        console.log("GameLoading에서 게임 시작 메시지 수신 : ", message);
         navigate("/game/match");
       } else {
         console.log("게임 설정 수신 오류");

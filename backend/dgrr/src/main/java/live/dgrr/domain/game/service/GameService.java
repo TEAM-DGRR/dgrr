@@ -11,6 +11,7 @@ import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.repository.GameRepository;
 import live.dgrr.domain.image.entity.event.ImageResult;
+import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.openvidu.service.OpenViduService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
@@ -36,9 +37,11 @@ public class GameService {
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
     private final GameRepository gameRepository;
+    private final MemberService memberService;
 
     //단위 : 초
-    private static final int ROUND_TIME = 20;
+    private static final int FIRST_ROUND_TIME = 35;
+    private static final int SECOND_ROUND_TIME = 35;
 
     //보상
     private static final int WIN_REWARD = 20;
@@ -60,9 +63,10 @@ public class GameService {
      */
 
 
-    public void handleMatchingRequest(String principalName) {
+    public void handleMatchingRequest(String principalName, String token) {
         log.info("Matching Session Started: {}", principalName);
-        Long memberId = 1L;
+        Long memberId = memberService.getIdFromToken(token);
+        log.info("Matching MemberId: {}", memberId);
 
         //신규 매칭 요청.
         WaitingMember nowWaitingMember = new WaitingMember(principalName, memberId);
@@ -121,7 +125,7 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(ROUND_TIME * 1000);
+            Thread.sleep(FIRST_ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -170,7 +174,7 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(ROUND_TIME * 1000);
+            Thread.sleep(SECOND_ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

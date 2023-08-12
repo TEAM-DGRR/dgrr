@@ -1,6 +1,6 @@
 import axios from "axios";
+import { OpenVidu } from "openvidu-browser";
 import { openViduConfig } from "./config";
-import { OpenVidu, Subscriber } from "openvidu-browser";
 
 const { APPLICATION_SERVER_URL, PUBLISHER_PROPERTIES } = openViduConfig;
 

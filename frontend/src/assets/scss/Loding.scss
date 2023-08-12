@@ -77,7 +77,7 @@ $font-main: 'Arial', sans-serif;
 .GameLoadingScreen::before,
 .GameLoadingScreen::after {
 	content: '';
-	position: absolute;
+	// position: absolute;
 	top: 0;
 	left: 50%;
 	height: 100%;

@@ -1,5 +1,6 @@
 //Stomp
 export const stompConfig = {
+  BROKER_URL: "ws://localhost:8080/api/v1/ws",
   CONNECT_HEADER: {
     "heart-beat": "10000,10000",
   },

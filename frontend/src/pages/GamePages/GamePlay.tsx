@@ -9,7 +9,10 @@ import { captureImage } from "components/Game/captureImage";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
 import { Client, IMessage } from "@stomp/stompjs";
 import { openViduConfig } from "components/Game";
+import { Timer } from "components/Game/Timer";
 import "assets/scss/GamePlay.scss";
+import { useNavigate } from "react-router-dom";
+import exitIco from "assets/images/ico_exit.svg"
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -193,17 +196,26 @@ export const GamePlay = (props: IGamePlayProps) => {
     }
   }, [turn]);
 
+  const navigate = useNavigate();
+
   return (
     <div className="gameplay-page">
-      {message}
+      <div className="gameplay-navbar">
+        {/* space 균등하게 주기 위한 더미 */}
+        {/* <div style={{width: 28}} /> */}
+        <Timer />
+        {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
+        {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
+      </div>
       <div id="main-video">
         <UserVideoComponent streamManager={subscriber} />
       </div>
-      <div>{turn}</div>
+      {/* <div>{turn}</div> */}
       <div id="main-video">
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <canvas ref={canvasRef} style={{ display: "none" }} width="640" height="480"></canvas>
+      <button onClick={()=>{navigate('/main')}}>메인으로</button>
     </div>
   );
 };

@@ -1,103 +1,102 @@
-@import "App.scss";
+@import 'App.scss';
 // Colors and Fonts
 $bg-color: #469ff6;
 $accent-color1: #fee500;
 $accent-color2: #424a52;
-$logo-character: url("../images/logo_character.png");
-$font-main: "Arial", sans-serif;
+$logo-character: url('../images/logo_character.png');
+$font-main: 'Arial', sans-serif;
 
 // Animations
 @keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px); 
-  }
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
 }
 
 body {
-  font-family: $font-main;
-  background-color: $bg-color;
-  color: white;
-  overflow: hidden;
+	// font-family: $font-main;
+	// background-color: $bg-color;
+	// color: white;
+	// overflow: hidden;
 }
 
 .GameLoadingScreen {
-  display: flex;
-  align-items: center;
-  justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
-  flex-direction: column;
-  height: 100vh;
-  position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
+	flex-direction: column;
+	height: 100vh;
+	position: relative;
 }
 
 .RotatingElement {
-  border-radius: 50%;
-  animation: rotate 5s infinite linear;
-  z-index: 5;
-  margin-bottom: 20vw;
+	border-radius: 50%;
+	animation: rotate 5s infinite linear;
+	z-index: 5;
+	margin-bottom: 20vw;
 
-  img {
-    width: 30vw;
-    height: 30vw;
-  }
+	img {
+		width: 30vw;
+		height: 30vw;
+	}
 }
 
 .Timer {
-  font-size: 5vw;
-  font-weight: bold;
-  color: $accent-color2;
-  margin-bottom: 20vw;
+	font-size: 5vw;
+	font-weight: bold;
+	color: $accent-color2;
+	margin-bottom: 20vw;
 }
 
 .LoadingText {
-  font-size: 6vw;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 4vw;
-  color: $accent-color1;
+	font-size: 6vw;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 4vw;
+	color: $accent-color1;
 
-  span {
-    display: inline-block;
-    animation: float 2s infinite;
-  }
+	span {
+		display: inline-block;
+		animation: float 2s infinite;
+	}
 }
 
-
 @for $i from 1 through 11 {
-  .LoadingText span:nth-child(#{$i}) {
-    animation-delay: 0.1s * $i;
-  }
+	.LoadingText span:nth-child(#{$i}) {
+		animation-delay: 0.1s * $i;
+	}
 }
 
 // Background effects
 .GameLoadingScreen::before,
 .GameLoadingScreen::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 100%;
-  width: 50vw;
-  z-index: -1;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	height: 100%;
+	width: 50vw;
+	z-index: -1;
 }
 
 .GameLoadingScreen::before {
-  background: linear-gradient(to left, $bg-color, transparent);
+	background: linear-gradient(to left, $bg-color, transparent);
 }
 
 .GameLoadingScreen::after {
-  left: 0;
-  background: linear-gradient(to right, $bg-color, transparent);
+	left: 0;
+	background: linear-gradient(to right, $bg-color, transparent);
 }

@@ -8,13 +8,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BattleDetailResponseDto {
+public class BattleDetailWithOpponentInfoResponseDto {
 
     private Long battleDetailId;
-
-    private Battle battle;
-
-    private Member member;
 
     private String firstFlag;
 

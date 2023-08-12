@@ -1,18 +1,12 @@
-import {
-  useMemo,
-  useRef,
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-} from "react";
+import { useMemo, useRef, useState, ChangeEvent, FormEvent, useEffect } from "react";
 import blankImg from "assets/images/logo_character.png";
 import axios from "axios";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 import photoUpload from "assets/images/ico_photo.png";
 import "assets/scss/Signup.scss";
-import { Input } from "components/Elements/Form/Input";
+import { Input } from "components/Form/Input";
+import { Button } from "components/Elements/Button/BasicButton";
 
 type UploadImg = {
   file: File;
@@ -164,7 +158,7 @@ export const SignUp = () => {
   return (
     <div className="SignUp">
       <div className="signup-title">
-        <p>데구르르에 오신 것을 환영합니다.</p>
+        <p>데구르르에 오신 것을 환영해요!</p>
       </div>
 
       <form onSubmit={onSubmit} className="signupForm">
@@ -186,39 +180,30 @@ export const SignUp = () => {
           />
         </label>
         <label id="nickname-label">
-          <div>
-            <span>닉네임 </span>
-            <span style={{ color: "grey" }}>
-              한글/영어/숫자 최소 2자~ 최대 12자 가능
-            </span>
-          </div>
-          <div className="input-container">
-            <Input
-              width={240}
-              onChange={onChangeNickname}
-              placeholder={"(필수)닉네임을 입력해주세요"}
-            />
-          </div>
-          <div className="check-state">
-            <span
-              style={{ visibility: see ? "visible" : "hidden", color: "red" }}
-            >
-              {checkstate}
-            </span>
-            <br />
-          </div>
+          <p className="label-title">닉네임</p>
+          <p style={{ color: "#8E8E90" }}>
+            한글/영어/숫자 최소 2자~최대 12자 가능
+          </p>
+          <Input
+            maxlength={12}
+            onChange={onChangeNickname}
+            placeholder={"닉네임을 입력해주세요"}
+          />
+          <p
+            style={{ visibility: see ? "visible" : "hidden", color: "red" }}
+          >
+            {checkstate}
+          </p>
         </label>
         <label id="description-label">
-          <span>상태 메세지</span>
+          <p className="label-title">상태 메세지</p>
           <Input
-            width={320}
+            maxlength={30}
             onChange={onChangeDescription}
-            placeholder={"상태메세지를 입력해주세요"}
+            placeholder={"상태 메세지를 입력해주세요"}
           />
         </label>
-        <button id="signupbtn" type="submit">
-          회원가입하고 시작하기
-        </button>
+        <label><Button onClick={onSubmit} color="blue">시작하기</Button></label>
       </form>
     </div>
   );

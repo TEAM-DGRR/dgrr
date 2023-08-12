@@ -13,10 +13,10 @@ export const GameLoading = () => {
   const [seconds, setSeconds] = useState(0);
 
   // Stomp and GameContext integration
-  const { 
-    stompClient, 
-    setGameConfig, 
-    connectStompClient, 
+  const {
+    stompClient,
+    setGameConfig,
+    connectStompClient,
     getGameConfiguration,
     isStompConnected,
   } = useGameContext();
@@ -46,7 +46,7 @@ export const GameLoading = () => {
     };
 
     tryConnectStomp();
-    
+
     const interval = setInterval(() => {
       setSeconds(prev => prev + 1);
     }, 1000);
@@ -58,7 +58,7 @@ export const GameLoading = () => {
   return (
     <div className="GameLoadingScreen">
       <div className="RotatingElement">
-        <img src={LoadingLogo} alt="a"/>
+        <img src={LoadingLogo} alt="a" />
       </div>
       <div className="Timer">{seconds}s</div> {/* This is the new timer display */}
       <div className="LoadingText">

@@ -4,8 +4,10 @@ $grey: #505050;
 $grey-dark: darken($grey, 10%);
 $font-family-nickname: "Helvetica", sans-serif;
 $font-family-intro: "Overpass", sans-serif;
-$nick-name-color: #1969b9;
-$intro-color: #000000;
+$nick-name-color1: #1969b9;
+$nick-name-color2: #fee500;
+$intro-color1: #000000;
+$intro-color2: #ffffff;
 $versus-image: url("../images/match-versus.png");
 
 @keyframes slideFromRight {
@@ -109,12 +111,10 @@ $versus-image: url("../images/match-versus.png");
     right: 0;
     bottom: 0;
     z-index: 1;
-    background: linear-gradient(
-      to right,
-      rgb(70, 159, 246, 1),
-      rgba(229, 240, 243, 0.7),
-      rgb(70, 159, 246, 1)
-    );
+    background: linear-gradient(to right,
+        rgb(70, 159, 246, 1),
+        rgba(229, 240, 243, 0.7),
+        rgb(70, 159, 246, 1));
     background-repeat: no-repeat;
     animation: spreadLight 0.6s;
   }
@@ -129,7 +129,7 @@ $versus-image: url("../images/match-versus.png");
     background-image: $versus-image;
     background-size: cover;
     background-position: center;
-    animation: popIn 0.3s forwards 0s, popOut 1s forwards 5s;
+    animation: popIn 0.3s forwards 0s, popOut 1s forwards 4s;
     opacity: 0;
     z-index: 3;
 
@@ -141,12 +141,10 @@ $versus-image: url("../images/match-versus.png");
       left: 50%;
       width: 150%;
       height: 150%;
-      background: radial-gradient(
-        circle,
-        rgba(255, 255, 255, 0.5),
-        rgba(255, 255, 255, 0.1),
-        transparent
-      );
+      background: radial-gradient(circle,
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0.1),
+          transparent);
       z-index: -1;
       transform: translateY(100%) scale(1.5);
       opacity: 0;
@@ -206,7 +204,6 @@ $versus-image: url("../images/match-versus.png");
   .MatchedPersonNickName,
   .MatchedPersonIntro {
     position: absolute;
-    bottom: 15%;
   }
 
   .MatchedPersonProfile {
@@ -227,11 +224,14 @@ $versus-image: url("../images/match-versus.png");
   }
 
   .MatchedPersonNickName {
-    bottom: 32%;
+    top: 55%;
+    color: $nick-name-color1;
   }
+
   .MatchedPersonIntro {
-    bottom: 5%;
+    top: 70%;
     text-align: left;
+    color: $intro-color1;
   }
 }
 
@@ -275,12 +275,14 @@ $versus-image: url("../images/match-versus.png");
 
   .MatchedPersonNickName {
     top: 8%;
-    margin-bottom: 10%;
+    // margin-bottom: 10%;
+    color: $nick-name-color2;
   }
 
   .MatchedPersonIntro {
     top: 20%;
     text-align: left;
+    color: $intro-color2;
   }
 }
 
@@ -303,7 +305,6 @@ $versus-image: url("../images/match-versus.png");
 
 .MatchedPersonNickName {
   font-family: $font-family-nickname;
-  color: $nick-name-color;
   font-size: calc(2vw + 2vh);
   font-weight: bold;
   z-index: 2;
@@ -321,7 +322,6 @@ $versus-image: url("../images/match-versus.png");
 
 .MatchedPersonIntro {
   font-family: $font-family-intro;
-  color: $intro-color;
   font-size: calc(1.2vw + 1.2vh);
   max-width: 80vw;
   max-width: 30vh;
@@ -338,10 +338,8 @@ $versus-image: url("../images/match-versus.png");
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.7),
-      rgba(240, 240, 240, 0.7)
-    );
+    background: linear-gradient(45deg,
+        rgba(255, 255, 255, 0.7),
+        rgba(240, 240, 240, 0.7));
   }
 }

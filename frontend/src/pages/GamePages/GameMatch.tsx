@@ -21,13 +21,11 @@ export const GameMatch = () => {
   const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
 
 
-  // const vsPersonProfile1 = enemyInfo.profileImage;
-  const vsPersonProfile1 = "https://dgrr-bucket.s3.ap-northeast-2.amazonaws.com/71961d40-02d6-424b-888b-693c08ed3fa8.png";
+  const vsPersonProfile1 = enemyInfo.profileImage;
   const USER1_NICKNAME = enemyInfo.nickname;
   const USER1_INTRO = enemyInfo.description;
 
-  // const vsPersonProfile2 = myInfo.profileImage;
-  const vsPersonProfile2 = "https://dgrr-bucket.s3.ap-northeast-2.amazonaws.com/71961d40-02d6-424b-888b-693c08ed3fa8.png";
+  const vsPersonProfile2 = myInfo.profileImage;
   const USER2_NICKNAME = myInfo.nickname;
   const USER2_INTRO = myInfo.description;
 

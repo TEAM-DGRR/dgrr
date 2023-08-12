@@ -26,12 +26,6 @@ $font-main: "Arial", sans-serif;
   }
 }
 
-body {
-  font-family: $font-main;
-  background-color: $bg-color;
-  color: white;
-  overflow: hidden;
-}
 
 .GameLoadingScreen {
   display: flex;

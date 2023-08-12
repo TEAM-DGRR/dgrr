@@ -28,7 +28,7 @@ export const UserVideoComponent = forwardRef<ChildMethods, IUserVideoComponent>(
 
     return (
       <div className="streamcomponent">
-        <video autoPlay={true} ref={videoRef} width="320" style={{ width: '320', height: '450' }} />
+        <video autoPlay={true} ref={videoRef} />
       </div>
     );
   }

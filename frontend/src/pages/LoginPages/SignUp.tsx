@@ -65,13 +65,28 @@ export const SignUp = () => {
     const fileList = e.target.files;
 
     if (fileList !== null && fileList.length > 0) {
-      const url = URL.createObjectURL(fileList[0]);
+      // const url = URL.createObjectURL(fileList[0]);
       // 미리보기용으로 이미지 state에 저장
-      setProfileImg({
-        file: fileList[0],
-        thumbnail: url,
-        type: fileList[0].type.slice(0, 5),
-      });
+      const formData = new FormData();
+      formData.append("file", fileList[0]);
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/file`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        } )
+        .then((res: any) => {
+          console.log("file upload: " + JSON.stringify(res.data));
+          setProfileImg({
+            file: fileList[0],
+            thumbnail: res.data,
+            type: fileList[0].type.slice(0, 5),
+          });
+          
+        })
+        .catch((err: any) => {
+          console.log(err);
+        })
     }
   };
 

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 
-@CrossOrigin("*")
+@CrossOrigin(exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 @RestController
 public class FileController {

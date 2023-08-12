@@ -71,9 +71,8 @@ class MemberRepositoryTest {
     @Test
     public void memberRepositorySaveAndFind() {
         Member member = new Member("kakaoId", "닉네임", "프로필이미지", "상태 메세지", RoleType.USER, "EXIST");
-        Member save = memberRepository.save(member);
-
-        Assertions.assertThat(memberService.getMemberByMemberId(save.getMemberId()).get().getKakaoId()).isEqualTo("kakaoId");
+        memberRepository.save(member);
+        Assertions.assertThat(memberService.getMemberByMemberId(member.getMemberId()).get().getKakaoId()).isEqualTo("kakaoId");
 
 
     }

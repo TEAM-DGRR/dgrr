@@ -41,4 +41,13 @@ public class BattleDetail extends BaseEntity {
         this.battleResult = battleResult;
         this.laughAmount = laughAmount;
     }
+
+    public BattleDetail(Battle battle, Member member, String firstFlag, Long holdingTime, GameResult battleResult, Long laughAmount) {
+        this.battle = battle;
+        this.member = member;
+        this.firstFlag = firstFlag;
+        this.holdingTime = holdingTime;
+        this.battleResult = battleResult;
+        this.laughAmount = laughAmount;
+    }
 }

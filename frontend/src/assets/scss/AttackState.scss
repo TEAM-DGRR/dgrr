@@ -1,0 +1,29 @@
+.attack-state {
+  // 크기, 모서리
+  width: 64px;
+  height: 40px;
+  border-radius: 8px;
+
+  // 위치
+  position: absolute;
+  top: 36px;
+  left: 36px;
+  z-index: 1;
+
+  // 글씨
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.red {
+    background: #FF004D;
+  }
+
+  &.blue {
+    background: #469FF6;
+  }
+}

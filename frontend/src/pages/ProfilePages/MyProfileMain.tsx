@@ -1,6 +1,8 @@
 import arrowleft from 'assets/images/ico_arrow-left_24px.svg';
 import editImg from 'assets/images/ico_edit_24px.svg';
 import profileImg from 'assets/images/peeps-avatar.png';
+import tierBronze from 'assets/images/tier_bronze.png';
+import tierSilver from 'assets/images/tier_silver.png';
 import tierGold from 'assets/images/tier_gold.png';
 import winImg from 'assets/images/result_win.svg';
 import loseImg from 'assets/images/result_lose.svg';
@@ -45,8 +47,8 @@ export const MyProfileMain = () => {
 
 	const [ratingList, setRatingList] = useState([
 		{
-			rating: null,
-			season: null,
+			rating: 0,
+			season: 0,
 		},
 	]);
 
@@ -64,7 +66,7 @@ export const MyProfileMain = () => {
 	const progressBarRef = useRef(null);
 	const progressBarTextRef = useRef(null);
 
-	const progressBarStates = [0, 75];
+	const progressBarStates = [0, 100];
 
 	useEffect(() => {
 		let time = 0;
@@ -78,7 +80,7 @@ export const MyProfileMain = () => {
 					gsap.to(progressBarRef.current, {
 						x: `${state}%`,
 						duration: 2,
-						backgroundColor: '#ffd700',
+						// backgroundColor: '#ffd700',
 					});
 				} else {
 					gsap.to(progressBarRef.current, {
@@ -147,12 +149,20 @@ export const MyProfileMain = () => {
 
 				<div className='tier'>
 					<span>내 티어</span>
-					{ratingList[0].rating}
 					<div className='tierInfo'>
 						<img src={questionImg} alt='티어 정보 보기' onClick={openModal} />
 					</div>
 					<div className='tierImage'>
-						<img src={tierGold} alt='티어 예시' />
+						<img
+							src={
+								ratingList[0].rating < 1600
+									? tierBronze
+									: ratingList[0].rating < 1800
+									? tierSilver
+									: tierGold
+							}
+							alt='티어 예시'
+						/>
 					</div>
 					<div>
 						<div className='container'>

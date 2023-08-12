@@ -11,7 +11,10 @@ import live.dgrr.domain.game.entity.enums.GameStatus;
 import live.dgrr.domain.game.entity.enums.RoundResult;
 import live.dgrr.domain.game.repository.GameRepository;
 import live.dgrr.domain.image.entity.event.ImageResult;
+import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.openvidu.service.OpenViduService;
+import live.dgrr.domain.rating.service.RatingService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +39,12 @@ public class GameService {
     private final SimpMessagingTemplate template;
     private final OpenViduService openViduService;
     private final GameRepository gameRepository;
+    private final MemberService memberService;
+    private final RatingService ratingService;
 
     //단위 : 초
-    private static final int ROUND_TIME = 20;
+    private static final int FIRST_ROUND_TIME = 35;
+    private static final int SECOND_ROUND_TIME = 35;
 
     //보상
     private static final int WIN_REWARD = 20;
@@ -60,9 +66,11 @@ public class GameService {
      */
 
 
-    public void handleMatchingRequest(String principalName) {
+    public void handleMatchingRequest(String principalName, String token) {
         log.info("Matching Session Started: {}", principalName);
-        Long memberId = 1L;
+        log.info("Matching Session Check Token:{}", token);
+        Long memberId = memberService.getIdFromToken(token);
+        log.info("Matching MemberId: {}", memberId);
 
         //신규 매칭 요청.
         WaitingMember nowWaitingMember = new WaitingMember(principalName, memberId);
@@ -85,10 +93,21 @@ public class GameService {
     private void gameStart(WaitingMember memberOne, WaitingMember memberTwo) {
         log.info("Game Started");
         //GameRoom 생성.
+        Member member1 = memberService.getMemberByMemberId(memberOne.getMemberId()).get();
+        Member member2 = memberService.getMemberByMemberId(memberTwo.getMemberId()).get();
+
+        int ratingOne = ratingService.findRatingByMember(member1).get(0).getRating();
+        int ratingTwo = ratingService.findRatingByMember(member2).get(0).getRating();
+
         GameRoomMember roomMember1 = new GameRoomMember(memberOne.getPrincipalName(),
-                memberOne.getMemberId(), "","","", 1400, Rank.BRONZE);
+                memberOne.getMemberId(), member1.getNickname(),member1.getProfileImage(),member1.getDescription(),
+                ratingOne, DgrrUtils.rankCalculator(ratingOne));
         GameRoomMember roomMember2 = new GameRoomMember(memberTwo.getPrincipalName(),
-                memberTwo.getMemberId(), "","","", 1400, Rank.BRONZE);
+                memberTwo.getMemberId(), member2.getNickname(),member2.getProfileImage(),member2.getDescription(),
+                ratingTwo, DgrrUtils.rankCalculator(ratingTwo));
+
+        log.info("GameRoomMemberOne: {}", roomMember1);
+        log.info("GameRoomMemberTwo: {}", roomMember2);
 
         //GameSessionId 생성
         String gameSessionId = UUID.randomUUID().toString();
@@ -121,7 +140,7 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(ROUND_TIME * 1000);
+            Thread.sleep(FIRST_ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -170,7 +189,7 @@ public class GameService {
         LocalDateTime recordStartTime = LocalDateTime.now();
         //시간 대기
         try {
-            Thread.sleep(ROUND_TIME * 1000);
+            Thread.sleep(SECOND_ROUND_TIME * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

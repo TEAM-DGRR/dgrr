@@ -9,6 +9,7 @@ import { captureImage } from "components/Game/captureImage";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
 import { Client, IMessage } from "@stomp/stompjs";
 import { openViduConfig } from "components/Game";
+import "assets/scss/GamePlay.scss";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -193,13 +194,13 @@ export const GamePlay = (props: IGamePlayProps) => {
   }, [turn]);
 
   return (
-    <div>
+    <div className="gameplay-page">
       {message}
       <div id="main-video">
         <UserVideoComponent streamManager={subscriber} />
       </div>
       <div>{turn}</div>
-      <div id="main-video2">
+      <div id="main-video">
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <canvas ref={canvasRef} style={{ display: "none" }} width="640" height="480"></canvas>

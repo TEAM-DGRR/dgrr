@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -98,7 +99,9 @@ public class MemberController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        System.out.println(authorization);
         return "Test has done";
     }
 

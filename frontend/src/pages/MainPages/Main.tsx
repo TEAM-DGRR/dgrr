@@ -11,25 +11,19 @@ export const Main = () => {
 	const navigate = useNavigate();
 
 	const onClick = () => {
-		axios
-			.get(`${process.env.REACT_APP_API_URL}/member/member-id`)
-			.then((res: any) => {
-				alert('::: ' + JSON.stringify(res.data));
-			})
-			.catch((err: any) => {
-				console.log(err);
-			});
+		// 메뉴로
+		navigate('/menu');
 	};
 
 	return (
 		<div className='MainPage'>
 			<div className='MainNav'>
-				<img src={menuIco} alt='메뉴 아이콘' />
+				<img src={menuIco} alt='메뉴 아이콘' onClick={onClick} />
 				<img
 					src={personIco}
 					alt='프로필 아이콘'
 					onClick={() => {
-						navigate('/myprofile');
+						navigate('/profile');
 					}}
 				/>
 			</div>
@@ -41,7 +35,13 @@ export const Main = () => {
 				<div className='MainBtns'>
 					<Button>코드 입력</Button>
 					<Button>방 만들기</Button>
-					<Button>랜덤 매칭</Button>
+					<Button
+						onClick={() => {
+							navigate('/game');
+						}}
+					>
+						랜덤 매칭
+					</Button>
 				</div>
 			</div>
 		</div>

@@ -1,50 +1,39 @@
 .signupForm {
-  label {
+  text-align: left;
+  .label {
     display: flex;
     flex-direction: column;
     width: calc(100% - 48px);
     margin: auto;
-    margin-bottom: 24px;
+    margin-bottom: 48px;
   }
-}
-
-.input-container {
-  display: flex;
-  gap: 8px; /* Input과 button 사이의 간격 */
-  align-items: center; /* 세로 중앙 정렬 */
 }
 
 .signup-title {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  height: 100px;
-
-  p {
-    padding-top: 38px;
-  }
+  color: black;
+  font-size: 24px;
+  font-weight: 700;
+  padding: 48px 24px;
+  height: 30%;
+  font-family: 'Noto Sans KR';
 }
 
-#signupbtn {
-  height: 56px;
-  width: calc(100% - 48px);
-  border-radius: 8px;
-  margin-left: 24px;
-  margin-top: 30px;
+#nickname-label *, #description-label * {
+  margin-bottom: 12px;
+}
 
-  // 색
-  background: #3c2f80;
-  color: white;
-  
-  // 폰트
-  font-size: 18px;
-  font-weight: bold;
+.label-title {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Noto Sans KR';
+
 }
 
 #profileImg-label {
   position: relative;
   width: 240px;
   height: 240px;
+  margin-bottom: 48px;
 
   label {
     width: 60px;
@@ -74,7 +63,6 @@
   margin-top: 12px;
 }
 
-.check-state {
-  margin-top: 24px;
-  vertical-align: middle;
+#photo-upload {
+  width: 100%;
 }

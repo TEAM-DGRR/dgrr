@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import live.dgrr.global.utils.Rank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
-@Getter @AllArgsConstructor
+@Getter @AllArgsConstructor @ToString
 public class GameRoomMember {
 
     @JsonIgnore

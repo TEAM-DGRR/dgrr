@@ -97,11 +97,13 @@ export const SignUp = () => {
         .then((res: any) => {
           // 없다면 회원가입 진행
           if (res.data.nicknameExists === "false") {
+            console.log("??? : " + profileImg?.thumbnail);
+            console.log("type: " + typeof(profileImg?.thumbnail));
             axios
               .post(`${process.env.REACT_APP_API_URL}/member`, {
                 kakaoId: id,
                 nickname: nickname,
-                profileImg: profileImg,
+                profileImage: (profileImg?.thumbnail),
                 description: description,
               })
               .then((res: any) => {
@@ -181,8 +183,8 @@ export const SignUp = () => {
             id="profileImg"
             type="file"
             accept="image/*"
-            ref={fileInputRef}
-            onChange={uploadImg}
+            ref={fileInputRef} // 미리보기
+            onChange={uploadImg} // 바뀌면
           />
         </label>
         <label id="nickname-label">

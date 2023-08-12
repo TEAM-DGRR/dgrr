@@ -1,10 +1,9 @@
 //Stomp
 export const stompConfig = {
-  BROKER_URL: "ws://localhost:8080/api/v1/ws",
   CONNECT_HEADER: {
     "heart-beat": "10000,10000",
   },
-  
+
   DESTINATION_URI: {
     MATCHING_URI: "/send/matching",
     GAME_URI: "/user/recv/game",
@@ -25,7 +24,6 @@ export const openViduConfig = {
     publishAudio: true,
     publishVideo: true,
     resolution: "1280x720",
-    frameRate: 60,
     frameRate: 60,
     insertMode: "APPEND",
     mirror: true,

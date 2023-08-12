@@ -1,0 +1,19 @@
+.gameplay-page {
+  width: 100%;
+  height: 100vh;
+  background: black;
+}
+
+.streamcomponent {
+  position: relative;
+  padding-top: 56.25%;
+  height: calc((100% - 72px)/2);
+}
+
+.streamcomponent video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}  

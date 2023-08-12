@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
 import live.dgrr.domain.member.dto.response.MemberInfoResponseDto;
@@ -176,7 +176,7 @@ public class MemberService {
         List<RatingResponseDto> ratings = ratingService.findRatingByMember(member);
 
         // BattleDetail 조회
-        List<BattleDetailResponseDto> battleDetails = battleService.findTop3BattleDetailByMemberId(member);
+        List<BattleDetailWithOpponentInfoResponseDto> battleDetails = battleService.findTop3BattleDetailByMemberId(member);
 
         // 조회한 정보를 MemberInfoResponseDto에 담아서 반환
         return new MemberInfoResponseDto(memberDto, ratings, battleDetails);

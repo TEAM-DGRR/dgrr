@@ -1,6 +1,6 @@
 package live.dgrr.domain.battle.controller;
 
-import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class BattleController {
     @GetMapping
     public ResponseEntity<?> getBattleDetail() {
         Long memberId = 1L;
-        List<BattleDetailResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
+        List<BattleDetailWithOpponentInfoResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
         return new ResponseEntity<>(battleDetails, HttpStatus.OK);
     }
 

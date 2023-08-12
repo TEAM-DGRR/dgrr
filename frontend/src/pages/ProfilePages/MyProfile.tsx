@@ -16,29 +16,6 @@ import axios from 'axios';
 export const MyProfile = () => {
 	const navigate = useNavigate();
 
-	// 사용자 정보 저장
-	const [member, setMember] = useState({
-		nickname: '',
-		description: '',
-		profileImg: '',
-	});
-
-	// const [battleDetailList, setBattleDetailList] = useState([
-	// 	{
-	// 		result: '',
-	// 		profileImage: '',
-	// 		nickname: '',
-	// 		date: '',
-	// 	},
-	// ]);
-
-	const [ratingList, setRatingList] = useState([
-		{
-			rating: null,
-			season: null,
-		},
-	]);
-
 	//modal
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const openModal = () => {
@@ -49,27 +26,38 @@ export const MyProfile = () => {
 		setIsModalOpen(false);
 	};
 
-	const battleDetailList = [
+	// 사용자 정보 저장
+	const [member, setMember] = useState({
+		nickname: '',
+		description: '',
+		profileImg: '',
+	});
+
+	const [battleDetailList, setBattleDetailList] = useState([
 		{
-			result: 'WIN',
-			profileImage: 'path_to_profile_image_1.jpg',
-			nickname: '미정미정',
-			date: '2023-08-09',
+			battleResult: '',
+			createdAt: '',
+			opponentProfileImage: '',
+			opponentNickname: '',
+			opponentDescription: '',
 		},
+	]);
+
+	const [ratingList, setRatingList] = useState([
 		{
-			result: 'DRAW',
-			profileImage: 'path_to_profile_image_2.jpg',
-			nickname: '웃어웃으라고',
-			date: '2023-08-08',
+			rating: null,
+			season: null,
 		},
-		{
-			result: 'LOSE',
-			profileImage: 'path_to_profile_image_2.jpg',
-			nickname: '마라탕 0단계먹는 명하',
-			date: '2023-08-08',
-		},
-		// ...
-	];
+	]);
+
+	function formatDate(dateString: string): string {
+		const date = new Date(dateString);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+		const day = String(date.getDate()).padStart(2, '0');
+
+		return `${year}-${month}-${day}`;
+	}
 
 	//progressBar - start
 	const progressBarContainerRef = useRef(null);
@@ -103,7 +91,6 @@ export const MyProfile = () => {
 		});
 		//progressBar - end
 
-		console.log('refresh check');
 		// 회원정보 받아오기
 		const fetchMemberData = async () => {
 			axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
@@ -114,7 +101,7 @@ export const MyProfile = () => {
 					console.log(res.data);
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
-					// setBattleDetailList(res.data.battleDetailList);
+					setBattleDetailList(res.data.battleDetailList);
 				})
 				.catch((err: any) => {
 					console.log(err);
@@ -191,20 +178,20 @@ export const MyProfile = () => {
 											<img
 												className='result-image'
 												src={
-													item.result === 'WIN'
+													item.battleResult === 'WIN'
 														? winImg
-														: item.result === 'LOSE'
+														: item.battleResult === 'LOSE'
 														? loseImg
 														: drawImg
 												}
 												alt='승리 이미지'
 											/>
 											<img className='profile-image' src={profileImg} alt='프로필 이미지' />
-											<span className='nickname'>{item.nickname}</span>
+											<span className='nickname'>{item.opponentNickname}</span>
 										</div>
 
 										<div className='result-right'>
-											<span className='date'>{item.date}</span>
+											<span className='date'>{formatDate(item.createdAt)}</span>
 										</div>
 									</div>
 								</li>

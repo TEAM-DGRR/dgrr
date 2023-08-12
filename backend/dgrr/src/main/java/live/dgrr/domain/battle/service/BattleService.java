@@ -1,9 +1,11 @@
 package live.dgrr.domain.battle.service;
 
-import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
+import live.dgrr.domain.battle.entity.Battle;
 import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.battle.repository.BattleDetailRepository;
 import live.dgrr.domain.member.entity.Member;
+import live.dgrr.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,26 +15,47 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BattleService {
-    private final BattleDetailRepository battleRepository;
+    private final BattleDetailRepository battleDetailRepository;
+    private final MemberRepository memberRepository;
 
-    public List<BattleDetailResponseDto> findTop3BattleDetailByMemberId(Member member) {
-        List<BattleDetail> battleDetails = battleRepository.findTop3ByMember_MemberIdOrderByCreatedAtAsc(member.getMemberId());
+    public List<BattleDetailWithOpponentInfoResponseDto> findTop3BattleDetailByMemberId(Member member) {
+        List<BattleDetail> battleDetails = battleDetailRepository.findTop3ByMember_MemberIdOrderByCreatedAtAsc(member.getMemberId());
         return getBattleDetailResponseDto(battleDetails);
     }
 
-    public List<BattleDetailResponseDto> findBattleDetailByMemberId(Long memberId) {
-        List<BattleDetail> battleDetails = battleRepository.findByMember_MemberIdOrderByCreatedAtAsc(memberId);
+    public List<BattleDetailWithOpponentInfoResponseDto> findBattleDetailByMemberId(Long memberId) {
+        List<BattleDetail> battleDetails = battleDetailRepository.findByMember_MemberIdOrderByCreatedAtAsc(memberId);
         return getBattleDetailResponseDto(battleDetails);
     }
 
-    private List<BattleDetailResponseDto> getBattleDetailResponseDto(List<BattleDetail> battleDetails) {
-        List<BattleDetailResponseDto> responseDtoList = new ArrayList<>();
+    private List<BattleDetailWithOpponentInfoResponseDto> getBattleDetailResponseDto(List<BattleDetail> battleDetails) {
+        List<BattleDetailWithOpponentInfoResponseDto> responseDtoList = new ArrayList<>();
 
         for (BattleDetail battleDetail : battleDetails) {
-            BattleDetailResponseDto responseDto = new BattleDetailResponseDto(battleDetail.getBattleDetailId(), battleDetail.getMember(),battleDetail.getFirstFlag(), battleDetail.getHoldingTime(), battleDetail.getBattleResult(), battleDetail.getLaughAmount());
+            Member opponentMember = getOpponentMemberForBattle(battleDetail);
+            BattleDetailWithOpponentInfoResponseDto responseDto = new BattleDetailWithOpponentInfoResponseDto(
+                    battleDetail.getBattleDetailId(),
+                    battleDetail.getFirstFlag(),
+                    battleDetail.getHoldingTime(),
+                    battleDetail.getBattleResult(),
+                    battleDetail.getLaughAmount(),
+                    battleDetail.getCreatedAt(),
+                    opponentMember.getNickname(),
+                    opponentMember.getProfileImage(),
+                    opponentMember.getDescription());
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
+    }
+
+    private Member getOpponentMemberForBattle(BattleDetail battleDetail) {
+        Battle battle = battleDetail.getBattle();
+        Member member = battleDetail.getMember();
+
+        //상대의 BattleDetail을 가져옴
+        BattleDetail opponentBattleDetail = battleDetailRepository.findByMember_OpponentMemberIdForBattleDetail(battle.getBattleId(), member.getMemberId());
+
+        return memberRepository.findByMemberId(opponentBattleDetail.getMember().getMemberId());
     }
 
 }

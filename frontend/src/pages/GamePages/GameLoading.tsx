@@ -1,16 +1,21 @@
 // GameLoading.tsx
 
+import LoadingSoundPath from "../../assets/audio/game-loading.mp3";
+
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
 import { IGameConfig } from "components/Game";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
+
 const LoadingMessage = "게임을 찾는 중입니다";
 
 export const GameLoading = () => {
+  const loadingSound = new Audio(LoadingSoundPath);
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
+
 
   // Stomp and GameContext integration
   const {
@@ -21,6 +26,8 @@ export const GameLoading = () => {
   } = useGameContext();
 
   useEffect(() => {
+
+    loadingSound.play();
     // 1) 소켓 통신 연결
     const tryConnectStomp = async () => {
       if (!stompClient) {
@@ -36,6 +43,7 @@ export const GameLoading = () => {
       if (message.success === "true") {
         setGameConfig(message);
         console.log("GameLoading에서 게임 시작 메시지 수신 : ", message);
+        loadingSound.pause();
         navigate("/game/match");
       } else {
         console.log("게임 설정 수신 오류");
@@ -49,7 +57,12 @@ export const GameLoading = () => {
     }, 1000);
 
     // Cleanup on unmount
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      loadingSound.pause();
+      loadingSound.currentTime = 0;
+    }
+
   }, []);
 
   return (

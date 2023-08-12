@@ -3,6 +3,7 @@ export const stompConfig = {
   CONNECT_HEADER: {
     "heart-beat": "10000,10000",
   },
+
   DESTINATION_URI: {
     MATCHING_URI: "/send/matching",
     GAME_URI: "/user/recv/game",

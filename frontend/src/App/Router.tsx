@@ -47,12 +47,12 @@ const router = createBrowserRouter([
         errorElement: <NotFound/>,
     },
     {
-        path: "match",
+        path: "game/match",
         element: <GameMatch/>,
         errorElement: <NotFound/>,
     },
     {
-        path: "loading",
+        path: "game/loading",
         element: <GameLoading/>,
         errorElement: <NotFound/>,
     },

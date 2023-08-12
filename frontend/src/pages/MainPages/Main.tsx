@@ -26,7 +26,7 @@ export const Main = () => {
 					src={personIco}
 					alt='프로필 아이콘'
 					onClick={() => {
-						navigate('/profile');
+						navigate('/myprofile');
 					}}
 				/>
 			</div>

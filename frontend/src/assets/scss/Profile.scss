@@ -27,7 +27,7 @@
 }
 
 .MarginFrame {
-	margin: 10px;
+	margin: 14px;
 }
 
 .navbar {
@@ -141,7 +141,7 @@
 }
 
 .record {
-	margin: 40px 0;
+	margin: 20px 0;
 	.recordTitle {
 		display: flex;
 		justify-content: space-between;
@@ -162,6 +162,7 @@
 	.recordList {
 		.list_ul {
 			.battle-item {
+				margin: 4px 0;
 				.battle-result {
 					display: flex;
 					justify-content: space-between;
@@ -170,16 +171,16 @@
 						display: flex;
 						align-items: center;
 						.result-image {
+							width: 36px;
 							margin: 3px;
 						}
 						.profile-image {
-							width: 24px;
+							width: 36px;
 							border-radius: 50%;
 							margin: 3px;
 						}
 						.nickname {
 							margin: 3px;
-							font-size: small;
 						}
 					}
 					.result-right {

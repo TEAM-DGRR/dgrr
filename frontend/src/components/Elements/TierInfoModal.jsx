@@ -18,7 +18,7 @@ const Modal = ({ isOpen, closeModal }) => {
 		{
 			tierName: 'bronze',
 			tierImage: tierBronze,
-			lowRating: 0,
+			lowRating: 1400,
 		},
 		{
 			tierName: 'silver',

@@ -2,14 +2,15 @@ import { Client, IMessage } from "@stomp/stompjs";
 import { IGameResult, IGameStatus, IImageResult, openViduConfig, stompConfig } from "components/Game";
 import { captureImage } from "components/Game/captureImage";
 import { joinSession } from "components/Game/openVidu";
-import { timeRemaining } from "components/Game/parseDate";
 import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
-import { captureImage } from "components/Game/captureImage";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
-import { Client, IMessage } from "@stomp/stompjs";
-import { openViduConfig } from "components/Game";
 import "assets/scss/GamePlay.scss";
+import { useEffect, useRef, useState } from "react";
+import { useGameContext } from "./GameContext";
+import { UserVideoComponent } from "./UserVideoComponent";
+import { Timer } from "components/Game/Timer";
+import { useNavigate } from "react-router-dom";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;

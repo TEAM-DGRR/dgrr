@@ -11,6 +11,7 @@ $font-main: 'Arial', sans-serif;
 	0% {
 		transform: rotate(0deg);
 	}
+
 	100% {
 		transform: rotate(360deg);
 	}
@@ -21,12 +22,15 @@ $font-main: 'Arial', sans-serif;
 	100% {
 		transform: translateY(0);
 	}
+
 	50% {
 		transform: translateY(-20px);
 	}
 }
 
 .GameLoadingScreen {
+	background: $blue;
+	text-align: center;
 	display: flex;
 	align-items: center;
 	justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
@@ -77,7 +81,7 @@ $font-main: 'Arial', sans-serif;
 .GameLoadingScreen::before,
 .GameLoadingScreen::after {
 	content: '';
-	// position: absolute;
+	position: absolute;
 	top: 0;
 	left: 50%;
 	height: 100%;

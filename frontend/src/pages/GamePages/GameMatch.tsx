@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 
-import vsPersonProfile1 from "assets/images/match-person1.png";
-import vsPersonProfile2 from "assets/images/match-person2.png";
 
 
 // const USER1_NICKNAME = "나 이수연인데";
@@ -21,15 +19,15 @@ export const GameMatch = () => {
   // Stomp
   const { stompClient, isStompConnected, gameConfig } = useGameContext();
   const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
-  
-  
-  // const vsPersonProfile1 = myInfo.profileImage;
-  const USER1_NICKNAME = myInfo.nickname;
-  const USER1_INTRO = myInfo.description;
 
-  // const vsPersonProfile2 = enemyInfo.profileImage;
-  const USER2_NICKNAME = enemyInfo.nickname;
-  const USER2_INTRO = enemyInfo.description;
+
+  const vsPersonProfile1 = enemyInfo.profileImage;
+  const USER1_NICKNAME = enemyInfo.nickname;
+  const USER1_INTRO = enemyInfo.description;
+
+  const vsPersonProfile2 = myInfo.profileImage;
+  const USER2_NICKNAME = myInfo.nickname;
+  const USER2_INTRO = myInfo.description;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -55,7 +53,7 @@ export const GameMatch = () => {
       <div className="MatchedPerson1">
         <div className="MatchedPersonBackground1"></div>
         <div className="MatchedPersonProfile">
-          <img src={vsPersonProfile1} alt='vsPersonProfile1'/>
+          <img src={vsPersonProfile1} alt='vsPersonProfile1' />
         </div>
         <div className="MatchedPersonNickName">
           {USER1_NICKNAME}
@@ -64,11 +62,11 @@ export const GameMatch = () => {
           {USER1_INTRO}
         </div>
       </div>
-      
+
       <div className="MatchedPerson2">
         <div className="MatchedPersonBackground2"></div>
         <div className="MatchedPersonProfile">
-          <img src={vsPersonProfile2} alt='vsPersonProfile2'/>
+          <img src={vsPersonProfile2} alt='vsPersonProfile2' />
         </div>
         <div className="MatchedPersonNickName">
           {USER2_NICKNAME}

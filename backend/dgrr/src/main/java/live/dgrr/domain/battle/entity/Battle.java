@@ -18,4 +18,9 @@ public class Battle extends BaseEntity {
     private BattleType battleType;
 
     private Long battleTime;
+
+    public Battle(BattleType battleType, Long battleTime) {
+        this.battleType = battleType;
+        this.battleTime = battleTime;
+    }
 }

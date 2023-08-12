@@ -12,7 +12,7 @@ export const Game = () => {
   return (
     <div>
       <GameProvider>
-        <Routes>
+        <Routes>s
           <Route path="/loading" element={<GameLoading />} />
           <Route path="/match" element={<GameMatch />} />
           <Route path="/play" element={<GamePlay />} />

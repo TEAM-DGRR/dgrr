@@ -1,16 +1,8 @@
 import "assets/scss/App.scss";
-import { Game } from "pages/GamePages/Game";
-import { GameMatch } from "pages/GamePages/GameMatch";
-import { KakaoCallback } from "pages/LoginPages/KakaoCallback";
-import { KakaoLogin } from "pages/LoginPages/KakaoLogin";
-import { SignUp } from "pages/LoginPages/SignUp";
-import { Main } from "pages/MainPages/Main";
-import { KakaoLogout } from "pages/LoginPages/KakaoLogout";
-import { Menu } from "pages/MainPages/Menu";
 import axios from "axios";
-import { GameLoading } from "pages/GamePages/GameLoading";
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
+import router from "./Router";
 
 export const App = () => {
   // 모바일 뷰포트 계산
@@ -28,19 +20,7 @@ export const App = () => {
 
   return (
     <div className="App">
-      <Routes>
-        {/* 로그인 관련 */}
-        <Route path="/" element={<KakaoLogin />} />
-        <Route path="/KakaoCallback" element={<KakaoCallback />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/KakaoLogout" element={<KakaoLogout/>}/>
-
-        <Route path="/main" element={<Main />} />
-        <Route path="/main/menu" element={<Menu/>}/>
-        <Route path="/game/*" element={<Game />} />
-        <Route path="/match" element={<GameMatch />} />
-        <Route path="/loading" element={<GameLoading />} />
-      </Routes>
+      <RouterProvider router={router} />
     </div>
   );
 };

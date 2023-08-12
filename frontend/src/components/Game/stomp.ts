@@ -1,10 +1,16 @@
-import { Client, IMessage, StompHeaders, messageCallbackType } from "@stomp/stompjs";
+import { Client, StompHeaders } from "@stomp/stompjs";
 import { stompConfig } from "./config";
 import { IGameConfig } from "./interface";
 
 const { CONNECT_HEADER, DESTINATION_URI } = stompConfig;
 const { GAME_URI, MATCHING_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } =
   DESTINATION_URI;
+
+interface IPublishParams {
+  body: string | undefined;
+}
+
+
 
 export const connectStomp = (headers: StompHeaders) => {
   const client = new Client({
@@ -30,15 +36,21 @@ export const connectStomp = (headers: StompHeaders) => {
 export const getGameConfig = (client: Client) => {
   return new Promise<IGameConfig>((resolve) => {
     client.subscribe(GAME_URI, (message) => {
-      console.log("[GAME Message recieved] : " + message.headers);
+      console.log("[GAME Message received] : " + message.headers);
       console.log("[body] : " + message.body);
       const gameConfig = JSON.parse(message.body);
       resolve(gameConfig);
     });
-    client.publish({
-      destination: MATCHING_URI,
-      body: "[enter matching queue]",
-    });
+
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      client.publish({
+        destination: MATCHING_URI,
+        body: token
+      });
+    } else {
+      console.error("Error: Token is null.");
+    }
   });
 };
 

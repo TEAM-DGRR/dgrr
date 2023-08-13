@@ -10,13 +10,13 @@
 .MainBody {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 45px);
+  height: calc(100% - 64x);
 }
 
 .MainNav {
   margin: auto;
   width: calc(100% - 48px);
-  height: 45px;
+  height: 64px;
   display: flex;
   justify-content: space-between;
 
@@ -36,7 +36,6 @@
   justify-content: space-evenly;
   align-items: center;
 }
-
 
 #character {
   width: 60%;

@@ -18,6 +18,8 @@ import { UserVideoComponent } from "./UserVideoComponent";
 import { Timer } from "components/Game/Timer";
 import { useNavigate } from "react-router-dom";
 import { AttackState } from "components/Game/AttackState";
+import attackIco from "assets/images/match-attack.png";
+import defendIco from "assets/images/match-defense.png";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -25,11 +27,13 @@ export interface ChildMethods {
 
 export const GamePlay = () => {
   const { stompClient, isStompConnected, gameConfig } = useGameContext();
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
+  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } =
+    gameConfig;
 
   // Stomp
   const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
-  const { IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } = DESTINATION_URI;
+  const { IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } =
+    DESTINATION_URI;
 
   // 이미지 처리
   const childRef = useRef<ChildMethods | null>(null);
@@ -210,16 +214,20 @@ export const GamePlay = () => {
       if (isStompConnected && stompClient instanceof Client) {
         const videoElement = childRef.current?.getVideoElement();
         if (videoElement && canvasRef.current) {
-          captureImage(videoElement, canvasRef.current, (base64data: string) => {
-            stompClient.publish({
-              destination: IMAGE_DATA_URI,
-              headers: {
-                round: status === "round 1" ? "first" : "second",
-                gameSessionId: gameSessionId,
-              },
-              body: base64data,
-            });
-          });
+          captureImage(
+            videoElement,
+            canvasRef.current,
+            (base64data: string) => {
+              stompClient.publish({
+                destination: IMAGE_DATA_URI,
+                headers: {
+                  round: status === "round 1" ? "first" : "second",
+                  gameSessionId: gameSessionId,
+                },
+                body: base64data,
+              });
+            }
+          );
         }
       } else {
         console.log("이미지 전송 실패. 연결 확인");
@@ -232,7 +240,10 @@ export const GamePlay = () => {
     clearInterval(startWebcamCapture.current);
     if (turn === "defense") {
       console.log("메시지 전송 시작");
-      startWebcamCapture.current = setInterval(webcamCapture.current, CAPTURE_INTERVAL);
+      startWebcamCapture.current = setInterval(
+        webcamCapture.current,
+        CAPTURE_INTERVAL
+      );
     }
   }, [turn]);
 
@@ -243,25 +254,35 @@ export const GamePlay = () => {
       <div className="gameplay-navbar">
         {/* space 균등하게 주기 위한 더미 */}
         {/* <div style={{width: 28}} /> */}
-        <Timer />
+        <Timer turn={turn} />
         {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
       <div id="main-video">
         {turn === "attack" ? (
-          <AttackState color="blue">방어</AttackState>
+          <img id="defend" src={defendIco} alt="방어상태" />
         ) : (
-          <AttackState color="red">공격</AttackState>
+          <img id="attack" src={attackIco} alt="공격상태" />
         )}
+        {/* {turn === "attack" ? (
+          <AttackState color="blue">방어</AttackState>
+          ) : (
+            <AttackState color="red">공격</AttackState>
+          )} */}
         <UserVideoComponent streamManager={subscriber} />
       </div>
       {/* <div>{turn}</div> */}
       <div id="main-video">
         {turn === "attack" ? (
+          <img id="attack" src={attackIco} alt="공격상태" />
+        ) : (
+          <img id="defend" src={defendIco} alt="방어상태" />
+        )}
+        {/* {turn === "attack" ? (
           <AttackState color="red">공격</AttackState>
         ) : (
           <AttackState color="blue">방어</AttackState>
-        )}
+        )} */}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <button

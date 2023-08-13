@@ -4,8 +4,10 @@ import profileImg from 'assets/images/peeps-avatar.png';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from 'components/Elements/Button/BasicButton';
+import { useNavigate } from 'react-router';
 
 export const GameResult = () => {
+	const navigate = useNavigate();
 	const battleResult = {
 		myInfo: {
 			//내 정보
@@ -55,44 +57,52 @@ export const GameResult = () => {
 
 	return (
 		<div className='GameResult'>
-			<div className='MarginFrame'>
-				<div className='border'>
-					<div className='result'>승리</div>
-					<div className='tier'>
-						<span>내 티어</span>
-						<div className='tierImage'>
-							<img src={tierGold} alt='티어 예시' />
-						</div>
-						<div>
-							<div className='container'>
-								<div className='progress-bar__container' ref={progressBarContainerRef}>
-									<div className='progress-bar' ref={progressBarRef}>
-										<span className='progress-bar__text' ref={progressBarTextRef}>
-											Uploaded Successfully!
-										</span>
-									</div>
+			<div className='border'>
+				<div className='result'>승리</div>
+				<div className='tier'>
+					<span>내 티어</span>
+					<div className='tierImage'>
+						<img src={tierGold} alt='티어 예시' />
+					</div>
+					<div>
+						<div className='container'>
+							<div className='progress-bar__container' ref={progressBarContainerRef}>
+								<div className='progress-bar' ref={progressBarRef}>
+									<span className='progress-bar__text' ref={progressBarTextRef}>
+										Uploaded Successfully!
+									</span>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
 
-					<div className='battle-bottom'>
-						<div className='battle-result'>
-							<div className='result-left'>
-								<img className='profile-image' src={profileImg} alt='프로필 이미지' />
-								<div className='profile-info'>
-									<span className='nickname'>{battleResult.enemyInfo.nickname}</span>
-									<span className='description'>{battleResult.enemyInfo.description}</span>
-								</div>
-							</div>
-							<div className='result-right'>
-								<Button size='md'>재도전?</Button>
+				<div className='battle-bottom'>
+					<div className='battle-result'>
+						<div className='result-left'>
+							<img className='profile-image' src={profileImg} alt='프로필 이미지' />
+							<div className='profile-info'>
+								<span className='nickname'>{battleResult.enemyInfo.nickname}</span>
+								<span className='description'>{battleResult.enemyInfo.description}</span>
 							</div>
 						</div>
+						<div className='result-right'>
+							<Button size='md'>재도전?</Button>
+						</div>
+					</div>
 
-						<div className='button'>
+					<div className='result-button'>
+						<div className='result-button-width'>
 							<Button>한판 더?</Button>
-							<Button>메인으로</Button>
+						</div>
+						<div className='result-button-width'>
+							<Button
+								onClick={() => {
+									navigate('/main');
+								}}
+							>
+								메인으로
+							</Button>
 						</div>
 					</div>
 				</div>

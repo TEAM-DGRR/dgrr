@@ -19,23 +19,6 @@ export const Main = () => {
 		navigate('/game/loading');
 	};
 
-	const onClickTest = () => {
-		axios.get(`${process.env.REACT_APP_API_URL}/battle/test`)
-		.then((res : any) => {
-			alert("res.data: " + JSON.stringify(res));
-		})
-		.catch((error: any) => {
-			console.log("error: " + JSON.stringify(error));
-			// if(error.response.status === 401) {
-				
-			// 	navigate("/unauthorized");
-			// 	return;
-			// }
-			navigate("/not-found");
-		})
-		
-	}
-
 	return (
 		<div className='MainPage'>
 			<div className='MainNav'>
@@ -56,7 +39,7 @@ export const Main = () => {
 
 				<div className='MainBtns'>
 					<Button>코드 입력</Button>
-					<Button onClick={onClickTest}>방 만들기</Button>
+					<Button>방 만들기</Button>
 					<Button onClick={handleRandomMatch}>랜덤 매칭</Button>
 				</div>
 			</div>

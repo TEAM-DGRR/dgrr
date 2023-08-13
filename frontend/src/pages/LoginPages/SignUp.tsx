@@ -128,7 +128,7 @@ export const SignUp = () => {
                     `${process.env.REACT_APP_API_URL}/member/login?kakaoId=${res.data.kakaoId}`
                   )
                   .then((res: any) => {
-                    console.log("login data: " + JSON.stringify(res.data));
+                    // console.log("login data: " + JSON.stringify(res.data));
                     localStorage.setItem("token", res.data.token);
                     axios.defaults.headers.common[
                       "Authorization"

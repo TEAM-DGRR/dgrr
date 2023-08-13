@@ -1,3 +1,5 @@
+// openVidu.ts
+
 import axios from "axios";
 import { OpenVidu, Session } from "openvidu-browser";
 import { openViduConfig } from "./config";

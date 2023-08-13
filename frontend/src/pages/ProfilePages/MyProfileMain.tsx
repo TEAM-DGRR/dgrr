@@ -10,10 +10,10 @@ import drawImg from 'assets/images/result_draw.svg';
 import questionImg from 'assets/images/question.svg';
 import 'assets/scss/Profile.scss';
 import { useNavigate } from 'react-router';
-import gsap from 'gsap';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TierInfoModal from 'components/Elements/TierInfoModal'; // 모달 컴포넌트 임포트
 import axios from 'axios';
+import { PrograssBar } from 'components/Elements/PrograssBar';
 
 export const MyProfileMain = () => {
 	const navigate = useNavigate();
@@ -32,7 +32,7 @@ export const MyProfileMain = () => {
 	const [member, setMember] = useState({
 		nickname: '',
 		description: '',
-		profileImg: '',
+		profileImage: '',
 	});
 
 	const [battleDetailList, setBattleDetailList] = useState([
@@ -61,38 +61,11 @@ export const MyProfileMain = () => {
 		return `${year}-${month}-${day}`;
 	}
 
-	//progressBar - start
-	const progressBarContainerRef = useRef(null);
-	const progressBarRef = useRef(null);
-	const progressBarTextRef = useRef(null);
-
-	const progressBarStates = [0, 100];
+	//progressBar - info
+	const [progressBarStates, setProgressBarStates] = useState([0, 0]); // 초기값은 0으로 설정
+	const endState = 100;
 
 	useEffect(() => {
-		let time = 0;
-		let endState = 100;
-
-		progressBarStates.forEach((state) => {
-			// let randomTime = Math.floor(Math.random() * 3000);
-			let Time = 20;
-			setTimeout(() => {
-				if (state === endState) {
-					gsap.to(progressBarRef.current, {
-						x: `${state}%`,
-						duration: 2,
-						// backgroundColor: '#ffd700',
-					});
-				} else {
-					gsap.to(progressBarRef.current, {
-						x: `${state}%`,
-						duration: 1,
-					});
-				}
-			}, Time + time);
-			time += Time;
-		});
-		//progressBar - end
-
 		// 회원정보 받아오기
 		const fetchMemberData = async () => {
 			axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
@@ -103,6 +76,15 @@ export const MyProfileMain = () => {
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
+
+					//progressBar - DataUpdate
+					const newRating = res.data.ratingList[0].rating;
+					//rating을 기준으로 다음 등급까지 얼마나 남았는지 계산하는 로직
+					let nextRating =
+						newRating >= 1400 && newRating < 1600 ? 1600 : newRating < 1800 ? 1800 : 0; //다음 등급 Rating
+					let percent = nextRating !== 0 ? 100 - (nextRating - newRating) / 2 : 100;
+					setProgressBarStates([0, percent]); // progressBarStates 업데이트
+					// setEndState(newRating); // endState 업데이트
 				})
 				.catch((err: any) => {
 					console.log(err);
@@ -111,6 +93,9 @@ export const MyProfileMain = () => {
 
 		fetchMemberData();
 	}, []); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
+
+	// endState가 업데이트될 때 GSAP 애니메이션을 실행
+	useEffect(() => {}, [progressBarStates]);
 
 	return (
 		<div className='MyProfile'>
@@ -138,7 +123,7 @@ export const MyProfileMain = () => {
 
 				<div className='profileBody'>
 					<div className='profileImage'>
-						<img src={profileImg} alt='프로필 예시' />
+						<img src={member.profileImage} alt='프로필 예시' />
 					</div>
 					<div className='profileInfo'>
 						{/* 회원정보 받아온 후에 연결시켜줄거임 */}
@@ -148,14 +133,14 @@ export const MyProfileMain = () => {
 				</div>
 
 				<div className='tier'>
-					<span>내 티어</span>
 					<div className='tierInfo'>
+						<span>내 티어</span>
 						<img src={questionImg} alt='티어 정보 보기' onClick={openModal} />
 					</div>
 					<div className='tierImage'>
 						<img
 							src={
-								ratingList[0].rating < 1600
+								ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
 									? tierBronze
 									: ratingList[0].rating < 1800
 									? tierSilver
@@ -166,13 +151,18 @@ export const MyProfileMain = () => {
 					</div>
 					<div>
 						<div className='container'>
-							<div className='progress-bar__container' ref={progressBarContainerRef}>
-								<div className='progress-bar' ref={progressBarRef}>
-									<span className='progress-bar__text' ref={progressBarTextRef}>
-										MAX
-									</span>
-								</div>
-							</div>
+							<PrograssBar
+								tier={
+									ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
+										? 'bronze'
+										: ratingList[0].rating < 1800
+										? 'silver'
+										: 'gold'
+								}
+								rating={ratingList[0].rating}
+								endState={endState}
+								progressBarStates={progressBarStates}
+							/>
 						</div>
 					</div>
 				</div>

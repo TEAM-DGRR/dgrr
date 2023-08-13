@@ -1,0 +1,54 @@
+$tier_gold: #feca39;
+$tier_silver: #c0c0c0;
+$tier_bronze: #cc8e34;
+
+.progress-bar__container {
+	width: 80%;
+	height: 2rem;
+	border-radius: 2rem;
+	position: relative;
+	overflow: hidden;
+	transition: all 0.5s;
+	will-change: transform;
+	&.bronze {
+		box-shadow: 0 0 5px $tier_bronze;
+	}
+	&.silver {
+		box-shadow: 0 0 5px $tier_silver;
+	}
+	&.gold {
+		box-shadow: 0 0 5px $tier_gold;
+	}
+}
+
+.progress-bar {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	content: '';
+	top: 0;
+	bottom: 0;
+	left: -100%;
+	border-radius: inherit;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-family: sans-serif;
+	&.bronze {
+		background-color: $tier_bronze;
+	}
+	&.silver {
+		background-color: $tier_silver;
+	}
+	&.gold {
+		background-color: $tier_gold;
+	}
+}
+
+.progress-bar__text {
+	display: none;
+	&.gold {
+		display: block;
+	}
+}

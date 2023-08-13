@@ -63,6 +63,14 @@ export const GamePlay = () => {
   const [role, setRole] = useState<string>(""); // 초기 상태
   const [round, setRound] = useState<string>("round 1"); // 초기 상태 "round 1"
 
+  // 턴 정보 모달창
+  const SHOW_TURN_CHANGE_MODAL_TIME = 1000;
+  const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
+
+  // 게임 종료 모달창
+  const SHOW_GAME_ENDED_MODAL_TIME = 2000;
+  const [showGameEndedModal, setShowGameEndedModal] = useState(false);
+
   // gameConfig의 turn에 따라 role을 설정
   useEffect(() => {
     if (gameConfig.turn === "first") {
@@ -70,6 +78,11 @@ export const GamePlay = () => {
     } else if (gameConfig.turn === "second") {
       setRole("defense");
     }
+    setShowTurnChangeModal(true);
+    setTimeout(
+      () => setShowTurnChangeModal(false),
+      SHOW_TURN_CHANGE_MODAL_TIME
+    );
   }, [gameConfig]);
 
   // GamePlay 렌더링 시 OvenVidu 연결
@@ -112,9 +125,14 @@ export const GamePlay = () => {
 
     const gameEnd = (gameResult: IGameResult) => {
       console.log("게임 종료");
-      stompClient?.deactivate();
-      OVSession?.disconnect();
-      navigate("/game/result");
+      setShowGameEndedModal(true);
+
+      setTimeout(() => {
+        setShowGameEndedModal(false);
+        stompClient?.deactivate();
+        OVSession?.disconnect();
+        navigate("/game/result");
+      }, SHOW_GAME_ENDED_MODAL_TIME);
     };
 
     // Stomp 엔드포인트 구독
@@ -150,6 +168,11 @@ export const GamePlay = () => {
                 prevRole === "attack" ? "defense" : "attack"
               );
             }
+            setShowTurnChangeModal(true);
+            setTimeout(
+              () => setShowTurnChangeModal(false),
+              SHOW_TURN_CHANGE_MODAL_TIME
+            );
           }
 
           roundEnd(gameStatus);
@@ -166,7 +189,6 @@ export const GamePlay = () => {
 
           // 게임 결과 정보를 Provider에 업데이트
           setMyGameResult(myGameResult);
-
           gameEnd(myGameResult);
         } catch {
           console.log("게임 상태 파싱 오류");
@@ -222,6 +244,21 @@ export const GamePlay = () => {
 
   return (
     <div className="gameplay-page">
+      {/* 모달창 띄우는 div */}
+      {showTurnChangeModal && (
+        <div className="role-modal">
+          <div className="role-modal-content">
+            <h2>{role} 턴입니다.</h2>
+          </div>
+        </div>
+      )}
+      {showGameEndedModal && (
+        <div className="game-end-modal">
+          <div className="game-end-modal-content">
+            <h2>게임이 종료되었습니다.</h2>
+          </div>
+        </div>
+      )}
       <div className="gameplay-navbar">
         {/* space 균등하게 주기 위한 더미 */}
         {/* <div style={{width: 28}} /> */}

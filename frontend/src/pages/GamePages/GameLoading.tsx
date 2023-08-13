@@ -1,6 +1,6 @@
 // GameLoading.tsx
 
-import LoadingSoundPath from "../../assets/audio/game-loading.mp3";
+import LoadingSoundPath from "assets/audio/game-loading.mp3";
 
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";

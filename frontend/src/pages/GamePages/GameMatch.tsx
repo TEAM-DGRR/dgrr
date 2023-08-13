@@ -1,12 +1,12 @@
 // GameMatch.tsx
 
+import MatchingSoundPath from "assets/audio/game-matching.mp3";
 import dummyImage from "assets/images/ico_bread_wink.png";
 import attack from "assets/images/match-attack.png";
 import defense from "assets/images/match-defense.png";
 import "assets/scss/Match.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MatchingSoundPath from "../../assets/audio/game-matching.mp3";
 import { useGameContext } from "./GameContext";
 
 

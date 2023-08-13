@@ -6,12 +6,30 @@
 
 #main-video {
   // navbar랑 맨 밑 마진 12px 뺀 길이 /2
-  height: calc((100% - 72px)/2);
+  height: calc((100% - 72px) / 2);
   // 양옆 마진 12px씩 빼고 계산
   width: calc(100% - 24px);
   margin: 0 12px;
 
   position: relative;
+
+  img {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    z-index: 1;
+    border-radius: 70%;
+
+    &#attack {
+      background: red;
+    }
+
+    &#defend {
+      background: blue;
+    }
+  }
 }
 
 .streamcomponent {
@@ -27,11 +45,11 @@
   height: 100%;
   // 비율 유지한채 세로 꽉차게 확대
   object-fit: cover;
-}  
+}
 
 .gameplay-navbar {
   text-align: center;
-  margin: 0 12px ;
+  margin: 0 12px;
   height: 60px;
 }
 

@@ -18,6 +18,8 @@ import { UserVideoComponent } from "./UserVideoComponent";
 import { Timer } from "components/Game/Timer";
 import { useNavigate } from "react-router-dom";
 import { AttackState } from "components/Game/AttackState";
+import attackIco from "assets/images/match-attack.png";
+import defendIco from "assets/images/match-defense.png";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -227,19 +229,29 @@ export const GamePlay = () => {
       </div>
       <div id="main-video">
         {turn === "attack" ? (
-          <AttackState color="blue">방어</AttackState>
+          <img id="defend" src={defendIco} alt="방어상태" />
         ) : (
-          <AttackState color="red">공격</AttackState>
+          <img id="attack" src={attackIco} alt="공격상태" />
         )}
+        {/* {turn === "attack" ? (
+          <AttackState color="blue">방어</AttackState>
+          ) : (
+            <AttackState color="red">공격</AttackState>
+          )} */}
         <UserVideoComponent streamManager={subscriber} />
       </div>
       {/* <div>{turn}</div> */}
       <div id="main-video">
         {turn === "attack" ? (
+          <img id="attack" src={attackIco} alt="공격상태" />
+        ) : (
+          <img id="defend" src={defendIco} alt="방어상태" />
+        )}
+        {/* {turn === "attack" ? (
           <AttackState color="red">공격</AttackState>
         ) : (
           <AttackState color="blue">방어</AttackState>
-        )}
+        )} */}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <button

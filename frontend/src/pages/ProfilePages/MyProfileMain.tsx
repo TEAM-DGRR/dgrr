@@ -32,7 +32,7 @@ export const MyProfileMain = () => {
 	const [member, setMember] = useState({
 		nickname: '',
 		description: '',
-		profileImg: '',
+		profileImage: '',
 	});
 
 	const [battleDetailList, setBattleDetailList] = useState([
@@ -72,6 +72,7 @@ export const MyProfileMain = () => {
 			const response = await axios
 				.get(`${process.env.REACT_APP_API_URL}/member/member-id`)
 				.then((res: any) => {
+					console.log(res.data);
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
@@ -122,7 +123,7 @@ export const MyProfileMain = () => {
 
 				<div className='profileBody'>
 					<div className='profileImage'>
-						<img src={profileImg} alt='프로필 예시' />
+						<img src={member.profileImage} alt='프로필 예시' />
 					</div>
 					<div className='profileInfo'>
 						{/* 회원정보 받아온 후에 연결시켜줄거임 */}

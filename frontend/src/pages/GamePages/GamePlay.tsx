@@ -84,7 +84,9 @@ export const GamePlay = () => {
   useEffect(() => {
     if (OVSession !== undefined) {
       OVSession.on("streamCreated", (event) => {
-        setSubscriber(OVSession.subscribe(event.stream, undefined));
+        const ySubscriber = OVSession.subscribe(event.stream, undefined);
+        console.log("Young Subscriber++++++++++++: " + ySubscriber);
+        setSubscriber(ySubscriber);
       });
     }
   }, [OVSession]);

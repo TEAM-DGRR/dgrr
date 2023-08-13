@@ -1,5 +1,5 @@
 import axios from "axios";
-import { OpenVidu } from "openvidu-browser";
+import { OpenVidu, Session } from "openvidu-browser";
 import { openViduConfig } from "./config";
 
 const { APPLICATION_SERVER_URL, PUBLISHER_PROPERTIES } = openViduConfig;
@@ -31,18 +31,28 @@ export const getToken = async (mySessionId: string) => {
   return await createToken(sessionId);
 };
 
-export const joinSession = async (token: string, myUserName: string) => {
+export const initGame = async () => {
   const OV = new OpenVidu();
   const session = OV.initSession();
+  session.on("exception", (exception) => {
+    console.warn(exception);
+  });
+  return { OV, session };
+};
+
+export const joinSession = async (
+  OV: OpenVidu,
+  session: Session,
+  token: string,
+  myUserName: string
+) => {
+  // const OV = new OpenVidu();
+  // const session = OV.initSession();
 
   // let subscriber: Subscriber | undefined = undefined;
   // session.on("streamCreated", (event) => {
   //   subscriber = session.subscribe(event.stream, undefined);
   // });
-
-  session.on("exception", (exception) => {
-    console.warn(exception);
-  });
 
   // const token = await getToken(sessionId);
   await session.connect(token, { clientData: myUserName });
@@ -61,5 +71,5 @@ export const joinSession = async (token: string, myUserName: string) => {
     (device) => device.deviceId === currentVideoDeviceId
   );
 
-  return { session, publisher, currentVideoDevice };
+  return { publisher, currentVideoDevice };
 };

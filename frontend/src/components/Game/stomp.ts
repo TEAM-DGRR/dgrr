@@ -6,11 +6,6 @@ const { CONNECT_HEADER, DESTINATION_URI } = stompConfig;
 const { GAME_URI, MATCHING_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } =
   DESTINATION_URI;
 
-interface IPublishParams {
-  body: string | undefined;
-}
-
-
 
 export const connectStomp = (headers: StompHeaders) => {
   const client = new Client({
@@ -20,7 +15,7 @@ export const connectStomp = (headers: StompHeaders) => {
       ...headers,
     },
     debug: (message) => {
-      console.log("[Stomp Debug]", message); // 웹소켓 디버깅 로그 추가
+      console.log("[Stomp Debug :: message]", message); // 웹소켓 디버깅 로그 추가
     },
   });
 
@@ -35,21 +30,22 @@ export const connectStomp = (headers: StompHeaders) => {
 
 export const getGameConfig = (client: Client) => {
   return new Promise<IGameConfig>((resolve) => {
+    console.log(GAME_URI, "를 구독합니다. ");
     client.subscribe(GAME_URI, (message) => {
-      console.log("[GAME Message received] : " + message.headers);
-      console.log("[body] : " + message.body);
+      console.log(" 게임 메시지를 받았습니다. message : " + message);
       const gameConfig = JSON.parse(message.body);
       resolve(gameConfig);
     });
 
     const token = localStorage.getItem("token");
+      console.log(MATCHING_URI, "로 localStorage의 token을 보냅니다. ");
     if (token !== null) {
       client.publish({
         destination: MATCHING_URI,
         body: token
       });
     } else {
-      console.error("Error: Token is null.");
+      console.error("Error 발생!! localStorage에 토큰이 없습니다.");
     }
   });
 };
@@ -57,7 +53,7 @@ export const getGameConfig = (client: Client) => {
 export const onStompError = (client: Client, callback: Function) => {
   client.onStompError = (frame) => {
     callback();
-    console.log("Stomp 연결 실패:", frame.headers["message"]);
+    console.log("Stomp 연결에 실패하였습니다. :", frame.headers["message"]);
   };
 };
 

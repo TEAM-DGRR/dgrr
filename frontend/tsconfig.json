@@ -23,5 +23,5 @@
   },
   "include": [
     "src"
-, "etc/SampleCodes"  ]
+, "etc/SampleCodes", "types/**/*.d.ts"  ]
 }

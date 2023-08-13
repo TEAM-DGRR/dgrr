@@ -1,5 +1,11 @@
 import { Client, IMessage } from "@stomp/stompjs";
-import { IGameResult, IGameStatus, IImageResult, openViduConfig, stompConfig } from "components/Game";
+import {
+  IGameResult,
+  IGameStatus,
+  IImageResult,
+  openViduConfig,
+  stompConfig,
+} from "components/Game";
 import { captureImage } from "components/Game/captureImage";
 import { joinSession } from "components/Game/openVidu";
 import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
@@ -29,7 +35,7 @@ export const GamePlay = () => {
   const childRef = useRef<ChildMethods | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startWebcamCapture = useRef<NodeJS.Timer>();
-  const webcamCapture = useRef<() => void>(() => { });
+  const webcamCapture = useRef<() => void>(() => {});
 
   // OpenVidu
   const [OVSession, setOVSession] = useState<Session>();
@@ -45,8 +51,6 @@ export const GamePlay = () => {
   const [emotion, setEmotion] = useState<string>("");
   const [probability, setProbability] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-
-  
 
   // 1) 게임 시작 준비
   useEffect(() => {
@@ -76,6 +80,15 @@ export const GamePlay = () => {
     setTimeout(gameStart, timeRemaining(startTime));
   }, []);
 
+  // 상대방 mediaStream 얻어오기
+  useEffect(() => {
+    if (OVSession !== undefined) {
+      OVSession.on("streamCreated", (event) => {
+        setSubscriber(OVSession.subscribe(event.stream, undefined));
+      });
+    }
+  }, [OVSession]);
+
   // OpenVidu 세션 입장
   useEffect(() => {
     joinSession(openViduToken, "myUserName")
@@ -89,15 +102,6 @@ export const GamePlay = () => {
         console.log("OpenVidu 연결 실패", error.code, error.message);
       });
   }, [openViduToken]);
-
-  // 상대방 mediaStream 얻어오기
-  useEffect(() => {
-    if (OVSession !== undefined) {
-      OVSession.on("streamCreated", (event) => {
-        setSubscriber(OVSession.subscribe(event.stream, undefined));
-      });
-    }
-  }, [OVSession]);
 
   useEffect(() => {
     const roundEnd = (gameStatus: IGameStatus) => {
@@ -197,7 +201,6 @@ export const GamePlay = () => {
       console.log("메시지 전송 시작");
       startWebcamCapture.current = setInterval(webcamCapture.current, CAPTURE_INTERVAL);
     }
-
   }, [turn]);
 
   const navigate = useNavigate();
@@ -212,19 +215,29 @@ export const GamePlay = () => {
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
       <div id="main-video">
-        {
-          turn === "attack" ? <AttackState color="blue">방어</AttackState> : <AttackState color="red">공격</AttackState>
-        }
+        {turn === "attack" ? (
+          <AttackState color="blue">방어</AttackState>
+        ) : (
+          <AttackState color="red">공격</AttackState>
+        )}
         <UserVideoComponent streamManager={subscriber} />
       </div>
       {/* <div>{turn}</div> */}
       <div id="main-video">
-        {
-          turn === "attack" ? <AttackState color="red">공격</AttackState> : <AttackState color="blue">방어</AttackState>
-        }
+        {turn === "attack" ? (
+          <AttackState color="red">공격</AttackState>
+        ) : (
+          <AttackState color="blue">방어</AttackState>
+        )}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
-      <button onClick={()=>{navigate('/main')}}>메인으로</button>
+      <button
+        onClick={() => {
+          navigate("/main");
+        }}
+      >
+        메인으로
+      </button>
     </div>
   );
 };

@@ -1,0 +1,138 @@
+@import 'App.scss';
+$blue: #469ff6;
+
+.GameResult {
+	width: 100%;
+	height: 100%;
+	background-color: $blue;
+	display: flex;
+	align-items: center;
+}
+
+.border {
+	background-color: white; // 흰 배경 적용
+	width: 90%; // 요소의 가로 크기를 조절
+	max-width: 400px; // 최대 가로 크기를 400px로 제한 (선택 사항)
+	margin: 0 auto; // 가운데 정렬을 위한 margin 설정
+	padding: 20px; // 내부 여백 추가
+	border-radius: 10px; // 테두리 모서리를 둥글게 설정
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // 그림자 효과 추가
+}
+.result {
+	font-size: xx-large;
+	font-weight: bold;
+	text-align: center;
+}
+
+.tier {
+	margin: 40px 0;
+	span {
+		font-weight: bold;
+	}
+	.tierInfo {
+		width: 20px;
+		position: absolute;
+		right: 20px;
+	}
+	.tierImage {
+		width: 150px;
+		margin: 0 auto;
+	}
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 10px;
+	}
+
+	.progress-bar__container {
+		width: 80%;
+		height: 2rem;
+		border-radius: 2rem;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.5s;
+		will-change: transform;
+		box-shadow: 0 0 5px $blue;
+	}
+
+	.progress-bar {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		content: '';
+		background-color: $blue;
+		top: 0;
+		bottom: 0;
+		left: -100%;
+		border-radius: inherit;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+		font-family: sans-serif;
+	}
+
+	.progress-bar__text {
+		display: none;
+	}
+}
+
+.battle-bottom {
+	margin: 0 20px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.battle-result {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 3px;
+
+	.result-left {
+		display: flex;
+		align-items: center;
+		.profile-info {
+			flex-direction: column;
+			display: flex;
+		}
+		.profile-image {
+			width: 50px;
+			border-radius: 50%;
+			margin: 3px;
+		}
+		.nickname {
+			margin: 3px;
+			font-size: small;
+			font-weight: bold;
+		}
+		.description {
+			margin: 3px;
+			font-size: x-small;
+		}
+	}
+	.result-right {
+		width: 30%;
+	}
+}
+
+.result-button {
+	text-align: center;
+	width: 100%;
+	margin: 40px 0;
+	.result-button-width {
+		width: 100%;
+		Button {
+			margin: 3px 0;
+		}
+	}
+}

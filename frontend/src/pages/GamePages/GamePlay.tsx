@@ -30,7 +30,13 @@ export interface ChildMethods {
 }
 
 export const GamePlay = () => {
-  const { stompClient, isStompConnected, gameConfig } = useGameContext();
+  const {
+    stompClient,
+    isStompConnected,
+    gameConfig,
+    myGameResult,
+    setMyGameResult,
+  } = useGameContext();
   const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo, turn } =
     gameConfig;
 
@@ -118,6 +124,7 @@ export const GamePlay = () => {
         console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
+          // 여기에 이미지 데이터 사용할 수 있음
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
@@ -151,14 +158,16 @@ export const GamePlay = () => {
         }
       });
 
+      // 3. 게임이 종료되면 게임 Result를 받음
       stompClient.subscribe(RESULT_URI, (message: IMessage) => {
-        console.log(
-          "게임 결과를 수신합니다.ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ : " +
-            message.body
-        );
+        console.log("게임 결과를 수신합니다. " + message.body);
         try {
-          const gameResult: IGameResult = JSON.parse(message.body);
-          gameEnd(gameResult);
+          const myGameResult: IGameResult = JSON.parse(message.body);
+
+          // 게임 결과 정보를 Provider에 업데이트
+          setMyGameResult(myGameResult);
+
+          gameEnd(myGameResult);
         } catch {
           console.log("게임 상태 파싱 오류");
         }

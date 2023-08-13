@@ -7,8 +7,8 @@ import {
   stompConfig,
 } from "components/Game";
 import { captureImage } from "components/Game/captureImage";
-import { joinSession } from "components/Game/openVidu";
-import { Device, Publisher, Session, Subscriber } from "openvidu-browser";
+import { initGame, joinSession } from "components/Game/openVidu";
+import { Device, OpenVidu, Publisher, Session, Subscriber } from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
 import "assets/scss/GamePlay.scss";
@@ -42,6 +42,7 @@ export const GamePlay = () => {
   const webcamCapture = useRef<() => void>(() => {});
 
   // OpenVidu
+  const [OV, setOV] = useState<OpenVidu>();
   const [OVSession, setOVSession] = useState<Session>();
   const [publisher, setPublisher] = useState<Publisher>();
   const [subscriber, setSubscriber] = useState<Subscriber>();
@@ -84,30 +85,60 @@ export const GamePlay = () => {
     setTimeout(gameStart, timeRemaining(startTime));
   }, []);
 
-  // 상대방 mediaStream 얻어오기
+  //OV, Session Create
   useEffect(() => {
-    if (OVSession !== undefined) {
-      OVSession.on("streamCreated", (event) => {
-        const ySubscriber = OVSession.subscribe(event.stream, undefined);
+    initGame().then(({ OV, session }) => {
+      console.log("THE FIRST OV INItialte");
+      setOV(OV);
+      setOVSession(session);
+      session.on("streamCreated", (event) => {
+        const ySubscriber = session.subscribe(event.stream, undefined);
         console.log("Young Subscriber++++++++++++: " + ySubscriber);
         setSubscriber(ySubscriber);
       });
-    }
-  }, [OVSession]);
 
-  // OpenVidu 세션 입장
-  useEffect(() => {
-    joinSession(openViduToken, "myUserName")
-      .then(({ session, publisher, currentVideoDevice }) => {
-        setOVSession(session);
-        setPublisher(publisher);
-        currentVideoDeviceRef.current = currentVideoDevice;
-        console.log("OpenVidu 연결 완료");
-      })
-      .catch((error) => {
-        console.log("OpenVidu 연결 실패", error.code, error.message);
-      });
-  }, [openViduToken]);
+      //연결
+      joinSession(OV, session, openViduToken, "myUserName")
+        .then(({ publisher, currentVideoDevice }) => {
+          setPublisher(publisher);
+          currentVideoDeviceRef.current = currentVideoDevice;
+          console.log("OpenVidu 연결 완료");
+        })
+        .catch((error) => {
+          console.log("OpenVidu 연결 실패", error.code, error.message);
+        });
+    });
+  }, []);
+
+  // 상대방 mediaStream 얻어오기
+  // useEffect(() => {
+  //   console.log("Second Outside");
+  //   if (OVSession !== undefined) {
+  //     console.log("Second inside");
+  //     OVSession.on("streamCreated", (event) => {
+  //       const ySubscriber = OVSession.subscribe(event.stream, undefined);
+  //       console.log("Young Subscriber++++++++++++: " + ySubscriber);
+  //       setSubscriber(ySubscriber);
+  //     });
+  //   }
+  // }, [OVSession]);
+
+  // OpenVidu connect 하기
+  // useEffect(() => {
+  //   console.log("Third Outside");
+  //   if (OVSession !== undefined && OV !== undefined) {
+  //     console.log("Third Inside");
+  //     joinSession(OV, OVSession, openViduToken, "myUserName")
+  //       .then(({ publisher, currentVideoDevice }) => {
+  //         setPublisher(publisher);
+  //         currentVideoDeviceRef.current = currentVideoDevice;
+  //         console.log("OpenVidu 연결 완료");
+  //       })
+  //       .catch((error) => {
+  //         console.log("OpenVidu 연결 실패", error.code, error.message);
+  //       });
+  //   }
+  // }, []);
 
   useEffect(() => {
     const roundEnd = (gameStatus: IGameStatus) => {

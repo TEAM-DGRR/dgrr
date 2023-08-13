@@ -17,7 +17,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         if(request.getRequestURI().startsWith("/api/v1/member/login")){
             return;
         }
-        System.out.println("유효한 자격증명을 제공하지 않고 접근하려 할때 401");
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

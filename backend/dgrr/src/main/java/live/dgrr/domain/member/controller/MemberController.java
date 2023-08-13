@@ -60,15 +60,7 @@ public class MemberController {
     public ResponseEntity login(@RequestParam("kakaoId") String kakaoId) {
         Member member = memberService.getMemberByKakaoId(kakaoId);
         String token = memberService.createToken(member);
-        System.out.println("/////////////////");
-        System.out.println("kakaoId: " + kakaoId);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getKakaoId());
-        System.out.println("bbb");
-//        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-        System.out.println("aaa");
         LoginResponseDto response = new LoginResponseDto(JwtProperties.TOKEN_PREFIX+tokenProvider.generateTokenDto(member.getKakaoId(), member.getMemberId()).getAccessToken(), member);
-        System.out.println(JwtProperties.TOKEN_PREFIX);
-        System.out.println("happy: " + response);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

@@ -224,7 +224,7 @@ export const SignUp = () => {
           />
         </label>
         <label className="label">
-          <Button onClick={onSubmit} color="blue">
+          <Button onClick={onSubmit} color="blue" width="100%">
             시작하기
           </Button>
         </label>

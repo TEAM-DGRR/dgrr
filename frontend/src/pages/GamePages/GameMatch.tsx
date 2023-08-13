@@ -26,7 +26,7 @@ const [seconds, setSeconds] = useState(0);
   const USER1_NICKNAME = enemyInfo.nickname;
   const USER1_INTRO = enemyInfo.description;
 
-  const USER2_TURN = gameConfig.turn === "first" ? defense : attack;
+  const USER2_TURN = gameConfig.turn === "first" ? attack : defense;
   const USER2_TURN_MESSAGE = USER2_TURN === attack ? "상대방을 먼저 웃기세요!" : "웃음을 참아야만 합니다!";
 
   // const vsPersonProfile2 = myInfo.profileImage;

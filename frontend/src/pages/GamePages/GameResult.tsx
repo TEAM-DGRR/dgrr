@@ -87,16 +87,17 @@ export const GameResult = () => {
 							</div>
 						</div>
 						<div className='result-right'>
-							<Button size='md'>재도전?</Button>
+							<Button width='100%'>재도전?</Button>
 						</div>
 					</div>
 
 					<div className='result-button'>
 						<div className='result-button-width'>
-							<Button>한판 더?</Button>
+							<Button width='100%'>한판 더?</Button>
 						</div>
 						<div className='result-button-width'>
 							<Button
+								width='100%'
 								onClick={() => {
 									navigate('/main');
 								}}

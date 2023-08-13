@@ -1,4 +1,3 @@
-import profileImg from "assets/images/peeps-avatar.png";
 import tierGold from "assets/images/tier_gold.png";
 import "assets/scss/GameResult.scss";
 import { Button } from "components/Elements/Button/BasicButton";
@@ -25,7 +24,7 @@ export const GameResult = () => {
   return (
     <div className="GameResult">
       <div className="border">
-        <div className="result">승리</div>
+        <div className="result">{gameResult}</div>
         <div className="tier">
           <span>내 티어</span>
           <div className="tierImage">
@@ -54,7 +53,7 @@ export const GameResult = () => {
             <div className="result-left">
               <img
                 className="profile-image"
-                src={profileImg}
+                src={myInfo.profileImage}
                 alt="프로필 이미지"
               />
               <div className="profile-info">

@@ -82,6 +82,17 @@ export const GamePlay = () => {
     setTimeout(gameStart, timeRemaining(startTime));
   }, []);
 
+  // 상대방 mediaStream 얻어오기
+  useEffect(() => {
+    if (OVSession !== undefined) {
+      OVSession.on("streamCreated", (event) => {
+        const ySubscriber = OVSession.subscribe(event.stream, undefined);
+        console.log("Young Subscriber++++++++++++: " + ySubscriber);
+        setSubscriber(ySubscriber);
+      });
+    }
+  }, [OVSession]);
+
   // OpenVidu 세션 입장
   useEffect(() => {
     joinSession(openViduToken, "myUserName")
@@ -95,15 +106,6 @@ export const GamePlay = () => {
         console.log("OpenVidu 연결 실패", error.code, error.message);
       });
   }, [openViduToken]);
-
-  // 상대방 mediaStream 얻어오기
-  useEffect(() => {
-    if (OVSession !== undefined) {
-      OVSession.on("streamCreated", (event) => {
-        setSubscriber(OVSession.subscribe(event.stream, undefined));
-      });
-    }
-  }, [OVSession]);
 
   useEffect(() => {
     const roundEnd = (gameStatus: IGameStatus) => {

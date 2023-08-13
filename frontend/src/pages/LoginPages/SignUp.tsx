@@ -1,4 +1,11 @@
-import { useMemo, useRef, useState, ChangeEvent, FormEvent, useEffect } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+} from "react";
 import blankImg from "assets/images/logo_character.png";
 import axios from "axios";
 import { useLocation } from "react-router";
@@ -58,7 +65,7 @@ export const SignUp = () => {
       .catch((error) => {
         console.error("signUp에서 member check 실패 : " + error);
       });
-  });
+  }, []);
 
   // 사진 업로드
   const uploadImg = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +81,7 @@ export const SignUp = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        } )
+        })
         .then((res: any) => {
           console.log("file upload: " + JSON.stringify(res.data));
           setProfileImg({
@@ -82,11 +89,10 @@ export const SignUp = () => {
             thumbnail: res.data,
             type: fileList[0].type.slice(0, 5),
           });
-          
         })
         .catch((err: any) => {
           console.log(err);
-        })
+        });
     }
   };
 
@@ -107,12 +113,12 @@ export const SignUp = () => {
           // 없다면 회원가입 진행
           if (res.data.nicknameExists === "false") {
             console.log("??? : " + profileImg?.thumbnail);
-            console.log("type: " + typeof(profileImg?.thumbnail));
+            console.log("type: " + typeof profileImg?.thumbnail);
             axios
               .post(`${process.env.REACT_APP_API_URL}/member`, {
                 kakaoId: id,
                 nickname: nickname,
-                profileImage: (profileImg?.thumbnail),
+                profileImage: profileImg?.thumbnail,
                 description: description,
               })
               .then((res: any) => {
@@ -205,9 +211,7 @@ export const SignUp = () => {
             onChange={onChangeNickname}
             placeholder={"닉네임을 입력해주세요"}
           />
-          <p
-            style={{ visibility: see ? "visible" : "hidden", color: "red" }}
-          >
+          <p style={{ visibility: see ? "visible" : "hidden", color: "red" }}>
             {checkstate}
           </p>
         </label>
@@ -219,7 +223,11 @@ export const SignUp = () => {
             placeholder={"상태 메세지를 입력해주세요"}
           />
         </label>
-        <label className="label"><Button onClick={onSubmit} color="blue">시작하기</Button></label>
+        <label className="label">
+          <Button onClick={onSubmit} color="blue">
+            시작하기
+          </Button>
+        </label>
       </form>
     </div>
   );

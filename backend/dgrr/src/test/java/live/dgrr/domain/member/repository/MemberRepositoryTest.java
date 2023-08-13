@@ -1,6 +1,7 @@
 package live.dgrr.domain.member.repository;
 
 import live.dgrr.domain.battle.dto.response.BattleDetailResponseDto;
+import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.battle.entity.BattleDetail;
 import live.dgrr.domain.game.entity.enums.GameResult;
@@ -123,7 +124,7 @@ class MemberRepositoryTest {
 
         //when
         Long memberId = member.getMemberId();
-        List<BattleDetailResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
+        List<BattleDetailWithOpponentInfoResponseDto> battleDetails = battleService.findBattleDetailByMemberId(memberId);
 
         //then
         Assertions.assertThat(battleDetails.size()).isEqualTo(num);

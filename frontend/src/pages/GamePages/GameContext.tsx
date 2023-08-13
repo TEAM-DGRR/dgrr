@@ -26,9 +26,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const isStompConnected = useRef<boolean>(false); 
 
   const connectStompClient = async (headers: StompHeaders) => {
+    console.log("Stomp 연결을 대기중입니다...")
     const client = await connectStomp(headers);
     setStompClient(client);
     isStompConnected.current = true;
+    console.log("Stomp연결에 성공하였습니다.")
     return client;
   };
 

@@ -1,13 +1,15 @@
 import 'assets/scss/GameResult.scss';
 import tierGold from 'assets/images/tier_gold.png';
 import profileImg from 'assets/images/peeps-avatar.png';
-import gsap from 'gsap';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'components/Elements/Button/BasicButton';
 import { useNavigate } from 'react-router';
+import { PrograssBar } from 'components/Elements/PrograssBar';
 
 export const GameResult = () => {
 	const navigate = useNavigate();
+	//임의 값 ->나중에는 내 rating 값 넣기
+	let rating = 1550;
 	const battleResult = {
 		myInfo: {
 			//내 정보
@@ -23,37 +25,12 @@ export const GameResult = () => {
 		afterRank: 'GOLD', //BRONZE,SILVER,GOLD
 	};
 
-	//progressBar
-	const progressBarContainerRef = useRef(null);
-	const progressBarRef = useRef(null);
-	const progressBarTextRef = useRef(null);
+	//progressBar - info
+	const [progressBarStates, setProgressBarStates] = useState([0, 100]); // 초기값은 0으로 설정하거나, 원하는 값으로 설정하세요.
+	const endState = 100;
 
-	const progressBarStates = [50, 75];
-
-	useEffect(() => {
-		let time = 0;
-		let endState = 100;
-
-		progressBarStates.forEach((state) => {
-			// let randomTime = Math.floor(Math.random() * 3000);
-			let Time = 20;
-			setTimeout(() => {
-				if (state === endState) {
-					gsap.to(progressBarRef.current, {
-						x: `${state}%`,
-						duration: 2,
-						backgroundColor: '#ffd700',
-					});
-				} else {
-					gsap.to(progressBarRef.current, {
-						x: `${state}%`,
-						duration: 1,
-					});
-				}
-			}, Time + time);
-			time += Time;
-		});
-	}, []); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
+	// endState가 업데이트될 때 GSAP 애니메이션을 실행
+	useEffect(() => {}, [progressBarStates]);
 
 	return (
 		<div className='GameResult'>
@@ -66,13 +43,14 @@ export const GameResult = () => {
 					</div>
 					<div>
 						<div className='container'>
-							<div className='progress-bar__container' ref={progressBarContainerRef}>
-								<div className='progress-bar' ref={progressBarRef}>
-									<span className='progress-bar__text' ref={progressBarTextRef}>
-										Uploaded Successfully!
-									</span>
-								</div>
-							</div>
+							<PrograssBar
+								tier={
+									rating >= 1400 && rating < 1600 ? 'bronze' : rating < 1800 ? 'silver' : 'gold'
+								}
+								rating={rating}
+								endState={endState}
+								progressBarStates={progressBarStates}
+							/>
 						</div>
 					</div>
 				</div>

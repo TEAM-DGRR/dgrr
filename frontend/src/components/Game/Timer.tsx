@@ -29,12 +29,10 @@ export const Timer = memo(({ turn }: { turn: string }) => {
   }, [leftTime]);
 
   useEffect(() => {
-    setLeftTime(30 * 1000);
+    if (turn !== "ready") {
+      setLeftTime(30 * 1000);
+    }
   }, [turn]);
 
-  return (
-    <div className="timer">
-      0 : {second} {turn}
-    </div>
-  );
+  return <div className="timer">0 : {second}</div>;
 });

@@ -4,17 +4,25 @@ import "assets/scss/Button.scss";
 
 interface IButtonProps {
   children: string;
-  size?: string;
+  width?: string;
+  height?: string;
   onClick?: Function;
   color?: string;
 }
 
 export const Button = (props: IButtonProps) => {
-  const { children, size = "lg", color = "yellow", onClick } = props;
+  const {
+    children,
+    width = "calc(100% - 48px)",
+    height = "56px",
+    color = "yellow",
+    onClick,
+  } = props;
   return (
     <button
-      className={classNames("Button", size, color)}
+      className={classNames("Button", color)}
       onClick={onClick as React.MouseEventHandler}
+      style={{ width: width, height: height }}
     >
       {children}
     </button>

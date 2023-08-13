@@ -37,22 +37,4 @@ $mainblack: #121417;
       background: darken(#469ff6, 10%); // 색상 10% 어둡게
     }
   }
-
-  // 사이즈
-  &.sm {
-    width: 86px;
-    height: 44px;
-    font-size: small;
-  }
-
-  &.md {
-    width: 100px;
-    height: 40px;
-    font-size: medium;
-  }
-
-  &.lg {
-    width: calc(100vw - 48px);
-    height: 56px;
-  }
 }

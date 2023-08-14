@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import "assets/scss/GamePlay.scss";
 
-export const Timer = memo(({ turn }: { turn: string }) => {
+export const Timer = memo(({ role }: { role: string }) => {
   // 30초
   const playTime = 30 * 1000;
   // 1초
@@ -29,10 +29,14 @@ export const Timer = memo(({ turn }: { turn: string }) => {
   }, [leftTime]);
 
   useEffect(() => {
-    if (turn !== "ready") {
+    const timeout = setTimeout(() => {
       setLeftTime(30 * 1000);
-    }
-  }, [turn]);
+    }, 3000); // 3초 뒤에 초기화
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [role]);
 
   return <div className="timer">0 : {second}</div>;
 });

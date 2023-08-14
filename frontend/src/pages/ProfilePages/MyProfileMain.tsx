@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import TierInfoModal from 'components/Elements/TierInfoModal'; // 모달 컴포넌트 임포트
 import axios from 'axios';
 import { PrograssBar } from 'components/Elements/PrograssBar';
+import { Button } from 'components/Elements/Button/BasicButton';
 
 export const MyProfileMain = () => {
 	const navigate = useNavigate();
@@ -52,6 +53,8 @@ export const MyProfileMain = () => {
 		},
 	]);
 
+	const [isThereBattleDetail, setIsThereBattleDetail] = useState(true);
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
 		const year = date.getFullYear();
@@ -75,6 +78,9 @@ export const MyProfileMain = () => {
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
+					if(battleDetailList.length <= 1) {
+						setIsThereBattleDetail(false);
+					}
 
 					//progressBar - DataUpdate
 					const newRating = res.data.ratingList[0].rating;
@@ -95,6 +101,10 @@ export const MyProfileMain = () => {
 
 	// endState가 업데이트될 때 GSAP 애니메이션을 실행
 	useEffect(() => {}, [progressBarStates]);
+
+	const handleRandomMatch = () => {
+		navigate('/game/loading');
+	};
 
 	return (
 		<div className='MyProfile'>
@@ -169,6 +179,7 @@ export const MyProfileMain = () => {
 				<div className='record'>
 					<div className='recordTitle'>
 						<span className='recentlyBattle'>최근 전적</span>
+						{isThereBattleDetail?
 						<span
 							className='moreBattle'
 							onClick={() => {
@@ -176,9 +187,11 @@ export const MyProfileMain = () => {
 							}}
 						>
 							더보기+
-						</span>
+						</span>: null
+						}
 					</div>
 					<div className='divisionLine'></div>
+					{isThereBattleDetail?
 					<div className='recordList'>
 						<ul className='list_ul'>
 							{battleDetailList.map((item, index) => (
@@ -208,6 +221,12 @@ export const MyProfileMain = () => {
 							))}
 						</ul>
 					</div>
+					:<div id="battleDetailNone">
+						<p>전적이 아직 없습니다.</p>
+						<p>랜덤 매칭으로 티어를 올려보세요!</p>
+						<Button onClick={handleRandomMatch}>랜덤 매칭</Button>
+					</div>
+											}
 				</div>
 			</div>
 		</div>

@@ -39,8 +39,7 @@ export const GamePlay = () => {
     myGameResult,
     setMyGameResult,
   } = useGameContext();
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo, turn } =
-    gameConfig;
+  const { gameSessionId, openViduToken } = gameConfig;
 
   // Stomp
   const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
@@ -55,8 +54,7 @@ export const GamePlay = () => {
 
   // 이미지 수신 정보 시각화
   const [recognition, setRecognition] = useState<string>("");
-  const [emotion, setEmotion] = useState<string>("");
-  const [probability, setPropbability] = useState<string>("");
+  const [smileProbability, setSmileProbability] = useState<string>("");
   const isRecognitionMessage = "인식 성공";
   const isNotRecognitionMessage = "인식 실패";
 
@@ -152,12 +150,7 @@ export const GamePlay = () => {
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
           setRecognition(imageResult.success);
-          setEmotion(imageResult.emotion);
-          if (imageResult.emotion === "Smile") {
-            setPropbability(imageResult.probability);
-          } else {
-            setPropbability("0");
-          }
+          setSmileProbability(imageResult.smileProbability);
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
@@ -299,10 +292,10 @@ export const GamePlay = () => {
         ) : null}
         {/* 이미지 분석 결과를 시각화 */}
 
-        {emotion === "Smile" && !showTurnChangeModal ? (
-          <ProbabilityGauge probability={parseFloat(probability)} />
+        {recognition && !showTurnChangeModal ? (
+          <ProbabilityGauge probability={parseFloat(smileProbability)} />
         ) : (
-          <ProbabilityGauge probability={parseFloat(probability)} />
+          <ProbabilityGauge probability={parseFloat(smileProbability)} />
         )}
         {!showTurnChangeModal && !showGameEndedModal ? (
           recognition === "true" ? (

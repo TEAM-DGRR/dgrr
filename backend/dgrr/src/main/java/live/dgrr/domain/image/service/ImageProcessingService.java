@@ -54,12 +54,14 @@ public class ImageProcessingService {
         String gameSessionId = ((String) ((JSONArray) nativeHeaders.get("gameSessionId")).get(0));
         System.out.println(nativeHeaders);
 
-        // 7. emotion, probability
+        // 7. emotion, probability, smileProbability
         String emotion = (String) result.get("emotion");
         double probability = (double) result.get("probability");
+        double smileProbability = (double) result.get("smileProbability");
         probability = Math.round(probability * 100) / 100.0;
+        smileProbability = Math.round(smileProbability * 100) / 100.0;
 
-        ImageResult imageResult = new ImageResult(success, emotion, probability);
+        ImageResult imageResult = new ImageResult(success, emotion, probability, smileProbability);
 
         if (success.equals("true")) {
 

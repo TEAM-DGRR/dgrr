@@ -37,6 +37,7 @@ export const GamePlay = () => {
     stompClient,
     isStompConnected,
     gameConfig,
+    // eslint-disable-next-line
     myGameResult,
     setMyGameResult,
   } = useGameContext();
@@ -60,11 +61,13 @@ export const GamePlay = () => {
   const isNotRecognitionMessage = "인식 실패";
 
   // OpenVidu
+  // eslint-disable-next-line
   const [OV, setOV] = useState<OpenVidu>();
   const [OVSession, setOVSession] = useState<Session>();
   const [publisher, setPublisher] = useState<Publisher>();
   const [subscriber, setSubscriber] = useState<Subscriber>();
   const currentVideoDeviceRef = useRef<Device>();
+  // eslint-disable-next-line
   const { PUBLISHER_PROPERTIES } = openViduConfig;
 
   // 게임 상태
@@ -96,6 +99,7 @@ export const GamePlay = () => {
       () => setShowTurnChangeModal(false),
       SHOW_TURN_CHANGE_MODAL_TIME
     );
+    // eslint-disable-next-line
   }, [gameConfig]);
 
   // GamePlay 렌더링 시 OvenVidu 연결
@@ -120,6 +124,7 @@ export const GamePlay = () => {
           console.log("OpenVidu 연결 실패", error.code, error.message);
         });
     });
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -217,6 +222,7 @@ export const GamePlay = () => {
         }
       });
     }
+    // eslint-disable-next-line
   }, []);
 
   // 이미지 캡처
@@ -245,6 +251,7 @@ export const GamePlay = () => {
         console.log("이미지 전송 실패. 연결 확인");
       }
     };
+    // eslint-disable-next-line
   }, [stompClient, round]);
 
   useEffect(() => {
@@ -260,6 +267,7 @@ export const GamePlay = () => {
         clearInterval(startWebcamCapture.current);
       }
     }
+    // eslint-disable-next-line
   }, [role]);
 
   const navigate = useNavigate();

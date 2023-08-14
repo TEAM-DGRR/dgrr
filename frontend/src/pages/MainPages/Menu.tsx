@@ -1,6 +1,6 @@
-import "assets/scss/Menu.scss";
 import backIco from "assets/images/ico_back.svg";
 import winkBreadIco from "assets/images/ico_bread_wink.png";
+import "assets/scss/Menu.scss";
 import { useNavigate } from "react-router-dom";
 
 export const Menu = () => {

@@ -12,6 +12,7 @@ import { useGameContext } from "./GameContext";
 export const GameResult = () => {
   const { gameConfig, myGameResult, disconnectStompClient } = useGameContext();
   const { myInfo, enemyInfo } = gameConfig;
+  // eslint-disable-next-line
   const { firstRoundTime, secondRoundTime, gameResult, reward, afterRank } =
     myGameResult;
 
@@ -24,7 +25,7 @@ export const GameResult = () => {
   let nextRating =
     newRating >= 1400 && newRating < 1600 ? 1600 : newRating < 1800 ? 1800 : 0; //다음 등급 Rating
   let percent = nextRating !== 0 ? 100 - (nextRating - newRating) / 2 : 100;
-
+  // eslint-disable-next-line
   const progressBarStates = [0, percent]; // 초기값은 0으로 설정하거나, 원하는 값으로 설정하세요.
   const endState = 100;
 

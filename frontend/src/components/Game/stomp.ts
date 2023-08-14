@@ -3,6 +3,7 @@ import { stompConfig } from "./config";
 import { IGameConfig } from "./interface";
 
 const { CONNECT_HEADER, DESTINATION_URI } = stompConfig;
+// eslint-disable-next-line
 const { GAME_URI, MATCHING_URI, IMAGE_DATA_URI, IMAGE_RESULT_URI, STATUS_URI, RESULT_URI } =
   DESTINATION_URI;
 

@@ -41,3 +41,8 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: error
+
+# kakao
+kakao:
+  client_id: ${KAKAO_CLIENT_ID}
+  redirect_uri: ${KAKAO_REDIRECT_URI}

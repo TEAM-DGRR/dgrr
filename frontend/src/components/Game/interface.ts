@@ -22,7 +22,7 @@ export interface IMemberInfo {
 }
 
 export interface IImageResult {
-  success: boolean;
+  success: string;
   emotion: string;
   probability: string;
   allProbability?: string;

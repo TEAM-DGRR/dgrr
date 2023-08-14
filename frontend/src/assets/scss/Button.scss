@@ -15,12 +15,8 @@ $mainblack: #121417;
     color: $mainblack;
     background: linear-gradient(180deg, #fff401 0%, #ffd873 100%);
 
-    &:hover {
-      background: lighten(#fff401, 10%); // 색상 10% 밝게
-    }
-
     &:active {
-      background: darken(#fff401, 10%); // 색상 10% 어둡게
+      background: darken(#fff401, 10%);
     }
   }
 
@@ -29,12 +25,14 @@ $mainblack: #121417;
     background: #469ff6;
     border: none;
 
-    &:hover {
-      background: lighten(#469ff6, 10%); // 색상 10% 밝게
-    }
-
     &:active {
-      background: darken(#469ff6, 10%); // 색상 10% 어둡게
+      background: darken(#469ff6, 10%);
     }
+  }
+
+  &.grey {
+    border: #424242 solid;
+    color: #afb4bb;
+    background: #d9dbe3;
   }
 }

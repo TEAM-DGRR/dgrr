@@ -1,0 +1,56 @@
+.explainmodal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.explainmodal-body {
+  position: absolute;
+  left: 12px;
+  background-color: white;
+  border-radius: 8px;
+  width: calc(100% - 24px);
+  height: auto;
+  padding: 16px;
+
+  // 게임설명 타이틀 크기
+  .explain-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  font-size: 16px;
+  text-align: left;
+  // 단어 기준으로 줄바꿈
+  word-break: keep-all;
+
+  li + li {
+    margin-top: 8px;
+  }
+}
+
+#explain-6 {
+  li {
+    margin-left: 8px;
+  }
+}
+
+.explainmodal-title {
+  display: flex;
+
+  justify-content: space-between;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}

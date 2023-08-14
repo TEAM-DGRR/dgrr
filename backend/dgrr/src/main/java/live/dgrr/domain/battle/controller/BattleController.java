@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/battle")
-@CrossOrigin
+@CrossOrigin(exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 public class BattleController {
 

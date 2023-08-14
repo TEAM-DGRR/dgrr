@@ -9,10 +9,14 @@ import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.rating.service.RatingService;
 import live.dgrr.global.security.jwt.JwtProperties;
+import live.dgrr.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +29,10 @@ import java.security.Principal;
 @Slf4j
 public class MemberController {
 
+    private final AuthenticationManagerBuilder managerBuilder;
     private final MemberService memberService;
     private final RatingService ratingService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/kakao-callback")
     public ResponseEntity<?> kakaoLogin(@RequestParam String code) {
@@ -52,8 +58,9 @@ public class MemberController {
 
     @GetMapping("/login")
     public ResponseEntity login(@RequestParam("kakaoId") String kakaoId) {
-        String token = memberService.createToken(memberService.getMemberByKakaoId(kakaoId));
-        LoginResponseDto response = new LoginResponseDto(JwtProperties.TOKEN_PREFIX + token, memberService.getMemberByKakaoId(kakaoId));
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+        String token = memberService.createToken(member);
+        LoginResponseDto response = new LoginResponseDto(JwtProperties.TOKEN_PREFIX+tokenProvider.generateTokenDto(member.getKakaoId(), member.getMemberId()).getAccessToken(), member);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

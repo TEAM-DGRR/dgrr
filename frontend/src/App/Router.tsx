@@ -8,6 +8,7 @@ import { Main } from 'pages/MainPages/Main';
 import { Menu } from 'pages/MainPages/Menu';
 import { MyProfile } from 'pages/ProfilePages/MyProfile';
 import { createBrowserRouter } from 'react-router-dom';
+import { Unauthorized } from 'components/Form/Unauthorized';
 
 const router = createBrowserRouter([
 	{
@@ -50,6 +51,16 @@ const router = createBrowserRouter([
 		element: <Game />,
 		errorElement: <NotFound />,
 	},
+	{
+		path: 'not-found',
+		element: <NotFound/>,
+		errorElement: <NotFound/>,
+	},
+	{
+		path: 'unauthorized',
+		element: <Unauthorized/>,
+		errorElement:<Unauthorized/>, 
+	}
 	// {
 	//     path: "game/match",
 	//     element: <GameMatch />,

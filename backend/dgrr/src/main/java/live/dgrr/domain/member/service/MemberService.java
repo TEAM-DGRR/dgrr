@@ -184,7 +184,7 @@ public class MemberService {
 
     @Transactional
     public void updateByMember(MemberRequestDto memberRequestDto) {
-        Optional<Member> member = memberRepository.findById(memberRequestDto.getMemberId());
-        member.get().updateMember(memberRequestDto.getNickname(), memberRequestDto.getProfileImage(), memberRequestDto.getDescription());
+        Member member = memberRepository.findByMemberId(memberRequestDto.getMemberId());
+        member.updateMember(memberRequestDto.getNickname(), memberRequestDto.getProfileImage(), memberRequestDto.getDescription());
     }
 }

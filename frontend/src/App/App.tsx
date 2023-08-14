@@ -13,9 +13,7 @@ export const App = () => {
 	const token = localStorage.getItem('token');
 	useEffect(() => {
 		setScreenSize();
-		console.log(token);
 		if (token) {
-			console.log('여기 오냐고');
 			axios.defaults.headers.common['Authorization'] = token;
 		}
 	}, []);

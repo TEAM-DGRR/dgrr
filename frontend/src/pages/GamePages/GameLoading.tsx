@@ -1,18 +1,15 @@
-// GameLoading.tsx
-
 import LoadingSoundPath from "assets/audio/game-loading.mp3";
-
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
 import { IGameConfig } from "components/Game";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 
 const LoadingMessage = "게임을 찾는 중입니다";
 
 export const GameLoading = () => {
-  const loadingSound = new Audio(LoadingSoundPath);
+  const loadingSound = useRef(new Audio(LoadingSoundPath)).current;
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
 
@@ -24,19 +21,17 @@ export const GameLoading = () => {
     getGameConfiguration,
   } = useGameContext();
 
+  // eslint-disable-next-line
   useEffect(() => {
     loadingSound.play();
-    // 1) 소켓 통신 연결
+
     const tryConnectStomp = async () => {
       if (!stompClient) {
         const client = await connectStompClient({});
-
-        // 2) 구독, 구독 완료 메시지 전송, 게임 시작 메시지를 수신하도록 대기
         startGameSession(await getGameConfiguration(client));
       }
     };
 
-    // 3) 게임 시작 메시지 수신 시, 게임 설정 요소 저장하고 게임 세션 시작
     const startGameSession = (message: IGameConfig) => {
       if (message.success === "true") {
         setGameConfig(message);
@@ -59,6 +54,7 @@ export const GameLoading = () => {
       loadingSound.pause();
       loadingSound.currentTime = 0;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   return (
@@ -66,8 +62,7 @@ export const GameLoading = () => {
       <div className="RotatingElement">
         <img src={LoadingLogo} alt="a" />
       </div>
-      <div className="Timer">{seconds}s</div>{" "}
-      {/* This is the new timer display */}
+      <div className="Timer">{seconds}s</div>
       <div className="LoadingText">
         {Array.from(LoadingMessage).map((char, index) => (
           <span key={index}>{char}</span>

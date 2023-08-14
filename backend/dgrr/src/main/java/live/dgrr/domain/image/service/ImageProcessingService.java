@@ -65,10 +65,10 @@ public class ImageProcessingService {
 
             // 이미지 판정 결과가 Smile이라면 gameService 호출.
             if (emotion.equals("Smile") && probability >= THRESHOLD) {
-                if(round.equals("first")) {
+                if(round.equals("round 1")) {
                     gameService.handleFirstRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
                 }
-                if(round.equals("second")) {
+                if(round.equals("round 2")) {
                     gameService.handleSecondRoundEnd(gameSessionId, RoundResult.LAUGH, probability);
                 }
             }

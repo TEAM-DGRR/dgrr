@@ -72,7 +72,6 @@ export const MyProfileMain = () => {
 			const response = await axios
 				.get(`${process.env.REACT_APP_API_URL}/member/member-id`)
 				.then((res: any) => {
-					console.log(res.data);
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
@@ -116,7 +115,7 @@ export const MyProfileMain = () => {
 						src={editImg}
 						alt='프로필편집'
 						onClick={() => {
-							navigate('/myprofile/update');
+							navigate('/myprofile/update', { state: { member } });
 						}}
 					/>
 				</div>

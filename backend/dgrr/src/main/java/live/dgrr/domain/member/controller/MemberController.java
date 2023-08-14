@@ -99,7 +99,7 @@ public class MemberController {
     }
 
     //mypage-update
-    @PutMapping
+    @PutMapping({"/", ""})
     public ResponseEntity<?> updateMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.updateByMember(memberRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);

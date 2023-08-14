@@ -9,6 +9,7 @@ import {
   openViduConfig,
   stompConfig,
 } from "components/Game";
+import { GameEndedModal } from "components/Game/GameEndedModal";
 import ProbabilityGauge from "components/Game/ProbabilityGauge";
 import { RoundChangeModal } from "components/Game/RoundChangeModal";
 import { Timer } from "components/Game/Timer";
@@ -73,10 +74,12 @@ export const GamePlay = () => {
   // 턴 정보 모달창
   const SHOW_TURN_CHANGE_MODAL_TIME = 3 * 1000;
   const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
+  const [turnChangeMessage, setTurnChangeMessage] = useState<string>("");
 
   // 게임 종료 모달창
   const SHOW_GAME_ENDED_MODAL_TIME = 3 * 1000;
   const [showGameEndedModal, setShowGameEndedModal] = useState(false);
+  const [gameEndedMessage, setGameEndedMessage] = useState<string>("");
 
   // gameConfig의 turn에 따라 role을 설정
   useEffect(() => {
@@ -117,8 +120,8 @@ export const GamePlay = () => {
   }, []);
 
   useEffect(() => {
-    const roundEnd = (gameStatus: IGameStatus) => {
-      const roundStart = () => {};
+    const round1End = (gameStatus: IGameStatus) => {
+      const round2Start = () => {};
 
       if (gameStatus.status === "round changed") {
         console.log("2라운드를 진행합니다.");
@@ -127,13 +130,20 @@ export const GamePlay = () => {
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
       }
 
-      setTimeout(roundStart, timeRemaining(gameStatus.startTime));
+      setTimeout(round2Start, timeRemaining(gameStatus.startTime));
     };
 
     const gameEnd = (gameResult: IGameResult) => {
       console.log("게임 종료");
       setShowGameEndedModal(true);
+      setRole((prevRole) => (prevRole === "attack" ? "defense" : "attack"));
 
+      // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
+      if (parseFloat(smileProbability) < 0.5) {
+        setGameEndedMessage("안웃었네요.");
+      } else {
+        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
+      }
       setTimeout(() => {
         setShowGameEndedModal(false);
         stompClient?.deactivate();
@@ -170,11 +180,11 @@ export const GamePlay = () => {
               setRole((prevRole) =>
                 prevRole === "attack" ? "defense" : "attack"
               );
-            } else if (round === "round 2") {
-              setRound("round 1");
-              setRole((prevRole) =>
-                prevRole === "attack" ? "defense" : "attack"
-              );
+              if (gameStatus.result === "HOLD_BACK") {
+                setTurnChangeMessage("안웃었네요.");
+              } else if (gameStatus.result === "LAUGH") {
+                setTurnChangeMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
+              }
             }
             // 3초간 모달 보여주기
             setShowTurnChangeModal(true);
@@ -184,7 +194,7 @@ export const GamePlay = () => {
             );
           }
 
-          roundEnd(gameStatus);
+          round1End(gameStatus);
         } catch {
           console.log("게임 상태 파싱 오류");
         }
@@ -315,7 +325,12 @@ export const GamePlay = () => {
           height="480"
         ></canvas>
       ) : null}
-      {showTurnChangeModal ? <RoundChangeModal role={role} /> : null}
+      {showTurnChangeModal ? (
+        <RoundChangeModal role={role} message={turnChangeMessage} />
+      ) : null}
+      {showGameEndedModal ? (
+        <GameEndedModal role={role} message={gameEndedMessage} />
+      ) : null}
     </div>
   );
 };

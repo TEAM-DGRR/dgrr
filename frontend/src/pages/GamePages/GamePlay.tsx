@@ -55,7 +55,7 @@ export const GamePlay = () => {
 
   // 이미지 수신 정보 시각화
   const [recognition, setRecognition] = useState<string>("");
-  const [smileProbability, setSmileProbability] = useState<string>("");
+  const [smileProbability, setSmileProbability] = useState<string>("1");
   const isRecognitionMessage = "인식 성공";
   const isNotRecognitionMessage = "인식 실패";
 
@@ -80,6 +80,9 @@ export const GamePlay = () => {
   const SHOW_GAME_ENDED_MODAL_TIME = 3 * 1000;
   const [showGameEndedModal, setShowGameEndedModal] = useState(false);
   const [gameEndedMessage, setGameEndedMessage] = useState<string>("");
+
+  // 웃음 판정 상수
+  const THRESHOLD = 0.5;
 
   // gameConfig의 turn에 따라 role을 설정
   useEffect(() => {
@@ -139,10 +142,10 @@ export const GamePlay = () => {
       setRole((prevRole) => (prevRole === "attack" ? "defense" : "attack"));
 
       // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
-      if (parseFloat(smileProbability) < 0.5) {
-        setGameEndedMessage("안웃었네요.");
+      if (parseFloat(smileProbability) < THRESHOLD) {
+        setGameEndedMessage("안웃었네요.\n게임 종료할게요~");
       } else {
-        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
+        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ\n게임 종료할게요~");
       }
       setTimeout(() => {
         setShowGameEndedModal(false);

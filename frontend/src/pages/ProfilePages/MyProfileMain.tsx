@@ -52,6 +52,9 @@ export const MyProfileMain = () => {
 		},
 	]);
 
+	//데이터 로드 되었는지
+	const [isLoad, setIsLoad] = useState(false);
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
 		const year = date.getFullYear();
@@ -75,6 +78,7 @@ export const MyProfileMain = () => {
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
+					setIsLoad(true);
 
 					//progressBar - DataUpdate
 					const newRating = res.data.ratingList[0].rating;
@@ -91,7 +95,7 @@ export const MyProfileMain = () => {
 		};
 
 		fetchMemberData();
-	}, []); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
+	}, [isLoad]); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
 
 	// endState가 업데이트될 때 GSAP 애니메이션을 실행
 	useEffect(() => {}, [progressBarStates]);
@@ -99,117 +103,119 @@ export const MyProfileMain = () => {
 	return (
 		<div className='MyProfile'>
 			<TierInfoModal isOpen={isModalOpen} closeModal={closeModal} />
-			<div className='MarginFrame'>
-				<div className='navbar'>
-					<div className='navbar-left'>
+			{isLoad ? (
+				<div className='MarginFrame'>
+					<div className='navbar'>
+						<div className='navbar-left'>
+							<img
+								src={arrowleft}
+								alt='뒤로가기'
+								onClick={() => {
+									navigate('/main');
+								}}
+							/>
+							<span>마이프로필</span>
+						</div>
 						<img
-							src={arrowleft}
-							alt='뒤로가기'
+							src={editImg}
+							alt='프로필편집'
 							onClick={() => {
-								navigate('/main');
+								navigate('/myprofile/update', { state: { member } });
 							}}
 						/>
-						<span>마이프로필</span>
 					</div>
-					<img
-						src={editImg}
-						alt='프로필편집'
-						onClick={() => {
-							navigate('/myprofile/update', { state: { member } });
-						}}
-					/>
-				</div>
 
-				<div className='profileBody'>
-					<div className='profileImage'>
-						<img src={member.profileImage} alt='프로필 예시' />
+					<div className='profileBody'>
+						<div className='profileImage'>
+							<img src={member.profileImage} alt='프로필 예시' />
+						</div>
+						<div className='profileInfo'>
+							{/* 회원정보 받아온 후에 연결시켜줄거임 */}
+							<span className='nickname'>{member.nickname}</span>
+							<span className='description'>{member.description}</span>
+						</div>
 					</div>
-					<div className='profileInfo'>
-						{/* 회원정보 받아온 후에 연결시켜줄거임 */}
-						<span className='nickname'>{member.nickname}</span>
-						<span className='description'>{member.description}</span>
-					</div>
-				</div>
 
-				<div className='tier'>
-					<div className='tierInfo'>
-						<span>내 티어</span>
-						<img src={questionImg} alt='티어 정보 보기' onClick={openModal} />
-					</div>
-					<div className='tierImage'>
-						<img
-							src={
-								ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
-									? tierBronze
-									: ratingList[0].rating < 1800
-									? tierSilver
-									: tierGold
-							}
-							alt='티어 예시'
-						/>
-					</div>
-					<div>
-						<div className='container'>
-							<PrograssBar
-								tier={
+					<div className='tier'>
+						<div className='tierInfo'>
+							<span>내 티어</span>
+							<img src={questionImg} alt='티어 정보 보기' onClick={openModal} />
+						</div>
+						<div className='tierImage'>
+							<img
+								src={
 									ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
-										? 'bronze'
+										? tierBronze
 										: ratingList[0].rating < 1800
-										? 'silver'
-										: 'gold'
+										? tierSilver
+										: tierGold
 								}
-								rating={ratingList[0].rating}
-								endState={endState}
-								progressBarStates={progressBarStates}
+								alt='티어 예시'
 							/>
+						</div>
+						<div>
+							<div className='container'>
+								<PrograssBar
+									tier={
+										ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
+											? 'bronze'
+											: ratingList[0].rating < 1800
+											? 'silver'
+											: 'gold'
+									}
+									rating={ratingList[0].rating}
+									endState={endState}
+									progressBarStates={progressBarStates}
+								/>
+							</div>
+						</div>
+					</div>
+
+					<div className='record'>
+						<div className='recordTitle'>
+							<span className='recentlyBattle'>최근 전적</span>
+							<span
+								className='moreBattle'
+								onClick={() => {
+									navigate('/myprofile/record');
+								}}
+							>
+								더보기+
+							</span>
+						</div>
+						<div className='divisionLine'></div>
+						<div className='recordList'>
+							<ul className='list_ul'>
+								{battleDetailList.map((item, index) => (
+									<li key={index} className='battle-item'>
+										<div className='battle-result'>
+											<div className='result-left'>
+												<img
+													className='result-image'
+													src={
+														item.battleResult === 'WIN'
+															? winImg
+															: item.battleResult === 'LOSE'
+															? loseImg
+															: drawImg
+													}
+													alt='승리 이미지'
+												/>
+												<img className='profile-image' src={profileImg} alt='프로필 이미지' />
+												<span className='nickname'>{item.opponentNickname}</span>
+											</div>
+
+											<div className='result-right'>
+												<span className='date'>{formatDate(item.createdAt)}</span>
+											</div>
+										</div>
+									</li>
+								))}
+							</ul>
 						</div>
 					</div>
 				</div>
-
-				<div className='record'>
-					<div className='recordTitle'>
-						<span className='recentlyBattle'>최근 전적</span>
-						<span
-							className='moreBattle'
-							onClick={() => {
-								navigate('/myprofile/record');
-							}}
-						>
-							더보기+
-						</span>
-					</div>
-					<div className='divisionLine'></div>
-					<div className='recordList'>
-						<ul className='list_ul'>
-							{battleDetailList.map((item, index) => (
-								<li key={index} className='battle-item'>
-									<div className='battle-result'>
-										<div className='result-left'>
-											<img
-												className='result-image'
-												src={
-													item.battleResult === 'WIN'
-														? winImg
-														: item.battleResult === 'LOSE'
-														? loseImg
-														: drawImg
-												}
-												alt='승리 이미지'
-											/>
-											<img className='profile-image' src={profileImg} alt='프로필 이미지' />
-											<span className='nickname'>{item.opponentNickname}</span>
-										</div>
-
-										<div className='result-right'>
-											<span className='date'>{formatDate(item.createdAt)}</span>
-										</div>
-									</div>
-								</li>
-							))}
-						</ul>
-					</div>
-				</div>
-			</div>
+			) : null}
 		</div>
 	);
 };

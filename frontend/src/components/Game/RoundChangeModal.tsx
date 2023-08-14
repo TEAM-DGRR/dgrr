@@ -3,13 +3,12 @@ import defense from "assets/images/match-defense.png";
 import "assets/scss/RoundChangeModal.scss";
 import { memo } from "react";
 
-export const RoundChangeModal = memo(({ turn }: { turn: string }) => {
+export const RoundChangeModal = memo(({ role }: { role: string }) => {
   return (
     <div className="roundchange-modal-background">
       <div className="roundchange-modal">
-        <p>라운드 변경!</p>
         {/* turn에 따라서 정보 다르게 보여주기 */}
-        {turn === "attack" ? (
+        {role === "attack" ? (
           <>
             <img src={attack} alt="공격" />
             <p>상대방을 웃기세요!</p>

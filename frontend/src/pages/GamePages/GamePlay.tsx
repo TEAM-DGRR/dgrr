@@ -1,6 +1,4 @@
 import { Client, IMessage } from "@stomp/stompjs";
-import attackIco from "assets/images/match-attack.png";
-import defendIco from "assets/images/match-defense.png";
 import "assets/scss/GamePlay.scss";
 import {
   IGameResult,
@@ -9,7 +7,6 @@ import {
   openViduConfig,
   stompConfig,
 } from "components/Game";
-import { Timer } from "components/Game/Timer";
 import { captureImage } from "components/Game/captureImage";
 import { initGame, joinSession } from "components/Game/openVidu";
 import {
@@ -27,12 +24,9 @@ import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 import { UserVideoComponent } from "./UserVideoComponent";
 import { Timer } from "components/Game/Timer";
-import { useNavigate } from "react-router-dom";
-import { AttackState } from "components/Game/AttackState";
 import attackIco from "assets/images/match-attack.png";
 import defendIco from "assets/images/match-defense.png";
 import { RoundChangeModal } from "components/Game/RoundChangeModal";
-import { stat } from "fs";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -73,7 +67,7 @@ export const GamePlay = () => {
   const [round, setRound] = useState<string>("round 1"); // 초기 상태 "round 1"
 
   // 턴 정보 모달창
-  const SHOW_TURN_CHANGE_MODAL_TIME = 1000;
+  const SHOW_TURN_CHANGE_MODAL_TIME = 3 * 1000;
   const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
 
   // 게임 종료 모달창
@@ -177,6 +171,7 @@ export const GamePlay = () => {
                 prevRole === "attack" ? "defense" : "attack"
               );
             }
+            // 3초간 모달 보여주기
             setShowTurnChangeModal(true);
             setTimeout(
               () => setShowTurnChangeModal(false),
@@ -253,54 +248,31 @@ export const GamePlay = () => {
 
   return (
     <div className="gameplay-page">
-      {/* 모달창 띄우는 div */}
-      {showTurnChangeModal && (
-        <div className="role-modal">
-          <div className="role-modal-content">
-            <h2>{role} 턴입니다.</h2>
-          </div>
-        </div>
-      )}
-      {showGameEndedModal && (
-        <div className="game-end-modal">
-          <div className="game-end-modal-content">
-            <h2>게임이 종료되었습니다.</h2>
-          </div>
-        </div>
-      )}
       <div className="gameplay-navbar">
         {/* space 균등하게 주기 위한 더미 */}
         {/* <div style={{width: 28}} /> */}
-        <Timer turn={role} />
+        <Timer role={role} />
         {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
       <div id="main-video">
+        {/* 상대 비디오 */}
         {role === "attack" ? (
           <img id="defend" src={defendIco} alt="방어상태" />
         ) : (
           <img id="attack" src={attackIco} alt="공격상태" />
         )}
-        {/* {turn === "attack" ? (
-          <AttackState color="blue">방어</AttackState>
-          ) : (
-            <AttackState color="red">공격</AttackState>
-          )} */}
         <UserVideoComponent streamManager={subscriber} />
       </div>
       <div id="main-video">
-        {turn !== "defense" && turn !== "ready" ? (
+        {/* 내 비디오 */}
+        {role !== "defense" && !showTurnChangeModal ? (
           <img id="attack" src={attackIco} alt="공격상태" />
         ) : null}
 
-        {turn !== "attack" && turn !== "ready" ? (
+        {role !== "attack" && !showTurnChangeModal ? (
           <img id="defend" src={defendIco} alt="방어상태" />
         ) : null}
-        {/* {turn === "attack" ? (
-          <AttackState color="red">공격</AttackState>
-        ) : (
-          <AttackState color="blue">방어</AttackState>
-        )} */}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
       <canvas
@@ -309,15 +281,7 @@ export const GamePlay = () => {
         width="640"
         height="480"
       ></canvas>
-      {/* <RoundChangeModal turn={turn} /> */}
-      {status === "ready" ? <RoundChangeModal turn={turn} /> : null}
-      <button
-        onClick={() => {
-          navigate("/main");
-        }}
-      >
-        메인으로
-      </button>
+      {showTurnChangeModal ? <RoundChangeModal role={role} /> : null}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 $mainblack: #121417;
-$blue: #469FF6;
+$blue: #469ff6;
 $grey: #505050;
 
 .App {
@@ -17,14 +17,17 @@ $grey: #505050;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Noto Sans KR';
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Pretendard Variable", Pretendard, Roboto, "Noto Sans KR", "Segoe UI",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
 a {
   text-decoration: none;
 }
-

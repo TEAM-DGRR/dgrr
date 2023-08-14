@@ -3,12 +3,14 @@ import personIco from "assets/images/ico_person_24px.svg";
 import character from "assets/images/logo_character.png";
 import title from "assets/images/logo_title.png";
 import "assets/scss/Main.scss";
-import axios from "axios";
 import { Button } from "components/Elements/Button/BasicButton";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { ExplainModal } from "components/Elements/ExplainModal";
 
 export const Main = () => {
   const navigate = useNavigate();
+  const [explainsee, setExplainsee] = useState(false);
 
   const onClick = () => {
     // 메뉴로
@@ -19,9 +21,12 @@ export const Main = () => {
     navigate("/game/loading");
   };
 
+  const showModal = () => {};
+
   return (
     <div className="MainPage">
       <div className="MainNav">
+        <ExplainModal />
         <img src={menuIco} alt="메뉴 아이콘" onClick={onClick} />
         <img
           src={personIco}
@@ -38,8 +43,8 @@ export const Main = () => {
         </div>
 
         <div className="MainBtns">
-          <Button color="grey">코드 입력</Button>
           <Button color="grey">방 만들기</Button>
+          <Button onClick={showModal}>설명보기</Button>
           <Button onClick={handleRandomMatch}>랜덤 매칭</Button>
         </div>
       </div>

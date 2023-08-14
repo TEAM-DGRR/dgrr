@@ -31,6 +31,60 @@
     }
   }
 }
+#noticeIsRecognitionInfo {
+  height: 2vw;
+  width: 8vw;
+  position: relative;
+  left: 5%;
+  top: 40%;
+  border-radius: 20%;
+  background-color: #33f133;
+  z-index: 5;
+
+  p {
+    width: 40vw;
+    color: white;
+    font-size: 20px;
+    margin-left: 10%;
+  }
+}
+
+#noticeIsNotRecognitionInfo {
+  height: 2vw;
+  width: 8vw;
+  position: relative;
+  left: 5%;
+  top: 60%;
+  border-radius: 20%;
+  background-color: #ec244f;
+  z-index: 5;
+
+  p {
+    width: 40vw;
+    color: white;
+    font-size: 20px;
+    margin-left: 10%;
+  }
+}
+
+#isFaceRecognition {
+  height: 2vw;
+  width: 10vw;
+  position: relative;
+  left: 45vw;
+  border-radius: 20%;
+  background-color: #33f133;
+  z-index: 5;
+}
+#isNotFaceRecognition {
+  height: 2vw;
+  width: 10vw;
+  position: relative;
+  left: 45vw;
+  border-radius: 20%;
+  background-color: #ec244f;
+  z-index: 5;
+}
 
 .streamcomponent {
   position: relative;

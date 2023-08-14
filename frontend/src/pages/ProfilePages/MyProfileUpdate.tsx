@@ -71,7 +71,8 @@ export const MyProfileUpdate = () => {
 	useEffect(() => {
 		// 닉네임 변경 감지
 		setNickname(member.nickname);
-	}, [member.nickname]);
+		setDescription(member.description);
+	}, [member]);
 
 	// 닉네임 변경상태 받기
 	const onChangeNickname = (e: ChangeEvent<HTMLInputElement>) => {

@@ -21,12 +21,20 @@ export const Main = () => {
     navigate("/game/loading");
   };
 
-  const showModal = () => {};
+  // 설명 모달 보여주기
+  const showModal = () => {
+    setExplainsee(true);
+  };
+
+  // 설명 모달 닫기
+  const closeModal = () => {
+    setExplainsee(false);
+  };
 
   return (
     <div className="MainPage">
       <div className="MainNav">
-        <ExplainModal />
+        {explainsee ? <ExplainModal onClose={closeModal} /> : null}
         <img src={menuIco} alt="메뉴 아이콘" onClick={onClick} />
         <img
           src={personIco}
@@ -44,7 +52,7 @@ export const Main = () => {
 
         <div className="MainBtns">
           <Button color="grey">방 만들기</Button>
-          <Button onClick={showModal}>설명보기</Button>
+          <Button onClick={showModal}>게임 설명</Button>
           <Button onClick={handleRandomMatch}>랜덤 매칭</Button>
         </div>
       </div>

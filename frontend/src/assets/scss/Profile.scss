@@ -115,6 +115,13 @@ $tier_bronze: #cc8e34;
 	}
 }
 
+#battleDetailNone {
+	text-align: center;
+	Button {
+		margin-top: 30px;
+	}
+}
+
 .record {
 	margin: 20px 0;
 	.recordTitle {
@@ -151,6 +158,7 @@ $tier_bronze: #cc8e34;
 						}
 						.profile-image {
 							width: 36px;
+							height: 36px;
 							border-radius: 50%;
 							margin: 3px;
 						}

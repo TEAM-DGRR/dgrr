@@ -6,7 +6,6 @@ import {
   FormEvent,
   useEffect,
 } from "react";
-import blankImg from "assets/images/logo_character.png";
 import axios from "axios";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import photoUpload from "assets/images/ico_photo.png";
 import "assets/scss/Signup.scss";
 import { Input } from "components/Form/Input";
 import { Button } from "components/Elements/Button/BasicButton";
+import profile_image_name from "assets/images/profile_image/profile_image_name.json";
 
 type UploadImg = {
   file: File;
@@ -44,6 +44,8 @@ export const SignUp = () => {
   const [description, setDescription] = useState("");
   // 경고 문구 visibility state
   const [see, setSee] = useState(false);
+  // 기본 이미지라네.. 유용하게 쓰게나..
+  const [basicImg, setBasicImg] = useState("");
 
   // 닉네임 변경상태 받기
   const onChangeNickname = (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,13 +114,11 @@ export const SignUp = () => {
         .then((res: any) => {
           // 없다면 회원가입 진행
           if (res.data.nicknameExists === "false") {
-            console.log("??? : " + profileImg?.thumbnail);
-            console.log("type: " + typeof profileImg?.thumbnail);
             axios
               .post(`${process.env.REACT_APP_API_URL}/member`, {
                 kakaoId: id,
                 nickname: nickname,
-                profileImage: profileImg?.thumbnail,
+                profileImage: profileImg?.thumbnail?profileImg.thumbnail:basicImg,
                 description: description,
               })
               .then((res: any) => {
@@ -163,10 +163,15 @@ export const SignUp = () => {
     }
   };
 
+  const getRandom = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min);
+
   // 프로필 이미지 미리보기 부분
   const ShowImg = useMemo(() => {
     if (!profileImg && profileImg == null) {
-      return <img src={blankImg} alt="기본 이미지" id="ex-profile" />;
+      const randomNum:number = getRandom(1, profile_image_name.length-1);
+      const basicImage = (profile_image_name[randomNum].url);
+      setBasicImg(basicImage);
+      return <img src={ basicImage } alt="기본 이미지" id="ex-profile" />;
     }
     return (
       <img

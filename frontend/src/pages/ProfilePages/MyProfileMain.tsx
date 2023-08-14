@@ -55,6 +55,9 @@ export const MyProfileMain = () => {
 
 	const [isThereBattleDetail, setIsThereBattleDetail] = useState(true);
 
+	//데이터 로드 되었는지
+	const [isLoad, setIsLoad] = useState(false);
+
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
 		const year = date.getFullYear();
@@ -81,6 +84,7 @@ export const MyProfileMain = () => {
 					if(battleDetailList.length <= 1) {
 						setIsThereBattleDetail(false);
 					}
+					setIsLoad(true);
 
 					//progressBar - DataUpdate
 					const newRating = res.data.ratingList[0].rating;
@@ -97,7 +101,7 @@ export const MyProfileMain = () => {
 		};
 
 		fetchMemberData();
-	}, []); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
+	}, [isLoad]); // useEffect를 컴포넌트가 처음 렌더링될 때만 실행되도록 빈 배열 전달
 
 	// endState가 업데이트될 때 GSAP 애니메이션을 실행
 	useEffect(() => {}, [progressBarStates]);
@@ -109,7 +113,7 @@ export const MyProfileMain = () => {
 	return (
 		<div className='MyProfile'>
 			<TierInfoModal isOpen={isModalOpen} closeModal={closeModal} />
-			<div className='MarginFrame'>
+			{isLoad ? (<div className='MarginFrame'>
 				<div className='navbar'>
 					<div className='navbar-left'>
 						<img
@@ -152,8 +156,8 @@ export const MyProfileMain = () => {
 								ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
 									? tierBronze
 									: ratingList[0].rating < 1800
-									? tierSilver
-									: tierGold
+										? tierSilver
+										: tierGold
 							}
 							alt='티어 예시'
 						/>
@@ -165,8 +169,8 @@ export const MyProfileMain = () => {
 									ratingList[0].rating >= 1400 && ratingList[0].rating < 1600
 										? 'bronze'
 										: ratingList[0].rating < 1800
-										? 'silver'
-										: 'gold'
+											? 'silver'
+											: 'gold'
 								}
 								rating={ratingList[0].rating}
 								endState={endState}
@@ -180,55 +184,55 @@ export const MyProfileMain = () => {
 					<div className='recordTitle'>
 						<span className='recentlyBattle'>최근 전적</span>
 						{isThereBattleDetail?
-						<span
-							className='moreBattle'
-							onClick={() => {
-								navigate('/myprofile/record');
-							}}
-						>
+							<span
+								className='moreBattle'
+								onClick={() => {
+									navigate('/myprofile/record');
+								}}
+							>
 							더보기+
 						</span>: null
 						}
 					</div>
 					<div className='divisionLine'></div>
 					{isThereBattleDetail?
-					<div className='recordList'>
-						<ul className='list_ul'>
-							{battleDetailList.map((item, index) => (
-								<li key={index} className='battle-item'>
-									<div className='battle-result'>
-										<div className='result-left'>
-											<img
-												className='result-image'
-												src={
-													item.battleResult === 'WIN'
-														? winImg
-														: item.battleResult === 'LOSE'
-														? loseImg
-														: drawImg
-												}
-												alt='승리 이미지'
-											/>
-											<img className='profile-image' src={profileImg} alt='프로필 이미지' />
-											<span className='nickname'>{item.opponentNickname}</span>
-										</div>
+						<div className='recordList'>
+							<ul className='list_ul'>
+								{battleDetailList.map((item, index) => (
+									<li key={index} className='battle-item'>
+										<div className='battle-result'>
+											<div className='result-left'>
+												<img
+													className='result-image'
+													src={
+														item.battleResult === 'WIN'
+															? winImg
+															: item.battleResult === 'LOSE'
+																? loseImg
+																: drawImg
+													}
+													alt='승리 이미지'
+												/>
+												<img className='profile-image' src={profileImg} alt='프로필 이미지' />
+												<span className='nickname'>{item.opponentNickname}</span>
+											</div>
 
-										<div className='result-right'>
-											<span className='date'>{formatDate(item.createdAt)}</span>
+											<div className='result-right'>
+												<span className='date'>{formatDate(item.createdAt)}</span>
+											</div>
 										</div>
-									</div>
-								</li>
-							))}
-						</ul>
-					</div>
-					:<div id="battleDetailNone">
-						<p>전적이 아직 없습니다.</p>
-						<p>랜덤 매칭으로 티어를 올려보세요!</p>
-						<Button onClick={handleRandomMatch}>랜덤 매칭</Button>
-					</div>
-											}
+									</li>
+								))}
+							</ul>
+						</div>
+						:<div id="battleDetailNone">
+							<p>전적이 아직 없습니다.</p>
+							<p>랜덤 매칭으로 티어를 올려보세요!</p>
+							<Button onClick={handleRandomMatch}>랜덤 매칭</Button>
+						</div>
+					}
 				</div>
-			</div>
+			</div>):null}
 		</div>
 	);
 };

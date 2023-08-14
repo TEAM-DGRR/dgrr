@@ -8,7 +8,13 @@ import {
 } from "components/Game";
 import { captureImage } from "components/Game/captureImage";
 import { initGame, joinSession } from "components/Game/openVidu";
-import { Device, OpenVidu, Publisher, Session, Subscriber } from "openvidu-browser";
+import {
+  Device,
+  OpenVidu,
+  Publisher,
+  Session,
+  Subscriber,
+} from "openvidu-browser";
 import { connectStomp, publishMessage } from "components/Game/stomp";
 import { parseDate, timeRemaining } from "components/Game/parseDate";
 import "assets/scss/GamePlay.scss";
@@ -20,6 +26,8 @@ import { useNavigate } from "react-router-dom";
 import { AttackState } from "components/Game/AttackState";
 import attackIco from "assets/images/match-attack.png";
 import defendIco from "assets/images/match-defense.png";
+import { RoundChangeModal } from "components/Game/RoundChangeModal";
+import { stat } from "fs";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -50,7 +58,7 @@ export const GamePlay = () => {
   const { PUBLISHER_PROPERTIES } = openViduConfig;
 
   // 게임 상태
-  const [status, setStatus] = useState<string>("ready");
+  const [status, setStatus] = useState<string>("보이니");
   const [turn, setTurn] = useState<string>("ready");
   const [success, setSuccess] = useState<boolean>(false);
   const [emotion, setEmotion] = useState<string>("");
@@ -271,13 +279,14 @@ export const GamePlay = () => {
           )} */}
         <UserVideoComponent streamManager={subscriber} />
       </div>
-      {/* <div>{turn}</div> */}
       <div id="main-video">
-        {turn === "attack" ? (
+        {turn !== "defense" && turn !== "ready" ? (
           <img id="attack" src={attackIco} alt="공격상태" />
-        ) : (
+        ) : null}
+
+        {turn !== "attack" && turn !== "ready" ? (
           <img id="defend" src={defendIco} alt="방어상태" />
-        )}
+        ) : null}
         {/* {turn === "attack" ? (
           <AttackState color="red">공격</AttackState>
         ) : (
@@ -285,6 +294,8 @@ export const GamePlay = () => {
         )} */}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
+      {/* <RoundChangeModal turn={turn} /> */}
+      {status === "ready" ? <RoundChangeModal turn={turn} /> : null}
       <button
         onClick={() => {
           navigate("/main");

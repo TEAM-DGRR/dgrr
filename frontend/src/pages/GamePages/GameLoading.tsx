@@ -1,4 +1,5 @@
 import LoadingSoundPath from "assets/audio/game-loading.mp3";
+import arrowleft from "assets/images/ico_arrow-left_24px.svg";
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
 import { IGameConfig } from "components/Game";
@@ -59,6 +60,17 @@ export const GameLoading = () => {
 
   return (
     <div className="GameLoadingScreen">
+      <div className="navbar">
+        <div className="navbar-left">
+          <img
+            src={arrowleft}
+            alt="뒤로가기"
+            onClick={() => {
+              navigate("/main");
+            }}
+          />
+        </div>
+      </div>
       <div className="RotatingElement">
         <img src={LoadingLogo} alt="a" />
       </div>

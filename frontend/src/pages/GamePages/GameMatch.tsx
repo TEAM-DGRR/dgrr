@@ -42,7 +42,7 @@ export const GameMatch = () => {
 
     // Cleanup on unmount
     return () => clearInterval(interval);
-  }, [gameConfig, navigate]);
+  }, [navigate]);
 
   useEffect(() => {
     if (seconds === 5) {

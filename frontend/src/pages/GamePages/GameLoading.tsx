@@ -16,7 +16,6 @@ export const GameLoading = () => {
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
 
-
   // Stomp and GameContext integration
   const {
     stompClient,
@@ -26,7 +25,6 @@ export const GameLoading = () => {
   } = useGameContext();
 
   useEffect(() => {
-
     loadingSound.play();
     // 1) 소켓 통신 연결
     const tryConnectStomp = async () => {
@@ -42,7 +40,6 @@ export const GameLoading = () => {
     const startGameSession = (message: IGameConfig) => {
       if (message.success === "true") {
         setGameConfig(message);
-        console.log("GameLoading에서 게임 시작 메시지 수신 : ", message);
         loadingSound.pause();
         navigate("/game/match");
       } else {
@@ -53,7 +50,7 @@ export const GameLoading = () => {
     tryConnectStomp();
 
     const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
+      setSeconds((prev) => prev + 1);
     }, 1000);
 
     // Cleanup on unmount
@@ -61,16 +58,16 @@ export const GameLoading = () => {
       clearInterval(interval);
       loadingSound.pause();
       loadingSound.currentTime = 0;
-    }
-
-  }, []);
+    };
+  }, [navigate]);
 
   return (
     <div className="GameLoadingScreen">
       <div className="RotatingElement">
         <img src={LoadingLogo} alt="a" />
       </div>
-      <div className="Timer">{seconds}s</div> {/* This is the new timer display */}
+      <div className="Timer">{seconds}s</div>{" "}
+      {/* This is the new timer display */}
       <div className="LoadingText">
         {Array.from(LoadingMessage).map((char, index) => (
           <span key={index}>{char}</span>

@@ -20,6 +20,7 @@ export interface IGamePlayProps {
   myGameResult: IGameResult;
   setMyGameResult: React.Dispatch<React.SetStateAction<IGameResult>>;
   connectStompClient: (headers: StompHeaders) => Promise<Client>;
+  disconnectStompClient: () => void;
   getGameConfiguration: (client: Client) => Promise<IGameConfig>;
   handleErrorOnStomp: (client: Client, callback: Function) => void;
   sendMessage: (client: Client, destination: string, body: string) => void;
@@ -42,6 +43,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     isStompConnected.current = true;
     console.log("Stomp연결에 성공하였습니다.");
     return client;
+  };
+
+  const disconnectStompClient = () => {
+    if (stompClient) {
+      console.log("Stomp 연결을 해제합니다!");
+      isStompConnected.current = false;
+      stompClient.deactivate();
+      setStompClient(undefined);
+      return;
+    }
   };
 
   const getGameConfiguration = async (client: Client) => {
@@ -67,6 +78,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         myGameResult,
         setMyGameResult,
         connectStompClient,
+        disconnectStompClient,
         getGameConfiguration,
         handleErrorOnStomp,
         sendMessage,

@@ -14,9 +14,9 @@ export const connectStomp = (headers: StompHeaders) => {
       ...CONNECT_HEADER,
       ...headers,
     },
-    debug: (message) => {
-      console.log("[Stomp Debug :: message]", message); // 웹소켓 디버깅 로그 추가
-    },
+    // debug: (message) => {
+    //   console.log("[Stomp Debug :: message]", message); // 웹소켓 디버깅 로그 추가
+    // },
   });
 
   client.activate();

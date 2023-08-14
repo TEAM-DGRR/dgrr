@@ -1,4 +1,7 @@
 import { Client, IMessage } from "@stomp/stompjs";
+import attackIco from "assets/images/match-attack.png";
+import defendIco from "assets/images/match-defense.png";
+import "assets/scss/GamePlay.scss";
 import {
   IGameResult,
   IGameStatus,
@@ -6,28 +9,35 @@ import {
   openViduConfig,
   stompConfig,
 } from "components/Game";
+import { Timer } from "components/Game/Timer";
 import { captureImage } from "components/Game/captureImage";
 import { initGame, joinSession } from "components/Game/openVidu";
-import { Device, OpenVidu, Publisher, Session, Subscriber } from "openvidu-browser";
-import { connectStomp, publishMessage } from "components/Game/stomp";
-import { parseDate, timeRemaining } from "components/Game/parseDate";
-import "assets/scss/GamePlay.scss";
+import { timeRemaining } from "components/Game/parseDate";
+import {
+  Device,
+  OpenVidu,
+  Publisher,
+  Session,
+  Subscriber,
+} from "openvidu-browser";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 import { UserVideoComponent } from "./UserVideoComponent";
-import { Timer } from "components/Game/Timer";
-import { useNavigate } from "react-router-dom";
-import { AttackState } from "components/Game/AttackState";
-import attackIco from "assets/images/match-attack.png";
-import defendIco from "assets/images/match-defense.png";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
 }
 
 export const GamePlay = () => {
-  const { stompClient, isStompConnected, gameConfig } = useGameContext();
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } =
+  const {
+    stompClient,
+    isStompConnected,
+    gameConfig,
+    myGameResult,
+    setMyGameResult,
+  } = useGameContext();
+  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo, turn } =
     gameConfig;
 
   // Stomp
@@ -50,42 +60,32 @@ export const GamePlay = () => {
   const { PUBLISHER_PROPERTIES } = openViduConfig;
 
   // 게임 상태
-  const [status, setStatus] = useState<string>("ready");
-  const [turn, setTurn] = useState<string>("ready");
-  const [success, setSuccess] = useState<boolean>(false);
-  const [emotion, setEmotion] = useState<string>("");
-  const [probability, setProbability] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const [role, setRole] = useState<string>(""); // 초기 상태
+  const [round, setRound] = useState<string>("round 1"); // 초기 상태 "round 1"
 
-  // 1) 게임 시작 준비
+  // 턴 정보 모달창
+  const SHOW_TURN_CHANGE_MODAL_TIME = 1000;
+  const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
+
+  // 게임 종료 모달창
+  const SHOW_GAME_ENDED_MODAL_TIME = 2000;
+  const [showGameEndedModal, setShowGameEndedModal] = useState(false);
+
+  // gameConfig의 turn에 따라 role을 설정
   useEffect(() => {
-    console.log("Stomp Client : ", stompClient);
-    if (gameConfig.turn === "first") setTurn("attack");
-    else setTurn("defense");
+    if (gameConfig.turn === "first") {
+      setRole("attack");
+    } else if (gameConfig.turn === "second") {
+      setRole("defense");
+    }
+    setShowTurnChangeModal(true);
+    setTimeout(
+      () => setShowTurnChangeModal(false),
+      SHOW_TURN_CHANGE_MODAL_TIME
+    );
+  }, [gameConfig]);
 
-    setMessage(`
-    상대 정보 :
-        닉네임 : ${enemyInfo.nickname}
-        한줄소개 : ${enemyInfo.description}
-        티어 : ${enemyInfo.rank}
-        점수 : ${enemyInfo.rating}
-    내 정보 :
-        닉네임 : ${myInfo.nickname}
-        한줄소개 : ${myInfo.description}
-        티어 : ${myInfo.rank}
-        점수 : ${myInfo.rating}
-    게임 준비 중...
-    나 : ${turn}`);
-
-    const gameStart = () => {
-      setStatus("round 1");
-      setMessage(`게임 시작! ${turn}`);
-    };
-
-    setTimeout(gameStart, timeRemaining(startTime));
-  }, []);
-
-  //OV, Session Create
+  // GamePlay 렌더링 시 OvenVidu 연결
   useEffect(() => {
     initGame().then(({ OV, session }) => {
       console.log("THE FIRST OV INItialte");
@@ -93,7 +93,6 @@ export const GamePlay = () => {
       setOVSession(session);
       session.on("streamCreated", (event) => {
         const ySubscriber = session.subscribe(event.stream, undefined);
-        console.log("Young Subscriber++++++++++++: " + ySubscriber);
         setSubscriber(ySubscriber);
       });
 
@@ -110,54 +109,14 @@ export const GamePlay = () => {
     });
   }, []);
 
-  // 상대방 mediaStream 얻어오기
-  // useEffect(() => {
-  //   console.log("Second Outside");
-  //   if (OVSession !== undefined) {
-  //     console.log("Second inside");
-  //     OVSession.on("streamCreated", (event) => {
-  //       const ySubscriber = OVSession.subscribe(event.stream, undefined);
-  //       console.log("Young Subscriber++++++++++++: " + ySubscriber);
-  //       setSubscriber(ySubscriber);
-  //     });
-  //   }
-  // }, [OVSession]);
-
-  // OpenVidu connect 하기
-  // useEffect(() => {
-  //   console.log("Third Outside");
-  //   if (OVSession !== undefined && OV !== undefined) {
-  //     console.log("Third Inside");
-  //     joinSession(OV, OVSession, openViduToken, "myUserName")
-  //       .then(({ publisher, currentVideoDevice }) => {
-  //         setPublisher(publisher);
-  //         currentVideoDeviceRef.current = currentVideoDevice;
-  //         console.log("OpenVidu 연결 완료");
-  //       })
-  //       .catch((error) => {
-  //         console.log("OpenVidu 연결 실패", error.code, error.message);
-  //       });
-  //   }
-  // }, []);
-
   useEffect(() => {
     const roundEnd = (gameStatus: IGameStatus) => {
-      const roundStart = () => {
-        if (gameConfig.turn === "first") setTurn("defense");
-        else setTurn("attack");
-        setStatus("round 2");
-        setMessage(`2라운드 시작! ${turn}`);
-      };
+      const roundStart = () => {};
 
-      setMessage(`
-      1 라운드 종료!
-      ${gameStatus.result === "LAUGH" ? "웃음 참기 실패!" : "시간 초과!"}
-      2 라운드 준비 중...
-      `);
       if (gameStatus.status === "round changed") {
-        setTurn("ready");
-        setStatus("ready");
+        console.log("2라운드를 진행합니다.");
       } else {
+        // gameStatus.status === "End"
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
       }
 
@@ -166,41 +125,71 @@ export const GamePlay = () => {
 
     const gameEnd = (gameResult: IGameResult) => {
       console.log("게임 종료");
-      setStatus("end");
-      setTurn("ready");
-      stompClient?.deactivate();
-      OVSession?.disconnect();
+      setShowGameEndedModal(true);
+
+      setTimeout(() => {
+        setShowGameEndedModal(false);
+        stompClient?.deactivate();
+        OVSession?.disconnect();
+        navigate("/game/result");
+      }, SHOW_GAME_ENDED_MODAL_TIME);
     };
 
     // Stomp 엔드포인트 구독
     if (stompClient !== undefined) {
+      // 1. 이미지 결과 받기
       stompClient.subscribe(IMAGE_RESULT_URI, (message: IMessage) => {
         console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
-          setSuccess(imageResult.success);
-          setEmotion(imageResult.emotion);
-          setProbability(imageResult.probability);
+          // 여기에 이미지 데이터 사용할 수 있음
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
       });
 
+      // 2. 게임 라운드가 변경되면 게임 status를 받음
       stompClient.subscribe(STATUS_URI, (message: IMessage) => {
-        console.log("게임 상태 수신 : " + message.body);
+        console.log("게임 상태를 수신합니다.@@@@@@@@@@@ : " + message.body);
         try {
           const gameStatus: IGameStatus = JSON.parse(message.body);
+
+          // 서버로부터 "round changed" 메시지를 받을 때 round와 role을 변경
+          console.log();
+          if (gameStatus.status === "round changed") {
+            if (round === "round 1") {
+              setRound("round 2");
+              setRole((prevRole) =>
+                prevRole === "attack" ? "defense" : "attack"
+              );
+            } else if (round === "round 2") {
+              setRound("round 1");
+              setRole((prevRole) =>
+                prevRole === "attack" ? "defense" : "attack"
+              );
+            }
+            setShowTurnChangeModal(true);
+            setTimeout(
+              () => setShowTurnChangeModal(false),
+              SHOW_TURN_CHANGE_MODAL_TIME
+            );
+          }
+
           roundEnd(gameStatus);
         } catch {
           console.log("게임 상태 파싱 오류");
         }
       });
 
+      // 3. 게임이 종료되면 게임 Result를 받음
       stompClient.subscribe(RESULT_URI, (message: IMessage) => {
-        console.log("게임 결과 수신 : " + message.body);
+        console.log("게임 결과를 수신합니다. " + message.body);
         try {
-          const gameResult: IGameResult = JSON.parse(message.body);
-          gameEnd(gameResult);
+          const myGameResult: IGameResult = JSON.parse(message.body);
+
+          // 게임 결과 정보를 Provider에 업데이트
+          setMyGameResult(myGameResult);
+          gameEnd(myGameResult);
         } catch {
           console.log("게임 상태 파싱 오류");
         }
@@ -218,10 +207,11 @@ export const GamePlay = () => {
             videoElement,
             canvasRef.current,
             (base64data: string) => {
+              console.log(IMAGE_DATA_URI, "로 이미지를 보냅니다.");
               stompClient.publish({
                 destination: IMAGE_DATA_URI,
                 headers: {
-                  round: status === "round 1" ? "first" : "second",
+                  round: round, // 여기에서 round 값을 동적으로 사용
                   gameSessionId: gameSessionId,
                 },
                 body: base64data,
@@ -233,33 +223,51 @@ export const GamePlay = () => {
         console.log("이미지 전송 실패. 연결 확인");
       }
     };
-  }, [stompClient]);
+  }, [stompClient, round]);
 
   useEffect(() => {
-    // 웹캠 캡쳐 함수
-    clearInterval(startWebcamCapture.current);
-    if (turn === "defense") {
+    if (role === "defense") {
       console.log("메시지 전송 시작");
       startWebcamCapture.current = setInterval(
         webcamCapture.current,
         CAPTURE_INTERVAL
       );
+    } else {
+      // role이 defense가 아닌 경우에는 웹캠 캡쳐 중지
+      if (startWebcamCapture.current) {
+        clearInterval(startWebcamCapture.current);
+      }
     }
-  }, [turn]);
+  }, [role]);
 
   const navigate = useNavigate();
 
   return (
     <div className="gameplay-page">
+      {/* 모달창 띄우는 div */}
+      {showTurnChangeModal && (
+        <div className="role-modal">
+          <div className="role-modal-content">
+            <h2>{role} 턴입니다.</h2>
+          </div>
+        </div>
+      )}
+      {showGameEndedModal && (
+        <div className="game-end-modal">
+          <div className="game-end-modal-content">
+            <h2>게임이 종료되었습니다.</h2>
+          </div>
+        </div>
+      )}
       <div className="gameplay-navbar">
         {/* space 균등하게 주기 위한 더미 */}
         {/* <div style={{width: 28}} /> */}
-        <Timer turn={turn} />
+        <Timer turn={role} />
         {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
       <div id="main-video">
-        {turn === "attack" ? (
+        {role === "attack" ? (
           <img id="defend" src={defendIco} alt="방어상태" />
         ) : (
           <img id="attack" src={attackIco} alt="공격상태" />
@@ -273,7 +281,7 @@ export const GamePlay = () => {
       </div>
       {/* <div>{turn}</div> */}
       <div id="main-video">
-        {turn === "attack" ? (
+        {role === "attack" ? (
           <img id="attack" src={attackIco} alt="공격상태" />
         ) : (
           <img id="defend" src={defendIco} alt="방어상태" />
@@ -285,6 +293,12 @@ export const GamePlay = () => {
         )} */}
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
+      <canvas
+        ref={canvasRef}
+        style={{ display: "none" }}
+        width="640"
+        height="480"
+      ></canvas>
       <button
         onClick={() => {
           navigate("/main");

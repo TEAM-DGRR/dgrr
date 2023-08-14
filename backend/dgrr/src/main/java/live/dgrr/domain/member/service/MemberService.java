@@ -4,6 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
@@ -24,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -149,9 +155,22 @@ public class MemberService {
     }
 
     public Long getIdFromToken(String token) {
-        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
-                .getClaim("id").asLong();
-        return memberId;
+//        System.out.println("SECRET: " + SECRET);
+//        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
+//                .getClaim("id").asLong();
+//        return memberId;
+        Claims claims = parseClaims(token);
+        return Long.valueOf(String.valueOf(claims.get("id")));
+    }
+
+    private Claims parseClaims(String accessToken) {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+            Key key = Keys.hmacShaKeyFor(keyBytes);
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     public Member getMemberByKakaoId(String id) {

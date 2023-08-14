@@ -4,6 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import live.dgrr.domain.battle.dto.response.BattleDetailWithOpponentInfoResponseDto;
 import live.dgrr.domain.battle.service.BattleService;
 import live.dgrr.domain.member.dto.request.MemberRequestDto;
@@ -24,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +44,10 @@ public class MemberService {
     private final BattleService battleService;
     @Value("${jwt.secret}")
     private String SECRET;
+    @Value("${kakao.client_id}")
+    private String KAKAO_CLIENT_ID;
+    @Value("${kakao.redirect_uri}")
+    private String KAKAO_REDIRECT_URI;
 
     public Member addMember(Member member) {
          memberRepository.save(member);
@@ -68,8 +78,8 @@ public class MemberService {
             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             String sb = "grant_type=authorization_code" +
-                    "&client_id=4761381774a32ff8949b9db4a3850618" + // TODO REST_API_KEY 입력
-                    "&redirect_uri=http://localhost:3000/kakaoCallback" + // TODO 인가코드 받은 redirect_uri 입력
+                    "&client_id="+KAKAO_CLIENT_ID + // TODO REST_API_KEY 입력
+                    "&redirect_uri="+KAKAO_REDIRECT_URI+ // TODO 인가코드 받은 redirect_uri 입력
                     "&code=" + code;
             bw.write(sb);
             bw.flush();
@@ -149,9 +159,22 @@ public class MemberService {
     }
 
     public Long getIdFromToken(String token) {
-        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
-                .getClaim("id").asLong();
-        return memberId;
+//        System.out.println("SECRET: " + SECRET);
+//        Long memberId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(token)
+//                .getClaim("id").asLong();
+//        return memberId;
+        Claims claims = parseClaims(token);
+        return Long.valueOf(String.valueOf(claims.get("id")));
+    }
+
+    private Claims parseClaims(String accessToken) {
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+            Key key = Keys.hmacShaKeyFor(keyBytes);
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     public Member getMemberByKakaoId(String id) {
@@ -184,7 +207,7 @@ public class MemberService {
 
     @Transactional
     public void updateByMember(MemberRequestDto memberRequestDto) {
-        Optional<Member> member = memberRepository.findById(memberRequestDto.getMemberId());
-        member.get().updateMember(memberRequestDto.getNickname(), memberRequestDto.getProfileImage(), memberRequestDto.getDescription());
+        Member member = memberRepository.findByMemberId(memberRequestDto.getMemberId());
+        member.updateMember(memberRequestDto.getNickname(), memberRequestDto.getProfileImage(), memberRequestDto.getDescription());
     }
 }

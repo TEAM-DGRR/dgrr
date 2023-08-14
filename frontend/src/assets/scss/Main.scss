@@ -27,6 +27,10 @@
 
 .MainImages {
   margin: 46px 0;
+
+  img + img {
+    margin-top: 24px;
+  }
 }
 
 .MainBtns {

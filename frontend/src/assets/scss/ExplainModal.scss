@@ -15,7 +15,7 @@
   position: absolute;
   left: 12px;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 20px;
   width: calc(100% - 24px);
   height: auto;
   padding: 16px;
@@ -28,10 +28,12 @@
     margin-bottom: 12px;
   }
 
-  font-size: 16px;
+  font-size: 18px;
   text-align: left;
   // 단어 기준으로 줄바꿈
   word-break: keep-all;
+
+  line-height: 150%;
 
   li + li {
     margin-top: 8px;

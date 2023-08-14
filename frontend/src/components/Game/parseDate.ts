@@ -1,5 +1,5 @@
 export const parseDate = (date: string) => {
-  const dateArray = date.split(/-|T|:|\.|(?<=\.\d{3})\B/g) as unknown as Array<number>;
+  const dateArray = date.split(".") as unknown as Array<number>;
   console.log(dateArray);
   return new Date(
     Date.UTC(

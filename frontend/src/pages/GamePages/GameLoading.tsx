@@ -2,6 +2,8 @@ import LoadingSoundPath from "assets/audio/game-loading.mp3";
 import arrowleft from "assets/images/ico_arrow-left_24px.svg";
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
+import { Button } from "components/Elements/Button/BasicButton";
+import { ExplainModal } from "components/Elements/ExplainModal";
 import { IGameConfig } from "components/Game";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +15,7 @@ export const GameLoading = () => {
   const loadingSound = useRef(new Audio(LoadingSoundPath)).current;
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
+  const [explainsee, setExplainsee] = useState(false);
 
   // Stomp and GameContext integration
   const {
@@ -58,18 +61,29 @@ export const GameLoading = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
+  const showModal = () => {
+    setExplainsee(true);
+  };
+
+  // 설명 모달 닫기
+  const closeModal = () => {
+    setExplainsee(false);
+  };
+
   return (
     <div className="GameLoadingScreen">
-      <div className="navbar">
-        <div className="navbar-left">
-          <img
-            src={arrowleft}
-            alt="뒤로가기"
-            onClick={() => {
-              navigate("/main");
-            }}
-          />
-        </div>
+      {explainsee ? <ExplainModal onClose={closeModal} /> : null}
+      <div className="arrow">
+        <img
+          src={arrowleft}
+          alt="뒤로가기"
+          onClick={() => {
+            navigate("/main");
+          }}
+        />
+      </div>
+      <div className="game-info">
+        <Button onClick={showModal}>게임 설명</Button>
       </div>
       <div className="RotatingElement">
         <img src={LoadingLogo} alt="a" />

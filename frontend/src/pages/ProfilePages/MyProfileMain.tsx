@@ -81,10 +81,13 @@ export const MyProfileMain = () => {
 					setMember(res.data.member);
 					setRatingList(res.data.ratingList);
 					setBattleDetailList(res.data.battleDetailList);
-					if(battleDetailList.length <= 1) {
-						setIsThereBattleDetail(false);
-					}
 					setIsLoad(true);
+					if(battleDetailList[0].battleResult==="") {
+						setIsThereBattleDetail(false);
+					}else{
+						setIsThereBattleDetail(true);
+					}
+					
 
 					//progressBar - DataUpdate
 					const newRating = res.data.ratingList[0].rating;

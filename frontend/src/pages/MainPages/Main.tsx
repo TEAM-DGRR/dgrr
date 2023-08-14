@@ -3,6 +3,7 @@ import personIco from 'assets/images/ico_person_24px.svg';
 import character from 'assets/images/logo_character.png';
 import title from 'assets/images/logo_title.png';
 import 'assets/scss/Main.scss';
+import axios from 'axios';
 import { Button } from 'components/Elements/Button/BasicButton';
 import { useNavigate } from 'react-router-dom';
 

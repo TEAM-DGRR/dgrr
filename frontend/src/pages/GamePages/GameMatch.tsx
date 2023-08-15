@@ -1,7 +1,6 @@
 // GameMatch.tsx
 
 import MatchingSoundPath from "assets/audio/game-matching.mp3";
-import dummyImage from "assets/images/ico_bread_wink.png";
 import attack from "assets/images/match-attack.png";
 import defense from "assets/images/match-defense.png";
 import "assets/scss/Match.scss";
@@ -9,50 +8,48 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 
-
-
 export const GameMatch = () => {
   const MatchingSound = new Audio(MatchingSoundPath);
 
-const navigate = useNavigate();
-const [seconds, setSeconds] = useState(0);
+  const navigate = useNavigate();
+  const [seconds, setSeconds] = useState(0);
 
   // Stomp
-  const { stompClient, isStompConnected, gameConfig } = useGameContext();
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo } = gameConfig;
+  const { gameConfig } = useGameContext();
+  const { myInfo, enemyInfo } = gameConfig;
 
-  // const vsPersonProfile1 = enemyInfo.profileImage;
-  const vsPersonProfile1 = dummyImage;
+  const vsPersonProfile1 = enemyInfo.profileImage;
   const USER1_NICKNAME = enemyInfo.nickname;
   const USER1_INTRO = enemyInfo.description;
 
   const USER2_TURN = gameConfig.turn === "first" ? attack : defense;
-  const USER2_TURN_MESSAGE = USER2_TURN === attack ? "상대방을 먼저 웃기세요!" : "웃음을 참아야만 합니다!";
+  const USER2_TURN_MESSAGE =
+    USER2_TURN === attack
+      ? "상대방을 먼저 웃기세요!"
+      : "웃음을 참아야만 합니다!";
 
-  // const vsPersonProfile2 = myInfo.profileImage;
-  const vsPersonProfile2 = dummyImage;
-
+  const vsPersonProfile2 = myInfo.profileImage;
   const USER2_NICKNAME = myInfo.nickname;
   const USER2_INTRO = myInfo.description;
 
-  useEffect(() => {    
+  useEffect(() => {
     MatchingSound.play();
-    console.log("GameMatch Page로 넘어왔습니다.")
+    console.log("GameMatch Page로 넘어왔습니다.");
 
     const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
+      setSeconds((prev) => prev + 1);
     }, 1000);
 
     // Cleanup on unmount
     return () => clearInterval(interval);
-}, [gameConfig, navigate]);
+  }, [gameConfig, navigate]);
 
-useEffect(() => {
-  if (seconds === 5) {
+  useEffect(() => {
+    if (seconds === 5) {
       MatchingSound.pause();
       navigate("/game/play");
     }
-}, [seconds, navigate]);
+  }, [seconds, navigate]);
 
   return (
     <div className="MatchPage">
@@ -65,30 +62,22 @@ useEffect(() => {
       <div className="MatchedPerson1">
         <div className="MatchedPersonBackground1"></div>
         <div className="MatchedPersonProfile">
-          <img src={vsPersonProfile1} alt='vsPersonProfile1' />
+          <img src={vsPersonProfile1} alt="vsPersonProfile1" />
         </div>
-        <div className="MatchedPersonNickName">
-          {USER1_NICKNAME}
-        </div>
-        <div className="MatchedPersonIntro">
-          {USER1_INTRO}
-        </div>
+        <div className="MatchedPersonNickName">{USER1_NICKNAME}</div>
+        <div className="MatchedPersonIntro">{USER1_INTRO}</div>
       </div>
 
       <div className="MatchedPerson2">
         <div className="MatchedPersonBackground2"></div>
         <div className="MatchedPersonProfile">
-          <img src={vsPersonProfile2} alt='vsPersonProfile2' />
+          <img src={vsPersonProfile2} alt="vsPersonProfile2" />
         </div>
         {/* <div className="MatchedPersonTurn">
           <img src={USER2_TURN} alt='USER2_TURN'></img>
         </div> */}
-        <div className="MatchedPersonNickName">
-          {USER2_NICKNAME}
-        </div>
-        <div className="MatchedPersonIntro">
-          {USER2_INTRO}
-        </div>
+        <div className="MatchedPersonNickName">{USER2_NICKNAME}</div>
+        <div className="MatchedPersonIntro">{USER2_INTRO}</div>
       </div>
     </div>
   );

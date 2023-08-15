@@ -1,0 +1,23 @@
+// ProbabilityGauge.scss
+.gauge-container {
+  width: 100%;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-bar {
+  height: 100%;
+  background-color: #fee500; // 바의 색깔은 원하는 색으로 변경 가능합니다.
+  transition: width 0.5s;
+}
+
+.gauge-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+}

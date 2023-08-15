@@ -12,7 +12,7 @@ export const stompConfig = {
     STATUS_URI: "/user/recv/status",
     RESULT_URI: "/user/recv/result",
   },
-  CAPTURE_INTERVAL: 1000,
+  CAPTURE_INTERVAL: 500,
 };
 
 //OpenVidu

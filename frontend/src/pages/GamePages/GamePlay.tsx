@@ -1,4 +1,6 @@
 import { Client, IMessage } from "@stomp/stompjs";
+import attackIco from "assets/images/match-attack.png";
+import defendIco from "assets/images/match-defense.png";
 import "assets/scss/GamePlay.scss";
 import {
   IGameResult,
@@ -7,8 +9,12 @@ import {
   openViduConfig,
   stompConfig,
 } from "components/Game";
+import ProbabilityGauge from "components/Game/ProbabilityGauge";
+import { RoundChangeModal } from "components/Game/RoundChangeModal";
+import { Timer } from "components/Game/Timer";
 import { captureImage } from "components/Game/captureImage";
 import { initGame, joinSession } from "components/Game/openVidu";
+import { timeRemaining } from "components/Game/parseDate";
 import {
   Device,
   OpenVidu,
@@ -16,17 +22,10 @@ import {
   Session,
   Subscriber,
 } from "openvidu-browser";
-import { connectStomp, publishMessage } from "components/Game/stomp";
-import { parseDate, timeRemaining } from "components/Game/parseDate";
-import "assets/scss/GamePlay.scss";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 import { UserVideoComponent } from "./UserVideoComponent";
-import { Timer } from "components/Game/Timer";
-import attackIco from "assets/images/match-attack.png";
-import defendIco from "assets/images/match-defense.png";
-import { RoundChangeModal } from "components/Game/RoundChangeModal";
 
 export interface ChildMethods {
   getVideoElement: () => HTMLVideoElement | null;
@@ -54,6 +53,13 @@ export const GamePlay = () => {
   const startWebcamCapture = useRef<NodeJS.Timer>();
   const webcamCapture = useRef<() => void>(() => {});
 
+  // 이미지 수신 정보 시각화
+  const [recognition, setRecognition] = useState<string>("");
+  const [emotion, setEmotion] = useState<string>("");
+  const [probability, setPropbability] = useState<string>("");
+  const isRecognitionMessage = "인식 성공";
+  const isNotRecognitionMessage = "인식 실패";
+
   // OpenVidu
   const [OV, setOV] = useState<OpenVidu>();
   const [OVSession, setOVSession] = useState<Session>();
@@ -71,7 +77,7 @@ export const GamePlay = () => {
   const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
 
   // 게임 종료 모달창
-  const SHOW_GAME_ENDED_MODAL_TIME = 2000;
+  const SHOW_GAME_ENDED_MODAL_TIME = 3 * 1000;
   const [showGameEndedModal, setShowGameEndedModal] = useState(false);
 
   // gameConfig의 turn에 따라 role을 설정
@@ -145,7 +151,13 @@ export const GamePlay = () => {
         console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
-          // 여기에 이미지 데이터 사용할 수 있음
+          setRecognition(imageResult.success);
+          setEmotion(imageResult.emotion);
+          if (imageResult.emotion === "Smile") {
+            setPropbability(imageResult.probability);
+          } else {
+            setPropbability("0");
+          }
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
@@ -248,6 +260,18 @@ export const GamePlay = () => {
 
   return (
     <div className="gameplay-page">
+      {!showTurnChangeModal && !showGameEndedModal ? (
+        <>
+          <div className="noticeIsRecognitionInfo"></div>
+          <div className="noticeIsRecognitionInfoMessage">
+            {isRecognitionMessage}
+          </div>
+          <div className="noticeIsNotRecognitionInfo"></div>
+          <div className="noticeIsNotRecognitionInfoMessage">
+            {isNotRecognitionMessage}
+          </div>
+        </>
+      ) : null}
       <div className="gameplay-navbar">
         {/* space 균등하게 주기 위한 더미 */}
         {/* <div style={{width: 28}} /> */}
@@ -257,30 +281,47 @@ export const GamePlay = () => {
       </div>
       <div id="main-video">
         {/* 상대 비디오 */}
-        {role === "attack" ? (
+        {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (
           <img id="defend" src={defendIco} alt="방어상태" />
-        ) : (
+        ) : null}
+        {role === "defense" && !showTurnChangeModal && !showGameEndedModal ? (
           <img id="attack" src={attackIco} alt="공격상태" />
-        )}
+        ) : null}
         <UserVideoComponent streamManager={subscriber} />
       </div>
       <div id="main-video">
         {/* 내 비디오 */}
-        {role !== "defense" && !showTurnChangeModal ? (
+        {role !== "defense" && !showTurnChangeModal && !showGameEndedModal ? (
           <img id="attack" src={attackIco} alt="공격상태" />
         ) : null}
-
-        {role !== "attack" && !showTurnChangeModal ? (
+        {role !== "attack" && !showTurnChangeModal && !showGameEndedModal ? (
           <img id="defend" src={defendIco} alt="방어상태" />
         ) : null}
+        {/* 이미지 분석 결과를 시각화 */}
+
+        {emotion === "Smile" && !showTurnChangeModal ? (
+          <ProbabilityGauge probability={parseFloat(probability)} />
+        ) : (
+          <ProbabilityGauge probability={parseFloat(probability)} />
+        )}
+        {!showTurnChangeModal && !showGameEndedModal ? (
+          recognition === "true" ? (
+            <div id="isFaceRecognition"></div>
+          ) : (
+            <div id="isNotFaceRecognition"></div>
+          )
+        ) : null}
+
         <UserVideoComponent ref={childRef} streamManager={publisher} />
       </div>
-      <canvas
-        ref={canvasRef}
-        style={{ display: "none" }}
-        width="640"
-        height="480"
-      ></canvas>
+      {!showTurnChangeModal && !showGameEndedModal ? (
+        <canvas
+          ref={canvasRef}
+          style={{ display: "none" }}
+          width="640"
+          height="480"
+        ></canvas>
+      ) : null}
       {showTurnChangeModal ? <RoundChangeModal role={role} /> : null}
     </div>
   );

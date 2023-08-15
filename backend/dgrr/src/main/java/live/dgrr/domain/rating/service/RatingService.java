@@ -22,6 +22,10 @@ public class RatingService {
         return getRatingResponseDto(ratings);
     }
 
+    public List<Rating> findById(Long memberId) {
+        return ratingRepository.findByMember_MemberId(memberId);
+    }
+
     private List<RatingResponseDto> getRatingResponseDto(List<Rating> ratings) {
         List<RatingResponseDto> responseDtoList = new ArrayList<>();
         for(Rating rating : ratings) {

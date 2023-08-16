@@ -31,13 +31,19 @@ $tier_bronze: #cc8e34;
 }
 
 .MarginFrame {
-  margin: 24px;
+  margin: 0 24px;
 }
 
 .navbar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  height: 64px;
+
+  img {
+    width: 24px;
+  }
 }
 
 .navbar-left {

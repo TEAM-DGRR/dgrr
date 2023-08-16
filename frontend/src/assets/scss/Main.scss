@@ -28,13 +28,13 @@
 .MainBody {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 64px);
+  height: calc(100% - 52px);
 }
 
 .MainNav {
   margin: auto;
   width: calc(100% - 48px);
-  height: 64px;
+  height: 52px;
   display: flex;
   justify-content: space-between;
 
@@ -48,8 +48,7 @@
   height: 50%;
 
   img:first-child {
-    animation:
-      fallAndSpin 2s ease-out forwards,
+    animation: fallAndSpin 2s ease-out forwards,
       spinInPlace 2s ease-out 2s forwards;
   }
 

@@ -67,8 +67,12 @@ export const GameMatch = () => {
         <div className="MatchedPersonProfile">
           <img src={vsPersonProfile1} alt="vsPersonProfile1" />
         </div>
-        <div className="MatchedPersonNickName">{USER1_NICKNAME}</div>
-        <div className="MatchedPersonIntro">{USER1_INTRO}</div>
+        <div className="MatchedPersonNickName">
+          <p>{USER1_NICKNAME}</p>
+        </div>
+        <div className="MatchedPersonIntro">
+          <p>{USER1_INTRO}</p>
+        </div>
       </div>
 
       <div className="MatchedPerson2">
@@ -79,8 +83,12 @@ export const GameMatch = () => {
         {/* <div className="MatchedPersonTurn">
           <img src={USER2_TURN} alt='USER2_TURN'></img>
         </div> */}
-        <div className="MatchedPersonNickName">{USER2_NICKNAME}</div>
-        <div className="MatchedPersonIntro">{USER2_INTRO}</div>
+        <div className="MatchedPersonNickName">
+          <p>{USER2_NICKNAME}</p>
+        </div>
+        <div className="MatchedPersonIntro">
+          <p>{USER2_INTRO}</p>
+        </div>
       </div>
     </div>
   );

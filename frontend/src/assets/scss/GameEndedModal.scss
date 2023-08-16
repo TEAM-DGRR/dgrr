@@ -1,3 +1,5 @@
+@import "App.scss";
+
 .gameended-modal-background {
   position: fixed;
   top: 0;
@@ -14,7 +16,7 @@
   z-index: 10;
 
   position: absolute;
-  top: 30%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
@@ -24,14 +26,22 @@
 
   text-align: center;
 
-  padding: 40px;
-
-  img {
-    width: 150px;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   p {
     font-size: 24px;
     font-weight: bold;
+  }
+}
+
+@include desktop {
+  .gameended-modal {
+    max-width: 450px;
+  }
+
+  p + p {
+    margin-top: 24px;
   }
 }

@@ -56,7 +56,7 @@ export const GamePlay = () => {
 
   // 이미지 수신 정보 시각화
   const [recognition, setRecognition] = useState<string>("");
-  const [smileProbability, setSmileProbability] = useState<string>("1");
+  const [smileProbability, setSmileProbability] = useState<string>("0");
   const isRecognitionMessage = "인식 성공";
   const isNotRecognitionMessage = "인식 실패";
 
@@ -144,19 +144,18 @@ export const GamePlay = () => {
     const gameEnd = (gameResult: IGameResult) => {
       console.log("게임 종료");
       setShowGameEndedModal(true);
-      setRole((prevRole) => (prevRole === "attack" ? "defense" : "attack"));
 
       // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
       if (parseFloat(smileProbability) < THRESHOLD) {
-        setGameEndedMessage("안웃었네요.\n게임 종료할게요~");
+        setGameEndedMessage("웃음을 참았어요!");
       } else {
-        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ\n게임 종료할게요~");
+        setGameEndedMessage("웃음을 참지 못했어요!");
       }
       setTimeout(() => {
-        setShowGameEndedModal(false);
+        // setShowGameEndedModal(false);
         stompClient?.deactivate();
         OVSession?.disconnect();
-        navigate("/game/result");
+        // navigate("/game/result");
       }, SHOW_GAME_ENDED_MODAL_TIME);
     };
 
@@ -181,18 +180,28 @@ export const GamePlay = () => {
           const gameStatus: IGameStatus = JSON.parse(message.body);
 
           // 서버로부터 "round changed" 메시지를 받을 때 round와 role을 변경
-          console.log();
           if (gameStatus.status === "round changed") {
             if (round === "round 1") {
               setRound("round 2");
+              // 내가 공격이었을 때
+              if (role === "attack") {
+                if (gameStatus.result === "HOLD_BACK") {
+                  setTurnChangeMessage("상대가 웃음을 참았어요!");
+                } else if (gameStatus.result === "LAUGH") {
+                  setTurnChangeMessage("상대가 웃었습니다!");
+                }
+              } else {
+                // 내가 방어였을 때
+                if (gameStatus.result === "HOLD_BACK") {
+                  setTurnChangeMessage("웃음을 참았어요!");
+                } else if (gameStatus.result === "LAUGH") {
+                  setTurnChangeMessage("웃음을 참지 못했어요!");
+                }
+              }
+              // 롤 변경
               setRole((prevRole) =>
                 prevRole === "attack" ? "defense" : "attack"
               );
-              if (gameStatus.result === "HOLD_BACK") {
-                setTurnChangeMessage("웃음을 참았어요!");
-              } else if (gameStatus.result === "LAUGH") {
-                setTurnChangeMessage("웃었습니다!");
-              }
             }
             // 3초간 모달 보여주기
             setShowTurnChangeModal(true);

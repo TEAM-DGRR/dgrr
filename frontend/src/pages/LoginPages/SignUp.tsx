@@ -58,6 +58,10 @@ export const SignUp = () => {
   };
 
   useEffect(() => {
+    if (!id) {
+      navigate("/");
+    }
+
     axios
       .get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${id}`)
       .then((response) => {
@@ -118,7 +122,9 @@ export const SignUp = () => {
               .post(`${process.env.REACT_APP_API_URL}/member`, {
                 kakaoId: id,
                 nickname: nickname,
-                profileImage: profileImg?.thumbnail?profileImg.thumbnail:basicImg,
+                profileImage: profileImg?.thumbnail
+                  ? profileImg.thumbnail
+                  : basicImg,
                 description: description,
               })
               .then((res: any) => {
@@ -163,15 +169,16 @@ export const SignUp = () => {
     }
   };
 
-  const getRandom = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min);
+  const getRandom = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min) + min);
 
   // 프로필 이미지 미리보기 부분
   const ShowImg = useMemo(() => {
     if (!profileImg && profileImg == null) {
-      const randomNum:number = getRandom(1, profile_image_name.length-1);
-      const basicImage = (profile_image_name[randomNum].url);
+      const randomNum: number = getRandom(1, profile_image_name.length - 1);
+      const basicImage = profile_image_name[randomNum].url;
       setBasicImg(basicImage);
-      return <img src={ basicImage } alt="기본 이미지" id="ex-profile" />;
+      return <img src={basicImage} alt="기본 이미지" id="ex-profile" />;
     }
     return (
       <img

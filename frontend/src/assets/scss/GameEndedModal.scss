@@ -1,4 +1,4 @@
-.roundchange-modal-background {
+.gameended-modal-background {
   position: fixed;
   top: 0;
   left: 0;
@@ -7,7 +7,7 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
-.roundchange-modal {
+.gameended-modal {
   width: calc(100% - 48px);
   height: 300px;
 
@@ -18,7 +18,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid;
   border-radius: 8px;
 

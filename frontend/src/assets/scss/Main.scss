@@ -1,5 +1,23 @@
 @import "App.scss";
 
+@keyframes fallAndSpin {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+}
+
+@keyframes spinInPlace {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+
 .MainPage {
   background: $blue;
   width: 100vw;
@@ -29,7 +47,15 @@
   margin: 46px 0;
   height: 50%;
 
+  img:first-child {
+    animation:
+      fallAndSpin 2s ease-out forwards,
+      spinInPlace 2s ease-out 2s forwards;
+  }
+
   img + img {
+    animation: spinInPlace 2s ease-out 2s forwards;
+
     margin-top: 24px;
   }
 }

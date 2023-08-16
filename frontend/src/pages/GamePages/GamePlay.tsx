@@ -9,6 +9,7 @@ import {
   openViduConfig,
   stompConfig,
 } from "components/Game";
+import { GameEndedModal } from "components/Game/GameEndedModal";
 import ProbabilityGauge from "components/Game/ProbabilityGauge";
 import { RoundChangeModal } from "components/Game/RoundChangeModal";
 import { Timer } from "components/Game/Timer";
@@ -36,11 +37,11 @@ export const GamePlay = () => {
     stompClient,
     isStompConnected,
     gameConfig,
+    // eslint-disable-next-line
     myGameResult,
     setMyGameResult,
   } = useGameContext();
-  const { gameSessionId, openViduToken, startTime, myInfo, enemyInfo, turn } =
-    gameConfig;
+  const { gameSessionId, openViduToken } = gameConfig;
 
   // Stomp
   const { DESTINATION_URI, CAPTURE_INTERVAL } = stompConfig;
@@ -55,17 +56,18 @@ export const GamePlay = () => {
 
   // 이미지 수신 정보 시각화
   const [recognition, setRecognition] = useState<string>("");
-  const [emotion, setEmotion] = useState<string>("");
-  const [probability, setPropbability] = useState<string>("");
+  const [smileProbability, setSmileProbability] = useState<string>("1");
   const isRecognitionMessage = "인식 성공";
   const isNotRecognitionMessage = "인식 실패";
 
   // OpenVidu
+  // eslint-disable-next-line
   const [OV, setOV] = useState<OpenVidu>();
   const [OVSession, setOVSession] = useState<Session>();
   const [publisher, setPublisher] = useState<Publisher>();
   const [subscriber, setSubscriber] = useState<Subscriber>();
   const currentVideoDeviceRef = useRef<Device>();
+  // eslint-disable-next-line
   const { PUBLISHER_PROPERTIES } = openViduConfig;
 
   // 게임 상태
@@ -75,10 +77,15 @@ export const GamePlay = () => {
   // 턴 정보 모달창
   const SHOW_TURN_CHANGE_MODAL_TIME = 3 * 1000;
   const [showTurnChangeModal, setShowTurnChangeModal] = useState(false);
+  const [turnChangeMessage, setTurnChangeMessage] = useState<string>("");
 
   // 게임 종료 모달창
   const SHOW_GAME_ENDED_MODAL_TIME = 3 * 1000;
   const [showGameEndedModal, setShowGameEndedModal] = useState(false);
+  const [gameEndedMessage, setGameEndedMessage] = useState<string>("");
+
+  // 웃음 판정 상수
+  const THRESHOLD = 0.5;
 
   // gameConfig의 turn에 따라 role을 설정
   useEffect(() => {
@@ -92,6 +99,7 @@ export const GamePlay = () => {
       () => setShowTurnChangeModal(false),
       SHOW_TURN_CHANGE_MODAL_TIME
     );
+    // eslint-disable-next-line
   }, [gameConfig]);
 
   // GamePlay 렌더링 시 OvenVidu 연결
@@ -116,11 +124,12 @@ export const GamePlay = () => {
           console.log("OpenVidu 연결 실패", error.code, error.message);
         });
     });
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    const roundEnd = (gameStatus: IGameStatus) => {
-      const roundStart = () => {};
+    const round1End = (gameStatus: IGameStatus) => {
+      const round2Start = () => {};
 
       if (gameStatus.status === "round changed") {
         console.log("2라운드를 진행합니다.");
@@ -129,13 +138,20 @@ export const GamePlay = () => {
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
       }
 
-      setTimeout(roundStart, timeRemaining(gameStatus.startTime));
+      setTimeout(round2Start, timeRemaining(gameStatus.startTime));
     };
 
     const gameEnd = (gameResult: IGameResult) => {
       console.log("게임 종료");
       setShowGameEndedModal(true);
+      setRole((prevRole) => (prevRole === "attack" ? "defense" : "attack"));
 
+      // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
+      if (parseFloat(smileProbability) < THRESHOLD) {
+        setGameEndedMessage("안웃었네요.\n게임 종료할게요~");
+      } else {
+        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ\n게임 종료할게요~");
+      }
       setTimeout(() => {
         setShowGameEndedModal(false);
         stompClient?.deactivate();
@@ -152,12 +168,7 @@ export const GamePlay = () => {
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
           setRecognition(imageResult.success);
-          setEmotion(imageResult.emotion);
-          if (imageResult.emotion === "Smile") {
-            setPropbability(imageResult.probability);
-          } else {
-            setPropbability("0");
-          }
+          setSmileProbability(imageResult.smileProbability);
         } catch {
           console.log("이미지 분석 파싱 오류");
         }
@@ -177,11 +188,11 @@ export const GamePlay = () => {
               setRole((prevRole) =>
                 prevRole === "attack" ? "defense" : "attack"
               );
-            } else if (round === "round 2") {
-              setRound("round 1");
-              setRole((prevRole) =>
-                prevRole === "attack" ? "defense" : "attack"
-              );
+              if (gameStatus.result === "HOLD_BACK") {
+                setTurnChangeMessage("안웃었네요.");
+              } else if (gameStatus.result === "LAUGH") {
+                setTurnChangeMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
+              }
             }
             // 3초간 모달 보여주기
             setShowTurnChangeModal(true);
@@ -191,7 +202,7 @@ export const GamePlay = () => {
             );
           }
 
-          roundEnd(gameStatus);
+          round1End(gameStatus);
         } catch {
           console.log("게임 상태 파싱 오류");
         }
@@ -211,6 +222,7 @@ export const GamePlay = () => {
         }
       });
     }
+    // eslint-disable-next-line
   }, []);
 
   // 이미지 캡처
@@ -239,6 +251,7 @@ export const GamePlay = () => {
         console.log("이미지 전송 실패. 연결 확인");
       }
     };
+    // eslint-disable-next-line
   }, [stompClient, round]);
 
   useEffect(() => {
@@ -254,6 +267,7 @@ export const GamePlay = () => {
         clearInterval(startWebcamCapture.current);
       }
     }
+    // eslint-disable-next-line
   }, [role]);
 
   const navigate = useNavigate();
@@ -299,10 +313,10 @@ export const GamePlay = () => {
         ) : null}
         {/* 이미지 분석 결과를 시각화 */}
 
-        {emotion === "Smile" && !showTurnChangeModal ? (
-          <ProbabilityGauge probability={parseFloat(probability)} />
+        {recognition && !showTurnChangeModal ? (
+          <ProbabilityGauge probability={parseFloat(smileProbability)} />
         ) : (
-          <ProbabilityGauge probability={parseFloat(probability)} />
+          <ProbabilityGauge probability={parseFloat(smileProbability)} />
         )}
         {!showTurnChangeModal && !showGameEndedModal ? (
           recognition === "true" ? (
@@ -322,7 +336,12 @@ export const GamePlay = () => {
           height="480"
         ></canvas>
       ) : null}
-      {showTurnChangeModal ? <RoundChangeModal role={role} /> : null}
+      {showTurnChangeModal ? (
+        <RoundChangeModal role={role} message={turnChangeMessage} />
+      ) : null}
+      {showGameEndedModal ? (
+        <GameEndedModal role={role} message={gameEndedMessage} />
+      ) : null}
     </div>
   );
 };

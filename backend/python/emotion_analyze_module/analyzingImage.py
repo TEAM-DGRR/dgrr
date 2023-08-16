@@ -27,6 +27,10 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
             emotion: float(prob) for emotion, prob in zip(emotions, probabilities)
         }
 
+        # "Smile" 감정의 확률 찾기
+        smile_index = emotions.index("Smile")
+        smile_prob = probabilities[smile_index]
+
         # 가장 높은 확률을 가진 감정을 결정
         max_index = np.argmax(probabilities)
         emotion = emotions[max_index]
@@ -34,12 +38,14 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
 
         return {
             "success": "true",
-            "emotion": emotion,
+            "emotion": "Smile",
             "probability": emotion_prob,
+            "smileProbability": smile_prob,
         }
 
     return {
         "success": "false",
         "emotion": "Not Detected",
-        "probability": -1.0,
+        "probability": 0.0,
+        "smileProbability": 0.0,
     }

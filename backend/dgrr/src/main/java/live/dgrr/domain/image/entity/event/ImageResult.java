@@ -12,5 +12,6 @@ public class ImageResult {
     private final String success;
     private String emotion;
     private double probability;
+    private double smileProbability;
 
 }

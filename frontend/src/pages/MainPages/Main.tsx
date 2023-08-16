@@ -19,15 +19,7 @@ export const Main = () => {
   };
 
   const handleRandomMatch = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop()); // 바로 스트림을 중지
-        navigate("/game/loading");
-      }
-    } catch (err) {
-      alert("비디오 접근을 허용해주세요!"); // 사용자에게 비디오 접근 권한을 요청하는 메시지를 표시
-    }
+    navigate("/game/loading");
   };
 
   // 설명 모달 보여주기

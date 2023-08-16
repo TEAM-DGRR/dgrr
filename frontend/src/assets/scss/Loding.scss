@@ -62,6 +62,17 @@ $font-main: "Arial", sans-serif;
   position: relative;
   width: 100%;
   height: calc(100% - 52px);
+
+  @include desktop {
+    img {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    .game-info {
+      margin: 0;
+    }
+  }
 }
 
 .RotatingElement {

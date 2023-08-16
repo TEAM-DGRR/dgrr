@@ -2,6 +2,8 @@ $mainblack: #121417;
 
 .Button {
   border-radius: 8px;
+  max-width: 450px;
+  margin: 0 auto;
 
   // 글씨
   font-weight: bold;

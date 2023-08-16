@@ -7,7 +7,7 @@ export const GameEndedModal = memo(
       <div className="gameended-modal-background">
         <div className="gameended-modal">
           <p>{message}</p>
-          <p>@게임을 종료합니다@</p>
+          <p>게임을 종료합니다</p>
         </div>
       </div>
     );

@@ -189,9 +189,9 @@ export const GamePlay = () => {
                 prevRole === "attack" ? "defense" : "attack"
               );
               if (gameStatus.result === "HOLD_BACK") {
-                setTurnChangeMessage("안웃었네요.");
+                setTurnChangeMessage("웃음을 참았어요!");
               } else if (gameStatus.result === "LAUGH") {
-                setTurnChangeMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
+                setTurnChangeMessage("웃었습니다!");
               }
             }
             // 3초간 모달 보여주기
@@ -278,11 +278,11 @@ export const GamePlay = () => {
         <>
           <div className="noticeIsRecognitionInfo"></div>
           <div className="noticeIsRecognitionInfoMessage">
-            {isRecognitionMessage}
+            <p>{isRecognitionMessage}</p>
           </div>
           <div className="noticeIsNotRecognitionInfo"></div>
           <div className="noticeIsNotRecognitionInfoMessage">
-            {isNotRecognitionMessage}
+            <p>{isNotRecognitionMessage}</p>
           </div>
         </>
       ) : null}
@@ -293,40 +293,43 @@ export const GamePlay = () => {
         {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
-      <div id="main-video">
-        {/* 상대 비디오 */}
-        {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="defend" src={defendIco} alt="방어상태" />
-        ) : null}
-        {role === "defense" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="attack" src={attackIco} alt="공격상태" />
-        ) : null}
-        <UserVideoComponent streamManager={subscriber} />
-      </div>
-      <div id="main-video">
-        {/* 내 비디오 */}
-        {role !== "defense" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="attack" src={attackIco} alt="공격상태" />
-        ) : null}
-        {role !== "attack" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="defend" src={defendIco} alt="방어상태" />
-        ) : null}
-        {/* 이미지 분석 결과를 시각화 */}
 
-        {recognition && !showTurnChangeModal ? (
-          <ProbabilityGauge probability={parseFloat(smileProbability)} />
-        ) : (
-          <ProbabilityGauge probability={parseFloat(smileProbability)} />
-        )}
-        {!showTurnChangeModal && !showGameEndedModal ? (
-          recognition === "true" ? (
-            <div id="isFaceRecognition"></div>
+      <div className="vieos">
+        <div id="main-video">
+          {/* 상대 비디오 */}
+          {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="defend" src={defendIco} alt="방어상태" />
+          ) : null}
+          {role === "defense" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="attack" src={attackIco} alt="공격상태" />
+          ) : null}
+          <UserVideoComponent streamManager={subscriber} />
+        </div>
+        <div id="main-video">
+          {/* 내 비디오 */}
+          {role !== "defense" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="attack" src={attackIco} alt="공격상태" />
+          ) : null}
+          {role !== "attack" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="defend" src={defendIco} alt="방어상태" />
+          ) : null}
+          {/* 이미지 분석 결과를 시각화 */}
+
+          {recognition && !showTurnChangeModal ? (
+            <ProbabilityGauge probability={parseFloat(smileProbability)} />
           ) : (
-            <div id="isNotFaceRecognition"></div>
-          )
-        ) : null}
+            <ProbabilityGauge probability={parseFloat(smileProbability)} />
+          )}
+          {!showTurnChangeModal && !showGameEndedModal ? (
+            recognition === "true" ? (
+              <div id="isFaceRecognition"></div>
+            ) : (
+              <div id="isNotFaceRecognition"></div>
+            )
+          ) : null}
 
-        <UserVideoComponent ref={childRef} streamManager={publisher} />
+          <UserVideoComponent ref={childRef} streamManager={publisher} />
+        </div>
       </div>
       {!showTurnChangeModal && !showGameEndedModal ? (
         <canvas

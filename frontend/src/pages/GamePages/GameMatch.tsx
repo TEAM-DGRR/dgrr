@@ -4,13 +4,11 @@ import MatchingSoundPath from "assets/audio/game-matching.mp3";
 import attack from "assets/images/match-attack.png";
 import defense from "assets/images/match-defense.png";
 import "assets/scss/Match.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 
 export const GameMatch = () => {
-  const MatchingSound = new Audio(MatchingSoundPath);
-
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
 
@@ -31,6 +29,7 @@ export const GameMatch = () => {
   const vsPersonProfile2 = myInfo.profileImage;
   const USER2_NICKNAME = myInfo.nickname;
   const USER2_INTRO = myInfo.description;
+  const MatchingSound = useRef(new Audio(MatchingSoundPath)).current;
 
   useEffect(() => {
     MatchingSound.play();
@@ -42,13 +41,17 @@ export const GameMatch = () => {
 
     // Cleanup on unmount
     return () => clearInterval(interval);
-  }, [gameConfig, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (seconds === 5) {
       MatchingSound.pause();
+      MatchingSound.currentTime = 0;
       navigate("/game/play");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds, navigate]);
 
   return (

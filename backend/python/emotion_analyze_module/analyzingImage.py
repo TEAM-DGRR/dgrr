@@ -38,7 +38,7 @@ async def analyze_image(image, face_cascade, emotion_model, emotions):
 
         return {
             "success": "true",
-            "emotion": "Smile",
+            "emotion": emotion,
             "probability": emotion_prob,
             "smileProbability": smile_prob,
         }

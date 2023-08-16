@@ -1,21 +1,21 @@
-// GameLoading.tsx
-
 import LoadingSoundPath from "assets/audio/game-loading.mp3";
-
+import arrowleft from "assets/images/ico_arrow-left_24px.svg";
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
+import { Button } from "components/Elements/Button/BasicButton";
+import { ExplainModal } from "components/Elements/ExplainModal";
 import { IGameConfig } from "components/Game";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
 
 const LoadingMessage = "게임을 찾는 중입니다";
 
 export const GameLoading = () => {
-  const loadingSound = new Audio(LoadingSoundPath);
+  const loadingSound = useRef(new Audio(LoadingSoundPath)).current;
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(0);
-
+  const [explainsee, setExplainsee] = useState(false);
 
   // Stomp and GameContext integration
   const {
@@ -25,24 +25,20 @@ export const GameLoading = () => {
     getGameConfiguration,
   } = useGameContext();
 
+  // eslint-disable-next-line
   useEffect(() => {
-
     loadingSound.play();
-    // 1) 소켓 통신 연결
+
     const tryConnectStomp = async () => {
       if (!stompClient) {
         const client = await connectStompClient({});
-
-        // 2) 구독, 구독 완료 메시지 전송, 게임 시작 메시지를 수신하도록 대기
         startGameSession(await getGameConfiguration(client));
       }
     };
 
-    // 3) 게임 시작 메시지 수신 시, 게임 설정 요소 저장하고 게임 세션 시작
     const startGameSession = (message: IGameConfig) => {
       if (message.success === "true") {
         setGameConfig(message);
-        console.log("GameLoading에서 게임 시작 메시지 수신 : ", message);
         loadingSound.pause();
         navigate("/game/match");
       } else {
@@ -53,7 +49,7 @@ export const GameLoading = () => {
     tryConnectStomp();
 
     const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
+      setSeconds((prev) => prev + 1);
     }, 1000);
 
     // Cleanup on unmount
@@ -61,16 +57,38 @@ export const GameLoading = () => {
       clearInterval(interval);
       loadingSound.pause();
       loadingSound.currentTime = 0;
-    }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
-  }, []);
+  const showModal = () => {
+    setExplainsee(true);
+  };
+
+  // 설명 모달 닫기
+  const closeModal = () => {
+    setExplainsee(false);
+  };
 
   return (
     <div className="GameLoadingScreen">
+      {explainsee ? <ExplainModal onClose={closeModal} /> : null}
+      <div className="arrow">
+        <img
+          src={arrowleft}
+          alt="뒤로가기"
+          onClick={() => {
+            navigate("/main");
+          }}
+        />
+      </div>
+      <div className="game-info">
+        <Button onClick={showModal}>게임 설명</Button>
+      </div>
       <div className="RotatingElement">
         <img src={LoadingLogo} alt="a" />
       </div>
-      <div className="Timer">{seconds}s</div> {/* This is the new timer display */}
+      <div className="Timer">{seconds}s</div>
       <div className="LoadingText">
         {Array.from(LoadingMessage).map((char, index) => (
           <span key={index}>{char}</span>

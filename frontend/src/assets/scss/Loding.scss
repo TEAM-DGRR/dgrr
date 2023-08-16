@@ -1,10 +1,10 @@
-@import 'App.scss';
+@import "App.scss";
 // Colors and Fonts
 $bg-color: #469ff6;
 $accent-color1: #fee500;
 $accent-color2: #424a52;
-$logo-character: url('../images/logo_character.png');
-$font-main: 'Arial', sans-serif;
+$logo-character: url("../images/logo_character.png");
+$font-main: "Arial", sans-serif;
 
 // Animations
 @keyframes rotate {
@@ -28,6 +28,24 @@ $font-main: 'Arial', sans-serif;
 	}
 }
 
+@keyframes heartbeat {
+	0% {
+		transform: scale(1);
+	}
+	30% {
+		transform: scale(1.05);
+	}
+	50% {
+		transform: scale(1);
+	}
+	70% {
+		transform: scale(1.05);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 .GameLoadingScreen {
 	background: $blue;
 	text-align: center;
@@ -35,8 +53,9 @@ $font-main: 'Arial', sans-serif;
 	align-items: center;
 	justify-content: center; // 각 아이템을 수직 중앙에 배치합니다.
 	flex-direction: column;
-	height: 100vh;
 	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 .RotatingElement {
@@ -80,7 +99,7 @@ $font-main: 'Arial', sans-serif;
 // Background effects
 .GameLoadingScreen::before,
 .GameLoadingScreen::after {
-	content: '';
+	content: "";
 	position: absolute;
 	top: 0;
 	left: 50%;
@@ -96,4 +115,29 @@ $font-main: 'Arial', sans-serif;
 .GameLoadingScreen::after {
 	left: 0;
 	background: linear-gradient(to right, $bg-color, transparent);
+}
+
+.arrow {
+	position: absolute;
+	top: 2%;
+	left: 4%;
+	z-index: 10;
+	img {
+		cursor: pointer;
+		width: 6vw; // 아이콘 크기에 따라 이 값을 조절할 수 있습니다.
+		height: 6vw;
+	}
+}
+
+.game-info {
+	position: absolute;
+	top: 80%;
+	right: 30%;
+	width: 40%;
+	animation: heartbeat 1.5s infinite; // 두근두근대는 효과 적용
+
+	img {
+		width: 6vw;
+		height: 6vw;
+	}
 }

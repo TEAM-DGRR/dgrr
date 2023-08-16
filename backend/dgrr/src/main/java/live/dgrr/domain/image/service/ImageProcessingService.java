@@ -52,7 +52,6 @@ public class ImageProcessingService {
         String success = (String) result.get("success");
         String round = ((String) ((JSONArray) nativeHeaders.get("round")).get(0));
         String gameSessionId = ((String) ((JSONArray) nativeHeaders.get("gameSessionId")).get(0));
-        System.out.println(nativeHeaders);
 
         // 7. emotion, probability, smileProbability
         String emotion = (String) result.get("emotion");

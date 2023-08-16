@@ -25,7 +25,7 @@ export interface IImageResult {
   success: string;
   emotion: string;
   probability: string;
-  allProbability?: string;
+  smileProbability: string;
 }
 
 export interface IGameStatus {

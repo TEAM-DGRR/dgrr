@@ -5,39 +5,37 @@
     flex-direction: column;
     width: calc(100% - 48px);
     margin: auto;
-    margin-bottom: 48px;
+    margin-bottom: 12px;
   }
 }
 
 .signup-title {
   color: black;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  padding: 48px 24px;
-  height: 30%;
-  font-family: 'Noto Sans KR';
+  padding: 24px 24px;
 }
 
-#nickname-label *, #description-label * {
+#nickname-label *,
+#description-label * {
   margin-bottom: 12px;
 }
 
 .label-title {
   font-size: 22px;
   font-weight: 700;
-  font-family: 'Noto Sans KR';
-
+  font-family: "Noto Sans KR";
 }
 
 #profileImg-label {
   position: relative;
-  width: 240px;
-  height: 240px;
-  margin-bottom: 48px;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 32px;
 
   label {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
 
     position: absolute;
     bottom: 0;

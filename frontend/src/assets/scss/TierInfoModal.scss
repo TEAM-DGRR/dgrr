@@ -1,34 +1,34 @@
 .list-tier {
-	list-style: none;
-	padding-left: 0;
-	margin-top: 0;
-	margin-bottom: 0;
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 
-	.tier-item {
-		margin: 4px 0px;
-		.tier-info {
-			display: flex;
-			.tier-image {
-				width: 50px;
-				margin: 4px;
-			}
+  .tier-item {
+    margin: 4px 0px;
+    .tier-info {
+      display: flex;
+      .tier-image {
+        width: 40px;
+        margin: 4px;
+      }
 
-			.tier-descption {
-				display: flex;
-				flex-direction: column;
-				align-self: center;
-				margin: 4px;
+      .tier-descption {
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        margin: 4px;
 
-				.tier-name {
-					font-weight: bold;
-					margin: 0px 4px;
-				}
+        .tier-name {
+          font-weight: bold;
+          margin: 0px 4px;
+        }
 
-				.tier-lowRating {
-					font-size: small;
-					margin: 0px 4px;
-				}
-			}
-		}
-	}
+        .tier-lowRating {
+          font-size: small;
+          margin: 0px 4px;
+        }
+      }
+    }
+  }
 }

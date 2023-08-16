@@ -16,9 +16,9 @@
   position: absolute;
   left: 12px;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 20px;
   width: calc(100% - 24px);
-  height: auto;
+  height: calc(100% - 100px);
   padding: 16px;
 
   // 게임설명 타이틀 크기
@@ -29,10 +29,17 @@
     margin-bottom: 12px;
   }
 
-  font-size: 16px;
+  .explain-content {
+    height: calc(100% - 56px);
+    overflow-y: auto;
+  }
+
+  font-size: 18px;
   text-align: left;
   // 단어 기준으로 줄바꿈
   word-break: keep-all;
+
+  line-height: 150%;
 
   li + li {
     margin-top: 8px;

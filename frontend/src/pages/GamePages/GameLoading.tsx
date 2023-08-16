@@ -1,5 +1,5 @@
 import LoadingSoundPath from "assets/audio/game-loading.mp3";
-import arrowleft from "assets/images/ico_arrow-left_24px.svg";
+import backIco from "assets/images/ico_back.svg";
 import LoadingLogo from "assets/images/logo_character.png";
 import "assets/scss/Loding.scss";
 import { Button } from "components/Elements/Button/BasicButton";
@@ -8,6 +8,7 @@ import { IGameConfig } from "components/Game";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "./GameContext";
+import questionImg from "assets/images/question.svg";
 
 const LoadingMessage = "게임을 찾는 중입니다";
 
@@ -71,28 +72,32 @@ export const GameLoading = () => {
   };
 
   return (
-    <div className="GameLoadingScreen">
-      {explainsee ? <ExplainModal onClose={closeModal} /> : null}
-      <div className="arrow">
+    <div className="gamelodaingpage">
+      <div className="loading-navbar">
         <img
-          src={arrowleft}
+          src={backIco}
           alt="뒤로가기"
           onClick={() => {
             navigate("/main");
           }}
         />
       </div>
-      <div className="game-info">
-        <Button onClick={showModal}>게임 설명</Button>
-      </div>
-      <div className="RotatingElement">
-        <img src={LoadingLogo} alt="a" />
-      </div>
-      <div className="Timer">{seconds}s</div>
-      <div className="LoadingText">
-        {Array.from(LoadingMessage).map((char, index) => (
-          <span key={index}>{char}</span>
-        ))}
+      <div className="GameLoadingScreen">
+        {explainsee ? <ExplainModal onClose={closeModal} /> : null}
+        <div className="RotatingElement">
+          <img src={LoadingLogo} alt="a" />
+        </div>
+        <div className="Timer">{seconds}s</div>
+        <div className="LoadingText">
+          {Array.from(LoadingMessage).map((char, index) => (
+            <span key={index}>{char}</span>
+          ))}
+        </div>
+        <div className="game-info">
+          <Button width="100px" onClick={showModal}>
+            게임 설명
+          </Button>
+        </div>
       </div>
     </div>
   );

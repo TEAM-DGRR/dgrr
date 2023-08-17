@@ -4,7 +4,7 @@ import "assets/scss/RoundChangeModal.scss";
 import { memo } from "react";
 
 export const RoundChangeModal = memo(
-  ({ role, message }: { role: string; message: string }) => {
+  ({ role, result }: { role: string; result: string }) => {
     return (
       <div className="roundchange-modal-background">
         <div className="roundchange-modal">
@@ -12,13 +12,21 @@ export const RoundChangeModal = memo(
           {role === "attack" ? (
             <>
               <img src={attack} alt="공격" />
-              <p>{message}</p>
+              {result === "HOLD_BACK" ? (
+                <p>웃음을 참았어요!</p>
+              ) : (
+                <p>웃음을 참지 못했어요</p>
+              )}
               <p>상대방을 웃기세요!</p>
             </>
           ) : (
             <>
               <img src={defense} alt="방어" />
-              <p>{message}</p>
+              {result === "HOLD_BACK" ? (
+                <p>상대가 웃지 않았어요</p>
+              ) : (
+                <p>상대가 웃었어요!</p>
+              )}
               <p>웃음을 참아보세요!</p>
             </>
           )}

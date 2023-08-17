@@ -73,6 +73,7 @@ export const GamePlay = () => {
   // 게임 상태
   const [role, setRole] = useState<string>(""); // 초기 상태
   const [round, setRound] = useState<string>("round 1"); // 초기 상태 "round 1"
+  const [result, setResult] = useState<string>("");
 
   // 턴 정보 모달창
   const SHOW_TURN_CHANGE_MODAL_TIME = 3 * 1000;
@@ -94,7 +95,7 @@ export const GamePlay = () => {
     } else if (gameConfig.turn === "second") {
       setRole("defense");
     }
-    setShowTurnChangeModal(true);
+    // setShowTurnChangeModal(true);
     setTimeout(
       () => setShowTurnChangeModal(false),
       SHOW_TURN_CHANGE_MODAL_TIME
@@ -181,6 +182,9 @@ export const GamePlay = () => {
 
           // 서버로부터 "round changed" 메시지를 받을 때 round와 role을 변경
           if (gameStatus.status === "round changed") {
+            // 게임 결과 저장
+            setResult(gameStatus.result);
+
             if (round === "round 1") {
               setRound("round 2");
               // 내가 공격이었을 때
@@ -349,7 +353,7 @@ export const GamePlay = () => {
         ></canvas>
       ) : null}
       {showTurnChangeModal ? (
-        <RoundChangeModal role={role} message={turnChangeMessage} />
+        <RoundChangeModal role={role} result={result} />
       ) : null}
       {showGameEndedModal ? (
         <GameEndedModal role={role} message={gameEndedMessage} />

@@ -105,7 +105,7 @@ export const GamePlay = () => {
   // GamePlay 렌더링 시 OvenVidu 연결
   useEffect(() => {
     initGame().then(({ OV, session }) => {
-      console.log("THE FIRST OV INItialte");
+      // console.log("THE FIRST OV INItialte");
       setOV(OV);
       setOVSession(session);
       session.on("streamCreated", (event) => {
@@ -118,7 +118,7 @@ export const GamePlay = () => {
         .then(({ publisher, currentVideoDevice }) => {
           setPublisher(publisher);
           currentVideoDeviceRef.current = currentVideoDevice;
-          console.log("OpenVidu 연결 완료");
+          // console.log("OpenVidu 연결 완료");
         })
         .catch((error) => {
           console.log("OpenVidu 연결 실패", error.code, error.message);
@@ -132,7 +132,7 @@ export const GamePlay = () => {
       const round2Start = () => {};
 
       if (gameStatus.status === "round changed") {
-        console.log("2라운드를 진행합니다.");
+        // console.log("2라운드를 진행합니다.");
       } else {
         // gameStatus.status === "End"
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
@@ -142,7 +142,7 @@ export const GamePlay = () => {
     };
 
     const gameEnd = (gameResult: IGameResult) => {
-      console.log("게임 종료");
+      // console.log("게임 종료");
       setShowGameEndedModal(true);
 
       // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
@@ -163,7 +163,7 @@ export const GamePlay = () => {
     if (stompClient !== undefined) {
       // 1. 이미지 결과 받기
       stompClient.subscribe(IMAGE_RESULT_URI, (message: IMessage) => {
-        console.log("이미지 분석 수신 : " + message.body);
+        // console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
           setRecognition(imageResult.success);
@@ -175,7 +175,7 @@ export const GamePlay = () => {
 
       // 2. 게임 라운드가 변경되면 게임 status를 받음
       stompClient.subscribe(STATUS_URI, (message: IMessage) => {
-        console.log("게임 상태를 수신합니다.@@@@@@@@@@@ : " + message.body);
+        // console.log("게임 상태를 수신합니다.@@@@@@@@@@@ : " + message.body);
         try {
           const gameStatus: IGameStatus = JSON.parse(message.body);
 
@@ -219,7 +219,7 @@ export const GamePlay = () => {
 
       // 3. 게임이 종료되면 게임 Result를 받음
       stompClient.subscribe(RESULT_URI, (message: IMessage) => {
-        console.log("게임 결과를 수신합니다. " + message.body);
+        // console.log("게임 결과를 수신합니다. " + message.body);
         try {
           const myGameResult: IGameResult = JSON.parse(message.body);
 
@@ -244,7 +244,7 @@ export const GamePlay = () => {
             videoElement,
             canvasRef.current,
             (base64data: string) => {
-              console.log(IMAGE_DATA_URI, "로 이미지를 보냅니다.");
+              // console.log(IMAGE_DATA_URI, "로 이미지를 보냅니다.");
               stompClient.publish({
                 destination: IMAGE_DATA_URI,
                 headers: {
@@ -265,7 +265,7 @@ export const GamePlay = () => {
 
   useEffect(() => {
     if (role === "defense") {
-      console.log("메시지 전송 시작");
+      // console.log("메시지 전송 시작");
       startWebcamCapture.current = setInterval(
         webcamCapture.current,
         CAPTURE_INTERVAL

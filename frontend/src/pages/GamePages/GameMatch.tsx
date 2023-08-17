@@ -33,7 +33,7 @@ export const GameMatch = () => {
 
   useEffect(() => {
     MatchingSound.play();
-    console.log("GameMatch Page로 넘어왔습니다.");
+    // console.log("GameMatch Page로 넘어왔습니다.");
 
     const interval = setInterval(() => {
       setSeconds((prev) => prev + 1);

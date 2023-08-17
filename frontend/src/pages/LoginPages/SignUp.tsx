@@ -65,11 +65,11 @@ export const SignUp = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${id}`)
       .then((response) => {
-        console.log("memberId: " + JSON.stringify(response.data));
-        console.log("headers: " + JSON.stringify(response.headers));
+        // console.log("memberId: " + JSON.stringify(response.data));
+        // console.log("headers: " + JSON.stringify(response.headers));
       })
       .catch((error) => {
-        console.error("signUp에서 member check 실패 : " + error);
+        // console.error("signUp에서 member check 실패 : " + error);
       });
   }, []);
 
@@ -89,7 +89,7 @@ export const SignUp = () => {
           },
         })
         .then((res: any) => {
-          console.log("file upload: " + JSON.stringify(res.data));
+          // console.log("file upload: " + JSON.stringify(res.data));
           setProfileImg({
             file: fileList[0],
             thumbnail: res.data,
@@ -128,7 +128,7 @@ export const SignUp = () => {
                 description: description,
               })
               .then((res: any) => {
-                console.log(res.data);
+                // console.log(res.data);
                 axios
                   .get(
                     `${process.env.REACT_APP_API_URL}/member/login?kakaoId=${res.data.kakaoId}`
@@ -144,7 +144,7 @@ export const SignUp = () => {
                         `${process.env.REACT_APP_API_URL}/member/kakao-id?kakaoId=${res.data.member.kakaoId}`
                       )
                       .then((res: any) => {
-                        console.log(JSON.stringify(res.data));
+                        // console.log(JSON.stringify(res.data));
                       });
                   });
                 navigate("/main");

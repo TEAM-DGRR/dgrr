@@ -264,8 +264,17 @@ public class GameService {
         //openvidu connection 종료
         openViduService.closeConnection(gameRoom.getGameSessionId());
 
+        //아이디가 같으면 저장 안함.
+        if(gameRoom.getMemberOne().getMemberId() == gameRoom.getMemberTwo().getMemberId()) {
+            gameRoom = null;
+            return;
+        }
+
         //db에 battle 저장
         saveGameResult(gameRoom, firstRoundTime, secondRoundTime, resultForMemberOne, resultForMemberTwo);
+
+        //GameRoom 메모리 반환
+        gameRoom = null;
     }
 
     @Transactional

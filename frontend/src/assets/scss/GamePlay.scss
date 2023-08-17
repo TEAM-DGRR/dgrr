@@ -6,8 +6,12 @@
   background: black;
 
   @include desktop {
-    .vieos {
+    .videos {
       display: flex;
+
+      #main-video {
+        height: 100%;
+      }
     }
 
     .noticeIsRecognitionInfo {
@@ -60,9 +64,13 @@
   }
 }
 
+.videos {
+  height: calc(100% - 84px);
+}
+
 #main-video {
   // navbar랑 맨 밑 마진 12px 뺀 길이 /2
-  height: calc((100% - 84px) / 2);
+  height: 50%;
   // 양옆 마진 12px씩 빼고 계산
   width: calc(100% - 24px);
   margin: 0 12px;

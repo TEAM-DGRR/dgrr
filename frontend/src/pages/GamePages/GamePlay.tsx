@@ -186,14 +186,14 @@ export const GamePlay = () => {
               // 내가 공격이었을 때
               if (role === "attack") {
                 if (gameStatus.result === "HOLD_BACK") {
-                  setTurnChangeMessage("상대가 웃음을 참았어요!");
+                  setTurnChangeMessage("웃음을 참았어요!");
                 } else if (gameStatus.result === "LAUGH") {
                   setTurnChangeMessage("상대가 웃었습니다!");
                 }
               } else {
                 // 내가 방어였을 때
                 if (gameStatus.result === "HOLD_BACK") {
-                  setTurnChangeMessage("웃음을 참았어요!");
+                  setTurnChangeMessage("상대가 웃지 않았어요!");
                 } else if (gameStatus.result === "LAUGH") {
                   setTurnChangeMessage("웃음을 참지 못했어요!");
                 }
@@ -303,7 +303,7 @@ export const GamePlay = () => {
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
 
-      <div className="vieos">
+      <div className="videos">
         <div id="main-video">
           {/* 상대 비디오 */}
           {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (

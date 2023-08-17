@@ -37,17 +37,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const isStompConnected = useRef<boolean>(false);
 
   const connectStompClient = async (headers: StompHeaders) => {
-    console.log("Stomp 연결을 대기중입니다...");
+    // console.log("Stomp 연결을 대기중입니다...");
     const client = await connectStomp(headers);
     setStompClient(client);
     isStompConnected.current = true;
-    console.log("Stomp연결에 성공하였습니다.");
+    // console.log("Stomp연결에 성공하였습니다.");
     return client;
   };
 
   const disconnectStompClient = () => {
     if (stompClient) {
-      console.log("Stomp 연결을 해제합니다!");
+      // console.log("Stomp 연결을 해제합니다!");
       isStompConnected.current = false;
       stompClient.deactivate();
       setStompClient(undefined);

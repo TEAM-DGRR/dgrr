@@ -1,3 +1,5 @@
+@import "App.scss";
+
 .explainmodal-bg {
   position: fixed;
   top: 0;
@@ -43,6 +45,22 @@
 
   li + li {
     margin-top: 8px;
+  }
+
+  @include desktop {
+    max-width: 450px;
+    left: calc(50% - 225px);
+    font-size: 16px;
+
+    .explainmodal-title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      p {
+        margin: 16px 0;
+      }
+    }
   }
 }
 

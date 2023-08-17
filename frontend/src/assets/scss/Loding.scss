@@ -66,7 +66,6 @@ $font-main: "Arial", sans-serif;
   @include desktop {
     img {
       max-width: 200px;
-      margin: 0 auto;
     }
 
     .game-info {

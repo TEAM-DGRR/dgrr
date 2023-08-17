@@ -1,3 +1,5 @@
+@import "App.scss";
+
 .roundchange-modal-background {
   position: fixed;
   top: 0;
@@ -33,5 +35,9 @@
   p {
     font-size: 24px;
     font-weight: bold;
+  }
+
+  @include desktop {
+    max-width: 450px;
   }
 }

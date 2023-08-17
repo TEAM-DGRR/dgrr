@@ -20,6 +20,8 @@ import live.dgrr.domain.member.entity.Member;
 import live.dgrr.domain.member.repository.MemberRepository;
 import live.dgrr.domain.member.service.MemberService;
 import live.dgrr.domain.openvidu.service.OpenViduService;
+import live.dgrr.domain.rating.entity.Rating;
+import live.dgrr.domain.rating.repository.RatingRepository;
 import live.dgrr.domain.rating.service.RatingService;
 import live.dgrr.global.utils.DgrrUtils;
 import live.dgrr.global.utils.Rank;
@@ -33,6 +35,7 @@ import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,6 +49,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final MemberService memberService;
     private final RatingService ratingService;
+    private final RatingRepository ratingRepository;
     private final BattleRepository battleRepository;
     private final MemberRepository memberRepository;
     private final BattleDetailRepository battleDetailRepository;
@@ -271,14 +275,14 @@ public class GameService {
         }
 
         //db에 battle 저장
-        saveGameResult(gameRoom, firstRoundTime, secondRoundTime, resultForMemberOne, resultForMemberTwo);
+        saveGameResult(gameRoom, firstRoundTime, secondRoundTime, resultForMemberOne, resultForMemberTwo, memberOneReward, memberTwoReward);
 
         //GameRoom 메모리 반환
         gameRoom = null;
     }
 
     @Transactional
-    public void saveGameResult(GameRoom gameRoom, long firstRoundTime, long secondRoundTime, GameResult resultForMemberOne, GameResult resultForMemberTwo) {
+    public void saveGameResult(GameRoom gameRoom, long firstRoundTime, long secondRoundTime, GameResult resultForMemberOne, GameResult resultForMemberTwo, int memberOneReward, int memberTwoReward) {
         Battle battle = new Battle(BattleType.ONE_ON_ONE, firstRoundTime + secondRoundTime);
         battleRepository.save(battle);
 
@@ -294,6 +298,15 @@ public class GameService {
 
         battleDetailRepository.save(battleDetailMemberOne);
         battleDetailRepository.save(battleDetailMemberTwo);
+
+        Rating memberOneRating = ratingService.findById(gameRoom.getMemberOne().getMemberId()).get(0);
+        Rating memberTwoRating = ratingService.findById(gameRoom.getMemberTwo().getMemberId()).get(0);
+
+        memberOneRating.addRatingAfterGame(memberOneReward);
+        memberTwoRating.addRatingAfterGame(memberTwoReward);
+
+        ratingRepository.save(memberOneRating);
+        ratingRepository.save(memberTwoRating);
     }
 
     /**

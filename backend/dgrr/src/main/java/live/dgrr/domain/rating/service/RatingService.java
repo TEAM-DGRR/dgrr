@@ -39,4 +39,9 @@ public class RatingService {
         Rating rating = new Rating(member, INITIAL_RATING, CURRENT_SEASON);
         ratingRepository.save(rating);
     }
+
+    public void save() {
+        Rating rating = new Rating();
+        ratingRepository.save(rating);
+    }
 }

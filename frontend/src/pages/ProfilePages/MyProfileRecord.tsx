@@ -84,7 +84,7 @@ export const MyProfileRecord = () => {
                       />
                       <img
                         className="profile-image"
-                        src={profileImg}
+                        src={item.opponentProfileImage}
                         alt="프로필 이미지"
                       />
                       <span className="nickname">{item.opponentNickname}</span>

@@ -155,7 +155,7 @@ export const GamePlay = () => {
         // setShowGameEndedModal(false);
         stompClient?.deactivate();
         OVSession?.disconnect();
-        // navigate("/game/result");
+        navigate("/game/result");
       }, SHOW_GAME_ENDED_MODAL_TIME);
     };
 

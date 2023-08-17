@@ -143,7 +143,7 @@ export const GamePlay = () => {
 
     const gameEnd = (gameResult: IGameResult) => {
       // console.log("게임 종료");
-      setShowGameEndedModal(true);
+      // setShowGameEndedModal(true);
 
       // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
       if (parseFloat(smileProbability) < THRESHOLD) {

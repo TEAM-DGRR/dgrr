@@ -219,7 +219,7 @@ export const MyProfileMain = () => {
                           />
                           <img
                             className="profile-image"
-                            src={profileImg}
+                            src={item.opponentProfileImage}
                             alt="프로필 이미지"
                           />
                           <span className="nickname">

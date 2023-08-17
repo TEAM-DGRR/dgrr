@@ -1,12 +1,68 @@
+@import "App.scss";
+
 .gameplay-page {
   width: 100%;
   height: var(--100vh, 100vh);
   background: black;
+
+  @include desktop {
+    .vieos {
+      display: flex;
+    }
+
+    .noticeIsRecognitionInfo {
+      height: 1vw;
+      width: 8vw;
+      position: absolute;
+      left: 5%;
+      top: 2%;
+      border-radius: 20%;
+      background-color: #33f133;
+      z-index: 5;
+    }
+
+    .noticeIsRecognitionInfoMessage {
+      max-width: 200px;
+      p {
+        width: 40vw;
+        color: white;
+        font-size: 14px;
+      }
+    }
+
+    .noticeIsNotRecognitionInfo {
+      height: 1vw;
+      width: 8vw;
+      position: absolute;
+      left: 5%;
+      top: 4%;
+      border-radius: 20%;
+      background-color: #ec244f;
+      z-index: 5;
+
+      margin-top: 5px;
+    }
+
+    .noticeIsNotRecognitionInfoMessage {
+      max-width: 200px;
+      margin-top: 5px;
+      p {
+        width: 40vw;
+        color: white;
+        font-size: 14px;
+      }
+    }
+
+    #isNotFaceRecognition {
+      position: absolute;
+      left: 40%;
+    }
+  }
 }
 
 #main-video {
   // navbar랑 맨 밑 마진 12px 뺀 길이 /2
-  height: calc((100% - 72px) / 2);
+  height: calc((100% - 84px) / 2);
   // 양옆 마진 12px씩 빼고 계산
   width: calc(100% - 24px);
   margin: 0 12px;
@@ -125,7 +181,7 @@
 .gameplay-navbar {
   text-align: center;
   margin: 0 12px;
-  height: 60px;
+  height: 52px;
 }
 
 .timer {

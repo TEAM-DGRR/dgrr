@@ -86,7 +86,7 @@ export const GameResult = () => {
               </div>
             </div>
             <div className="result-right">
-              <Button width="100%">재도전?</Button>
+              {/* <Button width="100%">재도전?</Button> */}
             </div>
           </div>
 

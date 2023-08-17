@@ -23,6 +23,27 @@
   width: 100vw;
   height: 100%;
   text-align: center;
+
+  // 데스크탑 화면일 때
+  @include desktop {
+    .MainImages {
+      display: flex;
+      justify-content: center;
+      height: 45%;
+      margin: 0;
+
+      #character {
+        width: 150px;
+        height: 150px;
+        margin: auto 0;
+      }
+
+      #title {
+        width: 300px;
+        margin: auto 12px;
+      }
+    }
+  }
 }
 
 .MainBody {

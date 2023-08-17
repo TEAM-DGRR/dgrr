@@ -2,6 +2,21 @@ $mainblack: #121417;
 $blue: #469ff6;
 $grey: #505050;
 
+// 브레이크포인트
+$mobile-max: 425px;
+$desktop-min: 426px;
+
+@mixin mobile {
+  @media (max-width: $mobile-max) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media (min-width: $desktop-min) {
+    @content;
+  }
+}
+
 .App {
   // 여백없이 고정
   position: absolute;

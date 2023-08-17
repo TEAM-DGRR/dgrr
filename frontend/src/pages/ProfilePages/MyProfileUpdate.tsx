@@ -114,7 +114,7 @@ export const MyProfileUpdate = () => {
             thumbnail: res.data,
             type: fileList[0].type.slice(0, 5),
           });
-          console.log("썸네일 변경헀냐고");
+          // console.log("썸네일 변경헀냐고");
           const mem = { ...member, profileImage: res.data };
           setMember(mem);
         })
@@ -130,7 +130,7 @@ export const MyProfileUpdate = () => {
 
     const regex = /^[a-zA-Z가-힣0-9]*$/;
     // 닉네임 조건을 만족하고 기존 닉네임과 다르다면 중복검사
-    console.log(nickname + " === " + beforeNickname);
+    // console.log(nickname + " === " + beforeNickname);
     if (nickname.length >= 2 && regex.test(nickname)) {
       if (nickname !== beforeNickname) {
         //닉네임이 바뀐 경우

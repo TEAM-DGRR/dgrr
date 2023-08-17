@@ -56,7 +56,7 @@ export const GamePlay = () => {
 
   // 이미지 수신 정보 시각화
   const [recognition, setRecognition] = useState<string>("");
-  const [smileProbability, setSmileProbability] = useState<string>("1");
+  const [smileProbability, setSmileProbability] = useState<string>("0");
   const isRecognitionMessage = "인식 성공";
   const isNotRecognitionMessage = "인식 실패";
 
@@ -105,7 +105,7 @@ export const GamePlay = () => {
   // GamePlay 렌더링 시 OvenVidu 연결
   useEffect(() => {
     initGame().then(({ OV, session }) => {
-      console.log("THE FIRST OV INItialte");
+      // console.log("THE FIRST OV INItialte");
       setOV(OV);
       setOVSession(session);
       session.on("streamCreated", (event) => {
@@ -118,7 +118,7 @@ export const GamePlay = () => {
         .then(({ publisher, currentVideoDevice }) => {
           setPublisher(publisher);
           currentVideoDeviceRef.current = currentVideoDevice;
-          console.log("OpenVidu 연결 완료");
+          // console.log("OpenVidu 연결 완료");
         })
         .catch((error) => {
           console.log("OpenVidu 연결 실패", error.code, error.message);
@@ -132,7 +132,7 @@ export const GamePlay = () => {
       const round2Start = () => {};
 
       if (gameStatus.status === "round changed") {
-        console.log("2라운드를 진행합니다.");
+        // console.log("2라운드를 진행합니다.");
       } else {
         // gameStatus.status === "End"
         console.log("게임 상태 파싱 오류 : 라운드 전환 불가");
@@ -142,18 +142,17 @@ export const GamePlay = () => {
     };
 
     const gameEnd = (gameResult: IGameResult) => {
-      console.log("게임 종료");
+      // console.log("게임 종료");
       setShowGameEndedModal(true);
-      setRole((prevRole) => (prevRole === "attack" ? "defense" : "attack"));
 
       // 게임 종료시에도 웃었는지 판단하는 로직. 서버에서 따로 정보를 주는게 없어서 smileProbability의 값으로 판단
       if (parseFloat(smileProbability) < THRESHOLD) {
-        setGameEndedMessage("안웃었네요.\n게임 종료할게요~");
+        setGameEndedMessage("웃음을 참았어요!");
       } else {
-        setGameEndedMessage("웃었습니다. ㅋㅋㅋㅋㅋ\n게임 종료할게요~");
+        setGameEndedMessage("웃음을 참지 못했어요!");
       }
       setTimeout(() => {
-        setShowGameEndedModal(false);
+        // setShowGameEndedModal(false);
         stompClient?.deactivate();
         OVSession?.disconnect();
         navigate("/game/result");
@@ -164,7 +163,7 @@ export const GamePlay = () => {
     if (stompClient !== undefined) {
       // 1. 이미지 결과 받기
       stompClient.subscribe(IMAGE_RESULT_URI, (message: IMessage) => {
-        console.log("이미지 분석 수신 : " + message.body);
+        // console.log("이미지 분석 수신 : " + message.body);
         try {
           const imageResult: IImageResult = JSON.parse(message.body);
           setRecognition(imageResult.success);
@@ -176,23 +175,33 @@ export const GamePlay = () => {
 
       // 2. 게임 라운드가 변경되면 게임 status를 받음
       stompClient.subscribe(STATUS_URI, (message: IMessage) => {
-        console.log("게임 상태를 수신합니다.@@@@@@@@@@@ : " + message.body);
+        // console.log("게임 상태를 수신합니다.@@@@@@@@@@@ : " + message.body);
         try {
           const gameStatus: IGameStatus = JSON.parse(message.body);
 
           // 서버로부터 "round changed" 메시지를 받을 때 round와 role을 변경
-          console.log();
           if (gameStatus.status === "round changed") {
             if (round === "round 1") {
               setRound("round 2");
+              // 내가 공격이었을 때
+              if (role === "attack") {
+                if (gameStatus.result === "HOLD_BACK") {
+                  setTurnChangeMessage("상대가 웃음을 참았어요!");
+                } else if (gameStatus.result === "LAUGH") {
+                  setTurnChangeMessage("상대가 웃었습니다!");
+                }
+              } else {
+                // 내가 방어였을 때
+                if (gameStatus.result === "HOLD_BACK") {
+                  setTurnChangeMessage("웃음을 참았어요!");
+                } else if (gameStatus.result === "LAUGH") {
+                  setTurnChangeMessage("웃음을 참지 못했어요!");
+                }
+              }
+              // 롤 변경
               setRole((prevRole) =>
                 prevRole === "attack" ? "defense" : "attack"
               );
-              if (gameStatus.result === "HOLD_BACK") {
-                setTurnChangeMessage("안웃었네요.");
-              } else if (gameStatus.result === "LAUGH") {
-                setTurnChangeMessage("웃었습니다. ㅋㅋㅋㅋㅋ");
-              }
             }
             // 3초간 모달 보여주기
             setShowTurnChangeModal(true);
@@ -210,7 +219,7 @@ export const GamePlay = () => {
 
       // 3. 게임이 종료되면 게임 Result를 받음
       stompClient.subscribe(RESULT_URI, (message: IMessage) => {
-        console.log("게임 결과를 수신합니다. " + message.body);
+        // console.log("게임 결과를 수신합니다. " + message.body);
         try {
           const myGameResult: IGameResult = JSON.parse(message.body);
 
@@ -235,7 +244,7 @@ export const GamePlay = () => {
             videoElement,
             canvasRef.current,
             (base64data: string) => {
-              console.log(IMAGE_DATA_URI, "로 이미지를 보냅니다.");
+              // console.log(IMAGE_DATA_URI, "로 이미지를 보냅니다.");
               stompClient.publish({
                 destination: IMAGE_DATA_URI,
                 headers: {
@@ -256,7 +265,7 @@ export const GamePlay = () => {
 
   useEffect(() => {
     if (role === "defense") {
-      console.log("메시지 전송 시작");
+      // console.log("메시지 전송 시작");
       startWebcamCapture.current = setInterval(
         webcamCapture.current,
         CAPTURE_INTERVAL
@@ -278,11 +287,11 @@ export const GamePlay = () => {
         <>
           <div className="noticeIsRecognitionInfo"></div>
           <div className="noticeIsRecognitionInfoMessage">
-            {isRecognitionMessage}
+            <p>{isRecognitionMessage}</p>
           </div>
           <div className="noticeIsNotRecognitionInfo"></div>
           <div className="noticeIsNotRecognitionInfoMessage">
-            {isNotRecognitionMessage}
+            <p>{isNotRecognitionMessage}</p>
           </div>
         </>
       ) : null}
@@ -293,40 +302,43 @@ export const GamePlay = () => {
         {/* 누르면 진짜 나갈건지 물어보는 모달 띄우기 / 현재 나가기가 없음 */}
         {/* <img hidden src={exitIco} alt="나가기버튼" style={{width: 28}} /> */}
       </div>
-      <div id="main-video">
-        {/* 상대 비디오 */}
-        {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="defend" src={defendIco} alt="방어상태" />
-        ) : null}
-        {role === "defense" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="attack" src={attackIco} alt="공격상태" />
-        ) : null}
-        <UserVideoComponent streamManager={subscriber} />
-      </div>
-      <div id="main-video">
-        {/* 내 비디오 */}
-        {role !== "defense" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="attack" src={attackIco} alt="공격상태" />
-        ) : null}
-        {role !== "attack" && !showTurnChangeModal && !showGameEndedModal ? (
-          <img id="defend" src={defendIco} alt="방어상태" />
-        ) : null}
-        {/* 이미지 분석 결과를 시각화 */}
 
-        {recognition && !showTurnChangeModal ? (
-          <ProbabilityGauge probability={parseFloat(smileProbability)} />
-        ) : (
-          <ProbabilityGauge probability={parseFloat(smileProbability)} />
-        )}
-        {!showTurnChangeModal && !showGameEndedModal ? (
-          recognition === "true" ? (
-            <div id="isFaceRecognition"></div>
+      <div className="vieos">
+        <div id="main-video">
+          {/* 상대 비디오 */}
+          {role === "attack" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="defend" src={defendIco} alt="방어상태" />
+          ) : null}
+          {role === "defense" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="attack" src={attackIco} alt="공격상태" />
+          ) : null}
+          <UserVideoComponent streamManager={subscriber} />
+        </div>
+        <div id="main-video">
+          {/* 내 비디오 */}
+          {role !== "defense" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="attack" src={attackIco} alt="공격상태" />
+          ) : null}
+          {role !== "attack" && !showTurnChangeModal && !showGameEndedModal ? (
+            <img id="defend" src={defendIco} alt="방어상태" />
+          ) : null}
+          {/* 이미지 분석 결과를 시각화 */}
+
+          {recognition && !showTurnChangeModal ? (
+            <ProbabilityGauge probability={parseFloat(smileProbability)} />
           ) : (
-            <div id="isNotFaceRecognition"></div>
-          )
-        ) : null}
+            <ProbabilityGauge probability={parseFloat(smileProbability)} />
+          )}
+          {!showTurnChangeModal && !showGameEndedModal ? (
+            recognition === "true" ? (
+              <div id="isFaceRecognition"></div>
+            ) : (
+              <div id="isNotFaceRecognition"></div>
+            )
+          ) : null}
 
-        <UserVideoComponent ref={childRef} streamManager={publisher} />
+          <UserVideoComponent ref={childRef} streamManager={publisher} />
+        </div>
       </div>
       {!showTurnChangeModal && !showGameEndedModal ? (
         <canvas

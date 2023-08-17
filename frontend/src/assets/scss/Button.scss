@@ -1,7 +1,11 @@
+@import "App.scss";
+
 $mainblack: #121417;
 
 .Button {
   border-radius: 8px;
+  max-width: 450px;
+  margin: 0 auto;
 
   // 글씨
   font-weight: bold;
@@ -34,5 +38,10 @@ $mainblack: #121417;
     border: #424242 solid;
     color: #afb4bb;
     background: #d9dbe3;
+  }
+
+  @include desktop {
+    max-width: 450px;
+    max-height: 48px;
   }
 }

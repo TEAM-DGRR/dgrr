@@ -29,4 +29,8 @@ public class Rating extends BaseEntity {
         this.rating = rating;
         this.season = season;
     }
+
+    public void addRatingAfterGame(int plus) {
+        this.rating = this.rating + plus;
+    }
 }
